@@ -1,0 +1,25 @@
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.demo-logo-vertical {
+  height: 55px;
+  margin: 16px;
+  background: rgba(255, 255, 255, .2);
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ant-menu>.ant-menu-item:hover,
+.ant-menu>.ant-menu-submenu:hover,
+.ant-menu>.ant-menu-item-active,
+.ant-menu>.ant-menu-submenu-active,
+.ant-menu>.ant-menu-item-open,
+.ant-menu>.ant-menu-submenu-open,
+.ant-menu>.ant-menu-item-selected,
+.ant-menu>.ant-menu-submenu-selected {
+  background-color: #CD1818;
+}
