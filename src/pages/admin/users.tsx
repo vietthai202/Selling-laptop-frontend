@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Space, Tag, Button, message, Modal } from 'antd';
-import { getAllUser } from '../../services/user';
+import { deleteUser, getAllUser } from '../../services/user';
 import { ColumnsType } from 'antd/es/table';
+import { logout } from '../../services/auth';
+import { useNavigate } from 'react-router-dom';
+import { IUser } from '../../types/auth';
 
 const Users = () => {
+    const navigate = useNavigate();
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [userDelete, setUserDelete] = useState<string>("");
+    const [userUpdate, setUserUpdate] = useState<IUser>();
 
     const buttonUpdate = (username: string) => {
         setIsUpdateOpen(true);
-
         console.log(username);
     }
 
@@ -26,12 +31,19 @@ const Users = () => {
             message.error("Không thể xóa admin khỏi hệ thống!");
         } else {
             setIsDeleteOpen(true);
+            setUserDelete(username);
         }
-
     }
 
     const doDelete = () => {
-        console.log("OK");
+        if (userDelete) {
+            deleteUser(userDelete)
+                .then((data: any) => {
+                    setIsDeleteOpen(false);
+                    setUserDelete("");
+                    message.success(data.message);
+                })
+        }
     }
 
     const cancelDelete = () => {
@@ -41,10 +53,16 @@ const Users = () => {
     const [dataSource, setDataSource] = useState([]);
 
     useEffect(() => {
-        getAllUser().then((data: any) => {
-            setDataSource(data);
-        });
-    }, [])
+        getAllUser()
+            .then((data: any) => {
+                setDataSource(data);
+            })
+            .catch((error: Error) => {
+                logout();
+                navigate("/login");
+                console.error('Failed to fetch user information');
+            });
+    }, [navigate, userDelete])
 
     interface DataType {
         id: string;

@@ -1,18 +1,28 @@
-import { Button, Form, Input, message } from 'antd';
+import { Button, DatePicker, Form, Input, message } from 'antd';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import routes from '../../routes';
 import { isLoggedIn, register } from '../../services/auth';
+
+import type { DatePickerProps } from 'antd';
 import type { IRegister } from '../../types/auth';
 
 const Register: React.FC = () => {
+
+    const onChange: DatePickerProps['onChange'] = (date, dateString) => {
+        // console.log(date, dateString);
+    };
+
     const navigate = useNavigate();
     const onFinish = async (values: any) => {
         const userInfo: IRegister = {
             name: values.name,
             email: values.email,
+            phone: values.phone,
             username: values.username,
-            password: values.password
+            password: values.password,
+            dateOfBirth: values.dateOfBirth.$d,
+            address: values.address
         }
         await register(userInfo)
             .then((data: any) => {
@@ -70,11 +80,35 @@ const Register: React.FC = () => {
                 </Form.Item>
 
                 <Form.Item
+                    label="Điện thoại"
+                    name="phone"
+                    rules={[{ required: true, message: 'Hãy nhập email!' }]}
+                >
+                    <Input size="large" placeholder='+84352918986' />
+                </Form.Item>
+
+                <Form.Item
                     label="Mật khẩu"
                     name="password"
                     rules={[{ required: true, message: 'Hãy nhập mật khẩu!' }]}
                 >
                     <Input.Password size="large" placeholder='Mật khẩu của bạn' />
+                </Form.Item>
+
+                <Form.Item
+                    label="Địa chỉ"
+                    name="address"
+                    rules={[{ required: false, message: 'Hãy nhập mật khẩu!' }]}
+                >
+                    <Input size="large" placeholder='Địa chỉ, nơi ở...' />
+                </Form.Item>
+
+                <Form.Item
+                    label="Ngày sinh"
+                    name="dateOfBirth"
+                    rules={[{ required: true, message: 'Ngày sinh của bạn!' }]}
+                >
+                    <DatePicker format="YYYY-MM-DD" size="large" onChange={onChange} />
                 </Form.Item>
 
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

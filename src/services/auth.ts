@@ -1,7 +1,7 @@
-import { AxiosResponse, AxiosError } from "axios";
-import api from "./api";
-import { IRegister, IUser } from "../types/auth";
 import { message } from "antd";
+import { AxiosError, AxiosResponse } from "axios";
+import { IRegister, IUser } from "../types/auth";
+import api from "./api";
 
 export function login(username: string, password: string): Promise<string> {
   return api
@@ -22,7 +22,15 @@ export function login(username: string, password: string): Promise<string> {
 
 export function register(userInfo: IRegister): Promise<boolean> {
   return api
-    .post("/register", { name: userInfo.name, email: userInfo.email, username: userInfo.username, password: userInfo.password })
+    .post("/register", {
+      name: userInfo.name,
+      email: userInfo.email,
+      username: userInfo.username,
+      password: userInfo.password,
+      dateOfBirth: userInfo.dateOfBirth,
+      address: userInfo.address,
+      phone: userInfo.phone,
+    })
     .then((response: AxiosResponse) => {
       return response.data;
     })
