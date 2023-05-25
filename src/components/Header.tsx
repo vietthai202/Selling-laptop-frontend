@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Modal } from 'antd';
+import { Button, Modal } from 'antd';
 import { getUserInfo, isLoggedIn, logout } from '../services/auth';
 
 import Logo from '../assets/images/logo.png'
@@ -11,9 +11,13 @@ import InfoIcon from '../assets/images/document.png'
 import CartIcon from '../assets/images/bag.png'
 import { IUser } from '../types/auth';
 import routes from '../routes';
+import { IProductCategory } from '../types/productCategory';
+import { getAllProductCategories } from '../services/productCategory';
 
 const Header: React.FC = () => {
     const [user, setUser] = useState<IUser | null>(null);
+
+    const [cate, setCate] = useState<IProductCategory[]>();
 
     const navigate = useNavigate();
 
@@ -36,6 +40,13 @@ const Header: React.FC = () => {
         logout();
         navigate("/login");
     };
+
+    useEffect(() => {
+        getAllProductCategories()
+            .then((data: IProductCategory[]) => {
+                setCate(data);
+            })
+    }, []);
 
     useEffect(() => {
         const username = localStorage.getItem("username");
@@ -84,8 +95,15 @@ const Header: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <div className='h-[40px] bg-[#333] text-white flex items-center justify-center'>
-                SUB HEADER HERE
+            <div className='h-[40px] space-x-4 bg-[#333] text-white flex items-center justify-center'>
+                {
+                    cate && cate.map((cate: IProductCategory) => (
+                        <Button href={cate.slug}>
+                            {cate.name}
+                        </Button>
+                    ))
+                }
+
             </div>
             <Modal
                 okButtonProps={{ style: { backgroundColor: '#CD1818' } }}
