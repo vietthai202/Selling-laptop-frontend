@@ -2,17 +2,10 @@ import { Button, DatePicker, Form, Input, message } from 'antd';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import routes from '../../routes';
-import { isLoggedIn, register } from '../../services/auth';
-
-import type { DatePickerProps } from 'antd';
+import { isLoggedIn, login, register } from '../../services/auth';
 import type { IRegister } from '../../types/auth';
 
 const Register: React.FC = () => {
-
-    const onChange: DatePickerProps['onChange'] = (date, dateString) => {
-        // console.log(date, dateString);
-    };
-
     const navigate = useNavigate();
     const onFinish = async (values: any) => {
         const userInfo: IRegister = {
@@ -25,9 +18,24 @@ const Register: React.FC = () => {
             address: values.address
         }
         await register(userInfo)
-            .then((data: any) => {
+            .then(async (data: any) => {
                 message.success(data.message);
-                navigate("/login")
+                await login(values.username, values.password)
+                    .then((data: any) => {
+                        message.success("Đăng nhập thành công!");
+
+                        if (data.userRole === "ROLE_USER") {
+                            navigate("/");
+                        } else {
+                            navigate("/admin");
+                        }
+                    })
+                    .catch(() => {
+                        message.error("Đăng nhập thất bại!");
+                    });
+                // navigate("/login")
+            }).catch(() => {
+                message.error("Hệ thống có lỗi!");
             });
     };
 
@@ -45,7 +53,7 @@ const Register: React.FC = () => {
         <div className='flex flex-col items-center justify-center py-20'>
             <div className='text-3xl mb-3'>ĐĂNG KÝ TÀI KHOẢN</div>
             <Form
-                name="loginForm"
+                name="registerForm"
                 layout="vertical"
                 labelCol={{ span: 8 }}
                 // wrapperCol={{ span: 16 }}
@@ -108,7 +116,7 @@ const Register: React.FC = () => {
                     name="dateOfBirth"
                     rules={[{ required: true, message: 'Ngày sinh của bạn!' }]}
                 >
-                    <DatePicker format="YYYY-MM-DD" size="large" onChange={onChange} />
+                    <DatePicker format="DD-MM-YYYY" size="large" />
                 </Form.Item>
 
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Modal } from 'antd';
 import { getUserInfo, isLoggedIn, logout } from '../services/auth';
 
@@ -10,6 +10,7 @@ import PhoneIcon from '../assets/images/telephone.png'
 import InfoIcon from '../assets/images/document.png'
 import CartIcon from '../assets/images/bag.png'
 import { IUser } from '../types/auth';
+import routes from '../routes';
 
 const Header: React.FC = () => {
     const [user, setUser] = useState<IUser | null>(null);
@@ -67,17 +68,17 @@ const Header: React.FC = () => {
                         <div className='font-bold whitespace-nowrap text-white'>0352918986</div>
                     </a>
 
-                    <div className='flex space-y-1 flex-col text-white items-center cursor-pointer'>
+                    <Link to={routes.BLOGS} className='flex space-y-1 flex-col text-white items-center cursor-pointer no-underline'>
                         <div><img className='w-6' src={InfoIcon} alt="" /></div>
                         <div className='font-bold whitespace-nowrap'>Thông tin hay</div>
-                    </div>
+                    </Link>
 
-                    <div onClick={showProfile} className='flex space-y-1 flex-col text-white items-center cursor-pointer'>
+                    <div onClick={showProfile} className='flex space-y-1 flex-col text-white items-center cursor-pointer no-underline'>
                         <div><img className='w-6' src={UserIcon} alt="" /></div>
                         <div className='font-bold whitespace-nowrap'>Tài khoản</div>
                     </div>
 
-                    <div className='flex space-y-1 flex-col text-white items-center cursor-pointer'>
+                    <div className='flex space-y-1 flex-col text-white items-center cursor-pointer no-underline'>
                         <div><img className='w-6' src={CartIcon} alt="" /></div>
                         <div className='font-bold whitespace-nowrap'>Giỏ hàng</div>
                     </div>

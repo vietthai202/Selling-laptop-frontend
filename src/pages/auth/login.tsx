@@ -12,7 +12,7 @@ const Login: React.FC = () => {
             .then((data: any) => {
                 message.success("Đăng nhập thành công!");
 
-                if (data.userRole === "USER") {
+                if (data.userRole === "ROLE_USER") {
                     navigate("/");
                 } else {
                     navigate("/admin");

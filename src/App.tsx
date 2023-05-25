@@ -1,14 +1,27 @@
-import './App.css';
 import { Route, Routes } from 'react-router-dom';
+import './App.css';
+import AdminLayout from './layout/AdminLayout';
+import MainLayout from './layout/MainLayout';
+import PageNotFound from './pages/PageNotFound';
+import BlogCategories from './pages/admin/blog-categories';
+import AdminBlogs from './pages/admin/blogs';
+import AddBlog from './pages/admin/blogs/addblog';
+import EditBlog from './pages/admin/blogs/editblog';
+import AdminHome from './pages/admin/home';
+import Users from './pages/admin/users';
 import Login from './pages/auth/login';
 import Register from './pages/auth/register';
+import Blogs from './pages/blog';
+import BlogDetail from './pages/blog/blogdetail';
 import Home from './pages/home';
-import AdminHome from './pages/admin/home';
 import routes from './routes';
-import PageNotFound from './pages/PageNotFound';
-import MainLayout from './pages/MainLayout';
-import AdminLayout from './pages/AdminLayout';
-import Users from './pages/admin/users';
+import Brands from './pages/admin/brands';
+import AddBrand from './pages/admin/brands/addBrand';
+import EditBrand from './pages/admin/brands/editBrand';
+import ProductCategories from './pages/admin/product-categories';
+import AddProductCategory from './pages/admin/product-categories/addProductCategory';
+import EditProductCategory from './pages/admin/product-categories/editProductCategory';
+import ProductDetail from './pages/product/ProductDetail';
 
 function App() {
   return (
@@ -18,12 +31,27 @@ function App() {
           <Route path={routes.HOME} element={<Home />} />
           <Route path={routes.LOGIN} element={<Login />} />
           <Route path={routes.REGISTER} element={<Register />} />
+          <Route path={routes.BLOGS} element={<Blogs />} />
+          <Route path={routes.BLOG_DETAIL} element={<BlogDetail />} />
+          <Route path={routes.PRODUCT_DETAIL} element={<ProductDetail />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
         <Route element={<AdminLayout />}>
           <Route path={routes.ADMIN} element={<AdminHome />} />
-          <Route path={routes.ADMIN_USERS} element={<Users />} />
           <Route path={routes.ADMIN_LOGIN} element={<Login />} />
+          <Route path={routes.ADMIN_USERS} element={<Users />} />
+
+          <Route path={routes.ADMIN_BLOGS} element={<AdminBlogs />} />
+          <Route path={routes.ADMIN_BLOGS_ADDNEW} element={<AddBlog />} />
+          <Route path={routes.ADMIN_BLOGS_EDIT} element={<EditBlog />} />
+          <Route path={routes.ADMIN_BLOGCATEGORIES} element={<BlogCategories />} />
+          <Route path={routes.ADMIN_BRANDS} element={<Brands />} />
+          <Route path={routes.ADMIN_BRANDS_ADDNEW} element={<AddBrand />} />
+          <Route path={routes.ADMIN_BRANDS_EDIT} element={<EditBrand />} />
+
+          <Route path={routes.ADMIN_PRODUCTCATEGORIES} element={<ProductCategories />} />
+          <Route path={routes.ADMIN_PRODUCTCATEGORIES_ADDNEW} element={<AddProductCategory />} />
+          <Route path={routes.ADMIN_PRODUCTCATEGORIES_EDIT} element={<EditProductCategory />} />
         </Route>
       </Routes>
     </div>
