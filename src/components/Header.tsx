@@ -1,18 +1,18 @@
+import { Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button, Modal } from 'antd';
 import { getUserInfo, isLoggedIn, logout } from '../services/auth';
 
-import Logo from '../assets/images/logo.png'
-import UserIcon from '../assets/images/user-profile.png'
-import UserRedIcon from '../assets/images/user-profile-red.png'
-import PhoneIcon from '../assets/images/telephone.png'
-import InfoIcon from '../assets/images/document.png'
-import CartIcon from '../assets/images/bag.png'
-import { IUser } from '../types/auth';
+import CartIcon from '../assets/images/bag.png';
+import InfoIcon from '../assets/images/document.png';
+import Logo from '../assets/images/logo.png';
+import PhoneIcon from '../assets/images/telephone.png';
+import UserRedIcon from '../assets/images/user-profile-red.png';
+import UserIcon from '../assets/images/user-profile.png';
 import routes from '../routes';
-import { IProductCategory } from '../types/productCategory';
 import { getAllProductCategories } from '../services/productCategory';
+import { IUser } from '../types/auth';
+import { IProductCategory } from '../types/productCategory';
 
 const Header: React.FC = () => {
     const [user, setUser] = useState<IUser | null>(null);
@@ -95,12 +95,12 @@ const Header: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <div className='h-[40px] space-x-4 bg-[#333] text-white flex items-center justify-center'>
+            <div className='h-[40px] space-x-10 bg-[#333] text-white flex items-center justify-center'>
                 {
                     cate && cate.map((cate: IProductCategory) => (
-                        <Button href={cate.slug}>
+                        <div key={cate.id} className='text-white cursor-pointer hover:font-bold'>
                             {cate.name}
-                        </Button>
+                        </div>
                     ))
                 }
 

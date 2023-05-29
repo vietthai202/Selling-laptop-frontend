@@ -43,7 +43,7 @@ export function register(userInfo: IRegister): Promise<boolean> {
 
 export function getUserInfo(username: string): Promise<IUser> {
   return api
-    .get(`/user/${username}`)
+    .get(`/user/get/${username}`)
     .then((response: AxiosResponse) => {
       return response.data;
     })

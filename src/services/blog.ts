@@ -4,7 +4,7 @@ import { IBlog } from "../types/blog";
 
 export function getAllBlog(): Promise<IBlog[]> {
   return api
-    .get("/blogs")
+    .get("/blog/list")
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -15,7 +15,7 @@ export function getAllBlog(): Promise<IBlog[]> {
 
 export function getBlogBySlug(slug: string): Promise<IBlog> {
   return api
-    .get(`/blog/${slug}`)
+    .get(`/blog/get/${slug}`)
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -26,7 +26,7 @@ export function getBlogBySlug(slug: string): Promise<IBlog> {
 
 export function deleteBlog(blogid: string): Promise<string> {
   return api
-    .delete(`/deleteBl/${blogid}`)
+    .delete(`/blog/delete/${blogid}`)
     .then((response: AxiosResponse) => {
       console.log(response.data);
       return response.data;
@@ -38,7 +38,7 @@ export function deleteBlog(blogid: string): Promise<string> {
 
 export function createBlog(blog: IBlog): Promise<string> {
   return api
-    .post(`/createBlog`, { userName: blog.userName, name: blog.name, content: blog.content, image: blog.image, slug: blog.slug, categoryId: blog.categoryId, shortContent: blog.shortContent })
+    .post("/blog/create", { userName: blog.userName, name: blog.name, content: blog.content, image: blog.image, slug: blog.slug, categoryId: blog.categoryId, shortContent: blog.shortContent })
     .then((response: AxiosResponse) => {
       console.log(response.data);
       return response.data;
@@ -50,7 +50,15 @@ export function createBlog(blog: IBlog): Promise<string> {
 
 export function updateBlog(blog: IBlog): Promise<string> {
   return api
-    .post(`/updateBl/${blog.id}`, { userName: blog.userName, name: blog.name, content: blog.content, image: blog.image, slug: blog.slug, categoryId: blog.categoryId, shortContent: blog.shortContent })
+    .post(`/blog/edit/${blog.id}`, {
+      userName: blog.userName,
+      name: blog.name,
+      content: blog.content,
+      image: blog.image,
+      slug: blog.slug,
+      categoryId: blog.categoryId,
+      shortContent: blog.shortContent,
+    })
     .then((response: AxiosResponse) => {
       console.log(response.data);
       return response.data;

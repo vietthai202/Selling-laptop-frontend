@@ -24,6 +24,8 @@ const AddProductCategory: React.FC = () => {
                 slug: convertToSlug(values.name),
             }
 
+            console.log(category);
+
             await addProductCategory(category)
                 .then(() => {
                     message.success("Thành công!");

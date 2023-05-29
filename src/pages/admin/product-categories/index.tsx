@@ -1,5 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Modal, Space, Table, message } from 'antd';
+import { Button, Modal, Space, Spin, Table, message } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,9 @@ import { IProductCategory } from '../../../types/productCategory';
 
 const ProductCategories: React.FC = () => {
     const navigate = useNavigate();
+
+    const [loading, setLoading] = useState(false);
+
     const [dataSource, setDataSource] = useState([]);
 
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -45,17 +48,18 @@ const ProductCategories: React.FC = () => {
         setIsDeleteOpen(false);
     }
 
-    useEffect(() => {
-        getAllProductCategories()
+    const fetchData = async () => {
+        setLoading(true);
+        await getAllProductCategories()
             .then((data: any) => {
                 console.log(data);
                 setDataSource(data);
-            })
-            .catch(() => {
-                logout();
-                navigate("/login");
-                console.error('Failed to fetch blog information');
+                setLoading(false);
             });
+    }
+
+    useEffect(() => {
+        fetchData();
     }, [navigate, productCategoryDelete])
 
     const columns: ColumnsType<IProductCategory> = [
@@ -84,8 +88,7 @@ const ProductCategories: React.FC = () => {
     ];
 
     return (
-        <div>
-
+        <Spin tip="Loading...." spinning={loading}>
             <Button href={routes.ADMIN_PRODUCTCATEGORIES_ADDNEW} className='mb-4' danger icon={<PlusOutlined />}>
                 Thêm danh mục
             </Button>
@@ -104,7 +107,7 @@ const ProductCategories: React.FC = () => {
                     Tất cả sản phẩm trong danh mục này sẽ tự động chuyển sang danh mục mặc định!
                 </div>
             </Modal>
-        </div>
+        </Spin>
     )
 }
 

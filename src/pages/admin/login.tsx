@@ -2,19 +2,20 @@ import { Button, Form, Input, message } from 'antd';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import routes from '../../routes';
-import { isLoggedIn, login } from "../../services/auth";
+import { isLoggedIn, login, logout } from "../../services/auth";
 
-const Login: React.FC = () => {
+const AdminLogin: React.FC = () => {
     const navigate = useNavigate();
 
     const onFinish = async (values: any) => {
         await login(values.username, values.password)
             .then((data: any) => {
-                message.success("Đăng nhập thành công!");
 
                 if (data.userRole === "ROLE_USER") {
-                    navigate("/");
+                    message.error("Đăng nhập thất bại!");
+                    logout();
                 } else {
+                    message.success("Đăng nhập thành công!");
                     navigate("/admin");
                 }
 
@@ -30,7 +31,7 @@ const Login: React.FC = () => {
 
     useEffect(() => {
         if (isLoggedIn()) {
-            navigate("/");
+            navigate("/admin");
         }
     }, [navigate]);
 
@@ -77,4 +78,4 @@ const Login: React.FC = () => {
     )
 };
 
-export default Login;
+export default AdminLogin;

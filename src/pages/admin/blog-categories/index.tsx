@@ -3,7 +3,7 @@ import { Button, Form, Input, Modal, Space, Table, message } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createCategory, getAllBlogCategory, getBlogCategoryById, updateBlogCategoryById } from '../../../services/blogCategory';
+import { createCategory, deleteBlogCategoryById, getAllBlogCategory, getBlogCategoryById, updateBlogCategoryById } from '../../../services/blogCategory';
 import { IBlogCategory } from '../../../types/blogCategory';
 
 const { TextArea } = Input;
@@ -27,6 +27,7 @@ const BlogCategories: React.FC = () => {
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const [cateUpdate, setCateUpdate] = useState<IBlogCategory>();
     const [formValue, setFromValue] = useState<any>();
+    const [idDelete, setIdDelete] = useState<string>("");
 
     const doCreate = () => {
         // createCategory();
@@ -104,11 +105,19 @@ const BlogCategories: React.FC = () => {
     }
 
     const buttonDelete = (blogid: string) => {
+        setIdDelete(blogid);
         setIsDeleteOpen(true);
     }
 
     const doDelete = () => {
-
+        deleteBlogCategoryById(idDelete)
+            .then(() => {
+                message.success("Xóa thành công");
+            }).catch(() => {
+                message.error("Xóa thất bại");
+            }).finally(() => {
+                setIsDeleteOpen(false);
+            });
     }
 
     const cancelDelete = () => {
@@ -119,7 +128,7 @@ const BlogCategories: React.FC = () => {
         getAllBlogCategory().then((data: any) => {
             setDataSource(data);
         });
-    }, [navigate, isCreateOpen, isUpdateOpen]);
+    }, [navigate, isCreateOpen, isUpdateOpen, isDeleteOpen]);
 
     useEffect(() => {
         if (cateUpdate)

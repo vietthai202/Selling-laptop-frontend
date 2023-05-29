@@ -4,7 +4,7 @@ import { IBrand } from "../types/brand";
 
 export function getAllBrands(): Promise<IBrand[]> {
   return api
-    .get("/brands")
+    .get("/brand/list")
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -15,7 +15,7 @@ export function getAllBrands(): Promise<IBrand[]> {
 
 export function addBrand(brand: IBrand): Promise<string> {
   return api
-    .post("/brand", { name: brand.name, description: brand.description, slug: brand.slug, image: brand.image })
+    .post("/brand/create", { name: brand.name, description: brand.description, slug: brand.slug, image: brand.image })
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -26,7 +26,7 @@ export function addBrand(brand: IBrand): Promise<string> {
 
 export function editBrand(brand: IBrand): Promise<string> {
   return api
-    .put(`/brands/${brand.id}`, brand)
+    .put(`/brand/edit/${brand.id}`, brand)
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -37,7 +37,7 @@ export function editBrand(brand: IBrand): Promise<string> {
 
 export function deleteBrand(brandId: string): Promise<string> {
   return api
-    .delete(`/brands/${brandId}`)
+    .delete(`/brand/delete/${brandId}`)
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -48,7 +48,7 @@ export function deleteBrand(brandId: string): Promise<string> {
 
 export function getBrandById(brandId: string): Promise<IBrand> {
   return api
-    .get(`/brands/${brandId}`)
+    .get(`/brand/getById/${brandId}`)
     .then((response: AxiosResponse) => {
       return response.data;
     })

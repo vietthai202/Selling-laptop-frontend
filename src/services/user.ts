@@ -4,7 +4,7 @@ import { IUser } from "../types/auth";
 
 export function getAllUser(): Promise<IUser[]> {
   return api
-    .get(`/users`)
+    .get(`/user/list`)
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -15,7 +15,7 @@ export function getAllUser(): Promise<IUser[]> {
 
 export function deleteUser(username: string): Promise<string> {
   return api
-    .post("/users/delete", { username })
+    .delete(`/user/delete/${username}`)
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -26,11 +26,39 @@ export function deleteUser(username: string): Promise<string> {
 
 export function updateUser(username: string, userInfo: IUser): Promise<string> {
   return api
-    .put(`/users/update/${username}`, { name: userInfo.name, email: userInfo.email, phone: userInfo.phone, address: userInfo.address, dateOfBirth: userInfo.dateOfBirth })
+    .put(`/user/edit/${username}`, {
+      name: userInfo.name,
+      email: userInfo.email,
+      phone: userInfo.phone,
+      address: userInfo.address,
+      dateOfBirth: userInfo.dateOfBirth,
+      userRole: userInfo.userRole,
+      password: userInfo.password,
+    })
     .then((response: AxiosResponse) => {
       return response.data;
     })
     .catch((error: AxiosError) => {
       throw new Error("Get failed");
+    });
+}
+
+export function createUser(userInfo: IUser): Promise<string> {
+  return api
+    .post("/user/create", {
+      name: userInfo.name,
+      username: userInfo.username,
+      password: userInfo.password,
+      email: userInfo.email,
+      phone: userInfo.phone,
+      address: userInfo.address,
+      dateOfBirth: userInfo.dateOfBirth,
+      userRole: userInfo.userRole,
+    })
+    .then((response: AxiosResponse) => {
+      return response.data;
+    })
+    .catch((error: AxiosError) => {
+      throw new Error("Create failed");
     });
 }

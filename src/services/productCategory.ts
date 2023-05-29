@@ -4,7 +4,7 @@ import { IProductCategory } from "../types/productCategory";
 
 export function getAllProductCategories(): Promise<IProductCategory[]> {
   return api
-    .get("/categories")
+    .get("/category/list")
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -15,7 +15,7 @@ export function getAllProductCategories(): Promise<IProductCategory[]> {
 
 export function addProductCategory(data: IProductCategory): Promise<string> {
   return api
-    .post("/creCategory", { name: data.name, slug: data.slug, image: data.image })
+    .post("/category/create", { name: data.name, slug: data.slug, description: data.description, image: data.image })
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -26,7 +26,7 @@ export function addProductCategory(data: IProductCategory): Promise<string> {
 
 export function editProductCategory(data: IProductCategory): Promise<string> {
   return api
-    .post(`/updateCategory/${data.id}`, data)
+    .post(`/category/edit/${data.id}`, data)
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -37,7 +37,7 @@ export function editProductCategory(data: IProductCategory): Promise<string> {
 
 export function deleteProductCategory(id: string): Promise<string> {
   return api
-    .delete(`/delCategory/${id}`)
+    .delete(`/category/delete/${id}`)
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -48,7 +48,7 @@ export function deleteProductCategory(id: string): Promise<string> {
 
 export function getProductCategoryById(id: string): Promise<IProductCategory> {
   return api
-    .get(`/categories/${id}`)
+    .get(`/category/get/${id}`)
     .then((response: AxiosResponse) => {
       return response.data;
     })

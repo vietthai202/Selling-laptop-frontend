@@ -4,7 +4,7 @@ import { IBlogCategory } from "../types/blogCategory";
 
 export function getAllBlogCategory(): Promise<IBlogCategory[]> {
   return api
-    .get("/blogcategories")
+    .get("/blog-category")
     .then((response: AxiosResponse) => {
       return response.data;
     })

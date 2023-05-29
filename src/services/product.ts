@@ -4,7 +4,7 @@ import api from "./api";
 
 export function getAllProduct(): Promise<IProduct[]> {
   return api
-    .get("/laptops")
+    .get("/laptop/list")
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -15,7 +15,7 @@ export function getAllProduct(): Promise<IProduct[]> {
 
 export function getProductBySlug(slug: string): Promise<IProduct> {
   return api
-    .get(`/laptops/${slug}`)
+    .get(`/laptop/get/${slug}`)
     .then((response: AxiosResponse) => {
       return response.data;
     })

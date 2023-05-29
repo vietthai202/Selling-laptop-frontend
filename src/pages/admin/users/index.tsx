@@ -1,4 +1,5 @@
-import { Button, DatePicker, Form, Input, Modal, Space, Table, Tag, message } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, DatePicker, Form, Input, Modal, Select, Space, Table, Tag, message } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -7,8 +8,9 @@ import weekday from "dayjs/plugin/weekday";
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUserInfo, logout } from '../../../services/auth';
-import { deleteUser, getAllUser, updateUser } from '../../../services/user';
+import { createUser, deleteUser, getAllUser, updateUser } from '../../../services/user';
 import { IUser } from '../../../types/auth';
+import { phone, password } from '../../../utils/validate';
 
 dayjs.extend(weekday)
 dayjs.extend(localeData)
@@ -25,21 +27,83 @@ interface DataType {
     userRole: string;
 }
 
+const USER_ROLE = [
+    {
+        value: 'ROLE_ADMIN',
+        label: 'ADMIN',
+    },
+    {
+        value: 'ROLE_BLOG',
+        label: 'BLOG MANAGER',
+    },
+    {
+        value: 'ROLE_PRODUCT',
+        label: 'PRODUCT MANAGER',
+    },
+    {
+        value: 'ROLE_USER',
+        label: 'DEFAULT USER',
+    },
+]
+
 const Users: React.FC = () => {
 
     const [form] = Form.useForm();
+
+    const [form2] = Form.useForm();
 
     const [loading, setLoading] = useState(true);
 
     const navigate = useNavigate();
     const [dataSource, setDataSource] = useState([]);
 
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
     const [userDelete, setUserDelete] = useState<string>("");
     const [userUpdate, setUserUpdate] = useState<IUser>();
     const [formValue, setFromValue] = useState<any>();
+
+    const buttonCreate = () => {
+        setIsCreateOpen(true);
+    }
+
+    const doCreate = () => {
+        form2
+            .validateFields()
+            .then((values: any) => {
+                const userToCreate: IUser = {
+                    id: 1,
+                    name: values.name,
+                    username: values.username,
+                    password: values.password,
+                    email: values.email,
+                    address: values.address,
+                    phone: values.phone,
+                    userRole: values.userRole.key,
+                    dateOfBirth: values.dateOfBirth.$d,
+                };
+
+                console.log(userToCreate)
+                createUser(userToCreate)
+                    .then((data: any) => {
+                        message.success(data.message);
+                    })
+                    .catch((data: any) => {
+                        message.error("Có lỗi khi tạo user!");
+                        console.log(data);
+                    })
+                    .finally(() => {
+                        setIsCreateOpen(false);
+                    })
+            })
+    }
+
+    const cancelCreate = () => {
+        form2.resetFields();
+        setIsCreateOpen(false);
+    }
 
     const buttonUpdate = async (username: string) => {
         await getUserInfo(username)
@@ -52,7 +116,8 @@ const Users: React.FC = () => {
                         email: data.email,
                         phone: data.phone,
                         address: data.address,
-                        dateOfBirth: dayjs(data.dateOfBirth)
+                        userRole: data.userRole,
+                        dateOfBirth: data.dateOfBirth ? dayjs(data.dateOfBirth) : dayjs()
                     }
                 )
 
@@ -70,7 +135,11 @@ const Users: React.FC = () => {
                     newUser.email = values.email;
                     newUser.phone = values.phone;
                     newUser.address = values.address;
+                    newUser.userRole = values.userRole;
                     newUser.dateOfBirth = values.dateOfBirth.$d;
+                    newUser.password = values.password;
+
+                    console.log(newUser);
                     updateUser(newUser.username, newUser)
                         .then((data: string) => {
                             message.success("Cập nhật thành công!");
@@ -98,6 +167,7 @@ const Users: React.FC = () => {
             message.error("Không thể xóa admin khỏi hệ thống!");
         } else {
             setIsDeleteOpen(true);
+            console.log(username);
             setUserDelete(username);
         }
     }
@@ -130,7 +200,7 @@ const Users: React.FC = () => {
             })
             .catch(() => {
                 logout();
-                navigate("/login");
+                navigate("/admin/login");
                 console.error('Failed to fetch user information');
             }).finally(() => {
                 setLoading(false);
@@ -169,7 +239,7 @@ const Users: React.FC = () => {
                 }
                 return (
                     <Tag color={color} key={role}>
-                        {role.toUpperCase()}
+                        {role}
                     </Tag>
                 )
             }
@@ -190,6 +260,10 @@ const Users: React.FC = () => {
 
     return (
         <div>
+            <Button className='mb-4' danger icon={<PlusOutlined />} onClick={() => { buttonCreate() }}>
+                Thêm người dùng
+            </Button>
+
 
             <Table rowKey="id" columns={columns} dataSource={[...dataSource]} loading={loading} />
 
@@ -231,6 +305,25 @@ const Users: React.FC = () => {
                             </Form.Item>
 
                             <Form.Item
+                                label="Mật khẩu"
+                                name="password"
+                                rules={[{ required: false, message: 'Hãy nhập mật khẩu mạnh!', pattern: password }]}
+                            >
+                                <Input type='password' size="large" placeholder='Để trống nếu không muốn thay đổi' />
+                            </Form.Item>
+
+                            <Form.Item
+                                label="ROLE"
+                                name="userRole"
+                                rules={[{ required: true, message: 'Hãy nhập role!' }]}
+                            >
+                                <Select
+                                    options={USER_ROLE}
+                                />
+
+                            </Form.Item>
+
+                            <Form.Item
                                 label="Điện thoại"
                                 name="phone"
                                 rules={[{ required: true, message: 'Hãy nhập email!' }]}
@@ -255,6 +348,97 @@ const Users: React.FC = () => {
                             </Form.Item>
                         </Form>
                     }
+                </div>
+            </Modal>
+
+            <Modal
+                destroyOnClose={true}
+                okButtonProps={{ style: { backgroundColor: '#CD1818' } }}
+                title="Thêm mới user!"
+                open={isCreateOpen}
+                onOk={doCreate}
+                onCancel={cancelCreate}
+                okText="Tạo mới"
+            >
+                <div className='flex flex-col items-center'>
+                    <Form
+                        preserve={false}
+                        form={form2}
+                        name="createForm"
+                        layout="vertical"
+                        labelCol={{ span: 8 }}
+                        style={{ minWidth: 400 }}
+                        initialValues={formValue}
+                        autoComplete="off"
+                    >
+                        <Form.Item
+                            label="Họ tên"
+                            name="name"
+                            rules={[{ required: true, message: 'Hãy nhập tên!' }]}
+                        >
+                            <Input size="large" placeholder='Nguyễn Văn A' />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Địa chỉ email"
+                            name="email"
+                            rules={[{ required: true, message: 'Hãy nhập email!', type: "email" }]}
+                        >
+                            <Input size="large" placeholder='example@gmail.com' />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Tên tài khoản"
+                            name="username"
+                            rules={[{ required: true, message: 'Hãy nhập tên tài khoản!' }]}
+                        >
+                            <Input size="large" placeholder='username' />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Mật khẩu"
+                            name="password"
+                            rules={[{ required: true, message: 'Hãy nhập mật khẩu mạnh!', pattern: password }]}
+                        >
+                            <Input type='password' size="large" placeholder='*****' />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="ROLE"
+                            name="userRole"
+                            rules={[{ required: true, message: 'Hãy nhập role!' }]}
+                        >
+                            <Select
+                                labelInValue
+                                options={USER_ROLE}
+                            />
+
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Điện thoại"
+                            name="phone"
+                            rules={[{ required: true, message: 'Hãy nhập điện thoại!', pattern: phone }]}
+                        >
+                            <Input size="large" placeholder='+84352918986' />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Địa chỉ"
+                            name="address"
+                            rules={[{ required: false, message: 'Hãy nhập địa chỉ!' }]}
+                        >
+                            <Input size="large" placeholder='Địa chỉ, nơi ở...' />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Ngày sinh"
+                            name="dateOfBirth"
+                            rules={[{ required: true, message: 'Ngày sinh!' }]}
+                        >
+                            <DatePicker format="DD-MM-YYYY" size="large" />
+                        </Form.Item>
+                    </Form>
                 </div>
             </Modal>
 

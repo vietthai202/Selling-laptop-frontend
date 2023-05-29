@@ -22,6 +22,7 @@ import ProductCategories from './pages/admin/product-categories';
 import AddProductCategory from './pages/admin/product-categories/addProductCategory';
 import EditProductCategory from './pages/admin/product-categories/editProductCategory';
 import ProductDetail from './pages/product/ProductDetail';
+import AdminLogin from './pages/admin/login';
 
 function App() {
   return (
@@ -38,7 +39,7 @@ function App() {
         </Route>
         <Route element={<AdminLayout />}>
           <Route path={routes.ADMIN} element={<AdminHome />} />
-          <Route path={routes.ADMIN_LOGIN} element={<Login />} />
+          <Route path={routes.ADMIN_LOGIN} element={<AdminLogin />} />
           <Route path={routes.ADMIN_USERS} element={<Users />} />
 
           <Route path={routes.ADMIN_BLOGS} element={<AdminBlogs />} />

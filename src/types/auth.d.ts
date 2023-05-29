@@ -11,9 +11,11 @@ export interface IRegister {
 export interface IUser {
   id: number;
   name: string;
+  password?: string;
   email: string;
   phone: string;
   dateOfBirth: string;
+  userRole: string;
   username: string;
   address: string;
 }
