@@ -1,14 +1,14 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Modal, Space, Table, message } from 'antd';
+import { Button, Modal, Space, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import routes from '../../../routes';
 import { logout } from '../../../services/auth';
-import { deleteBrand, getAllBrands } from '../../../services/brands';
-import { IBrand } from '../../../types/brand';
+import { getAllProduct } from '../../../services/product';
+import { IProduct } from '../../../types/product';
 
-const Brands: React.FC = () => {
+const AdminProducts: React.FC = () => {
     const navigate = useNavigate();
     const [dataSource, setDataSource] = useState([]);
 
@@ -17,7 +17,7 @@ const Brands: React.FC = () => {
     const [brandDelete, setBrandDelete] = useState<string>("");
 
     const buttonUpdate = (slug: string) => {
-        navigate(`/admin/brands/edit/${slug}`);
+        navigate(`/admin/products/edit/${slug}`);
     }
 
     const buttonDelete = (blogid: string) => {
@@ -27,17 +27,17 @@ const Brands: React.FC = () => {
 
     const doDelete = () => {
         if (brandDelete) {
-            deleteBrand(brandDelete)
-                .then((data: any) => {
-                    setIsDeleteOpen(false);
-                    setBrandDelete("");
-                    message.success(data.message);
-                })
-                .catch(() => {
-                    setIsDeleteOpen(false);
-                    setBrandDelete("");
-                    message.error("Có lỗi khi xóa brand!");
-                })
+            // deleteBrand(brandDelete)
+            //     .then((data: any) => {
+            //         setIsDeleteOpen(false);
+            //         setBrandDelete("");
+            //         message.success(data.message);
+            //     })
+            //     .catch(() => {
+            //         setIsDeleteOpen(false);
+            //         setBrandDelete("");
+            //         message.error("Có lỗi khi xóa brand!");
+            //     })
         }
     }
 
@@ -46,37 +46,53 @@ const Brands: React.FC = () => {
     }
 
     useEffect(() => {
-        getAllBrands()
+
+        getAllProduct()
             .then((data: any) => {
+                console.log(data);
                 setDataSource(data);
-            })
-            .catch(() => {
+            }).catch(() => {
                 logout();
-                navigate("/login");
+                navigate("/admin/login");
                 console.error('Failed to fetch blog information');
             });
+
+        // getAllBrands()
+        //     .then((data: any) => {
+        //         setDataSource(data);
+        //     })
+        //     .catch(() => {
+        //         logout();
+        //         navigate("/login");
+        //         console.error('Failed to fetch blog information');
+        //     });
     }, [navigate, brandDelete])
 
-    const columns: ColumnsType<IBrand> = [
+    const columns: ColumnsType<IProduct> = [
         {
-            title: 'Thương hiệu',
-            dataIndex: 'name',
-            key: 'name',
+            title: 'Tên laptop',
+            dataIndex: 'title',
+            key: 'title',
         },
         {
-            title: 'Logo',
+            title: 'Hình ảnh',
             dataIndex: 'image',
             key: 'image',
             render: (_, record) => {
                 return (
-                    <img className='w-48 h-20' src={record.image || "https://upload.wikimedia.org/wikipedia/commons/7/75/No_image_available.png"} alt='' />
+                    <img className='w-40 h-24 border-solid border-1 border-[#7675756f] rounded-md' src={record.image ? record.image : "https://upload.wikimedia.org/wikipedia/commons/7/75/No_image_available.png"} alt='' />
                 )
             }
         },
         {
-            title: 'Mô tả',
-            dataIndex: 'description',
-            key: 'description',
+            title: 'Mã sản phẩm',
+            dataIndex: 'sku',
+            key: 'sku',
+        },
+        {
+            title: 'Số lượng',
+            dataIndex: 'quantity',
+            key: 'quantity',
         },
         {
             title: 'Action',
@@ -84,8 +100,8 @@ const Brands: React.FC = () => {
             render: (_, record) => {
                 return (
                     <Space size="middle">
-                        <Button onClick={() => buttonUpdate(record.id.toString())}>Sửa</Button>
-                        <Button danger onClick={() => buttonDelete(record.id.toString())}>Xóa</Button>
+                        <Button onClick={() => buttonUpdate(record.slug.toString())}>Sửa</Button>
+                        <Button onClick={() => navigate(`/product/${record.slug.toString()}`)}>Xem</Button>
                     </Space>
                 )
             }
@@ -95,8 +111,8 @@ const Brands: React.FC = () => {
     return (
         <div>
 
-            <Button href={routes.ADMIN_BRANDS_ADDNEW} className='mb-4' danger icon={<PlusOutlined />}>
-                Thêm thương hiệu
+            <Button href={routes.ADMIN_PRODUCTS_ADDNEW} className='mb-4' danger icon={<PlusOutlined />}>
+                Thêm sản phẩm
             </Button>
 
             <Table rowKey="id" columns={columns} dataSource={dataSource} />
@@ -117,4 +133,4 @@ const Brands: React.FC = () => {
     )
 }
 
-export default Brands;
+export default AdminProducts;

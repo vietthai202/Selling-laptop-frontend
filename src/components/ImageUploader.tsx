@@ -1,71 +1,73 @@
+import { UploadOutlined } from '@ant-design/icons';
+import { Button, Image, Upload, UploadFile } from 'antd';
+import { UploadChangeParam } from 'antd/es/upload';
 import React, { useState } from 'react';
-import axios from 'axios';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/storage';
 
-interface UploadImageResponse {
-    data: {
-        link: string;
-    };
-}
-
-const uploadImage = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-        delete axios.defaults.headers.common["Authorization"];
-        const response = await axios.post<UploadImageResponse>(
-            'https://api.imgur.com/3/image',
-            formData,
-            {
-                headers: {
-                    Authorization: '558eba93e57cecf bd4ab8823d20b1d415028937d8aa2647ad9c1454'
-                }
-            }
-        );
-
-        return response.data.data.link;
-    } catch (error) {
-        console.error('Error uploading image:', error);
-        throw error;
-    }
+// Khởi tạo Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyClaRkzpwKvhXOh_cHm4pmU0ppRKIRNvTo",
+    authDomain: "swp-upload.firebaseapp.com",
+    projectId: "swp-upload",
+    storageBucket: "swp-upload.appspot.com",
+    messagingSenderId: "654377095573",
+    appId: "1:654377095573:web:04f4a5923505b147d7669c"
 };
 
-const ImageUploader: React.FC = () => {
-    const [selectedImage, setSelectedImage] = useState<File | null>(null);
-    const [imageUrl, setImageUrl] = useState<string | null>(null);
-    const [uploading, setUploading] = useState<boolean>(false);
+firebase.initializeApp(firebaseConfig);
+const storage = (firebase as any).storage();
 
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files && event.target.files[0];
-        if (file) {
-            setSelectedImage(file);
+const UploadImage: React.FC = () => {
+    const [selectedImages, setSelectedImages] = useState<File[]>([]);
+    const [imageURLs, setImageURLs] = useState<string[]>([]);
+
+    const handleFileInputChange = (info: UploadChangeParam<UploadFile<any>>) => {
+        if (info.fileList && info.fileList.length > 0) {
+            const files: any = info.fileList.map((file) => file.originFileObj);
+            setSelectedImages(files);
         }
     };
 
-    const handleUpload = async () => {
-        if (selectedImage) {
-            setUploading(true);
+    const handleUpload = () => {
+        if (selectedImages.length > 0) {
+            const uploadPromises = selectedImages.map((image) => {
+                return storage.ref(`/images/${image.name}`).put(image);
+            });
 
-            try {
-                const url = await uploadImage(selectedImage);
-                setImageUrl(url);
-            } catch (error) {
-                console.error('Error uploading image:', error);
-            }
-
-            setUploading(false);
+            Promise.all(uploadPromises)
+                .then((snapshots) => {
+                    const downloadURLPromises = snapshots.map((snapshot) =>
+                        snapshot.ref.getDownloadURL()
+                    );
+                    return Promise.all(downloadURLPromises);
+                })
+                .then((urls) => {
+                    setImageURLs(urls);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
         }
     };
 
     return (
         <div>
-            <input type="file" accept="image/*" onChange={handleImageChange} />
-            <button onClick={handleUpload} disabled={!selectedImage || uploading}>
-                {uploading ? 'Uploading...' : 'Upload Image'}
-            </button>
-            {imageUrl && <img src={imageUrl} alt="Uploaded" />}
+            <Upload
+                multiple
+                beforeUpload={() => false}
+                onChange={handleFileInputChange}
+            >
+                <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+            </Upload>
+            <Button type="primary" onClick={handleUpload}>
+                Tải lên
+            </Button>
+            {imageURLs.map((url, index) => (
+                <Image key={index} src={url} alt={`Uploaded ${index}`} />
+            ))}
         </div>
     );
 };
 
-export default ImageUploader;
+export default UploadImage;

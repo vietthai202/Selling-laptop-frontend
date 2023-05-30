@@ -10,7 +10,7 @@ import { convertToSlug } from '../../../utils/string';
 
 const { TextArea } = Input;
 
-const AddBrand: React.FC = () => {
+const AddSlide: React.FC = () => {
     const navigate = useNavigate();
 
     const [image, setImage] = useState<string | null>(null);
@@ -89,4 +89,4 @@ const AddBrand: React.FC = () => {
     )
 }
 
-export default AddBrand;
+export default AddSlide;

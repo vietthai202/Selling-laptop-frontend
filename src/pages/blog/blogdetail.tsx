@@ -28,7 +28,10 @@ const BlogDetail = () => {
                     {blog?.shortContent}
                 </p>
                 <figure>
-                    <img src={blog?.image} alt="" className="w-full" />
+                    {
+                        blog?.image &&
+                        <img src={blog.image} alt="" className="w-full" />
+                    }
                 </figure>
                 <div>
                     <div dangerouslySetInnerHTML={{ __html: blog?.content || "No content" }} />

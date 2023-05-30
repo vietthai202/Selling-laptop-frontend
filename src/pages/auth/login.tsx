@@ -63,15 +63,20 @@ const Login: React.FC = () => {
                     <Input.Password size="large" placeholder='Mật khẩu của bạn' />
                 </Form.Item>
 
-                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                    <Button type="primary" className='bg-[#CD1818] hover:bg-[#6d6d6d]' htmlType="submit">
-                        Đăng nhập
+                <Form.Item className='flex justify-center'>
+                    <span onClick={() => navigate(routes.FORGOT)} className='font-bold text-red-500 hover:text-red-400 cursor-pointer'>
+                        LẤY MẬT KHẨU
+                    </span>
+
+                    <Button type="primary" className='bg-[#CD1818] hover:bg-[#6d6d6d] mx-5' htmlType="submit">
+                        ĐĂNG NHẬP
                     </Button>
 
-                    <span onClick={() => navigate(routes.REGISTER)} className='ml-5 font-bold text-red-500 hover:text-red-400 cursor-pointer'>
+                    <span onClick={() => navigate(routes.REGISTER)} className='font-bold text-red-500 hover:text-red-400 cursor-pointer'>
                         ĐĂNG KÝ
                     </span>
                 </Form.Item>
+
             </Form>
         </div>
     )

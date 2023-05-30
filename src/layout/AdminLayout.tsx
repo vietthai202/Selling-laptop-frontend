@@ -1,9 +1,11 @@
 
 import { BlockOutlined, FileTextOutlined, LaptopOutlined, SlackSquareOutlined, UserOutlined } from '@ant-design/icons';
-import { Layout, Menu, theme } from 'antd';
+import { Button, Layout, Menu, theme } from 'antd';
 import React from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../assets/images/logo.png';
+import { logout } from '../services/auth';
+import { Header } from 'antd/es/layout/layout';
 const { Content, Footer, Sider } = Layout;
 
 const AdminLayout = () => {
@@ -16,39 +18,87 @@ const AdminLayout = () => {
         token: { colorBgContainer },
     } = theme.useToken();
 
-    const menu = [
-        {
-            key: "users",
-            icon: React.createElement(UserOutlined),
-            label: `Người dùng`,
-        },
-        {
-            key: "blog-categories",
-            icon: React.createElement(BlockOutlined),
-            label: `Danh mục tin`,
-        },
-        {
-            key: "blogs",
-            icon: React.createElement(FileTextOutlined),
-            label: `Tin tức`,
-        },
-        {
-            key: "brands",
-            icon: React.createElement(SlackSquareOutlined),
-            label: `Thương hiệu`,
-        },
-        {
-            key: "product-categories",
-            icon: React.createElement(BlockOutlined),
-            label: `Danh mục sản phẩm`,
-        },
-        {
-            key: "products",
-            icon: React.createElement(LaptopOutlined),
-            label: `Sản phẩm`,
-        },
+    const userRole: string = localStorage.getItem("role") || "";
 
-    ]
+    const getMenuItems = (USERROLE: string) => {
+        switch (USERROLE) {
+            case 'ROLE_ADMIN':
+                return [
+                    {
+                        key: "users",
+                        icon: React.createElement(UserOutlined),
+                        label: `Người dùng`,
+                    },
+                    {
+                        key: "blog-categories",
+                        icon: React.createElement(BlockOutlined),
+                        label: `Danh mục tin`,
+                    },
+                    {
+                        key: "blogs",
+                        icon: React.createElement(FileTextOutlined),
+                        label: `Tin tức`,
+                    },
+                    {
+                        key: "brands",
+                        icon: React.createElement(SlackSquareOutlined),
+                        label: `Thương hiệu`,
+                    },
+                    {
+                        key: "slides",
+                        icon: React.createElement(SlackSquareOutlined),
+                        label: `Slide Show`,
+                    },
+                    {
+                        key: "product-categories",
+                        icon: React.createElement(BlockOutlined),
+                        label: `Danh mục sản phẩm`,
+                    },
+                    {
+                        key: "products",
+                        icon: React.createElement(LaptopOutlined),
+                        label: `Sản phẩm`,
+                    },
+                ]
+            case 'ROLE_BLOG':
+                return [
+
+                    {
+                        key: "blog-categories",
+                        icon: React.createElement(BlockOutlined),
+                        label: `Danh mục tin`,
+                    },
+                    {
+                        key: "blogs",
+                        icon: React.createElement(FileTextOutlined),
+                        label: `Tin tức`,
+                    },
+                ]
+            case 'ROLE_PRODUCT':
+                return [
+                    {
+                        key: "brands",
+                        icon: React.createElement(SlackSquareOutlined),
+                        label: `Thương hiệu`,
+                    },
+                    {
+                        key: "product-categories",
+                        icon: React.createElement(BlockOutlined),
+                        label: `Danh mục sản phẩm`,
+                    },
+                    {
+                        key: "products",
+                        icon: React.createElement(LaptopOutlined),
+                        label: `Sản phẩm`,
+                    },
+                ]
+            default:
+                return [
+                ]
+        }
+    }
+
+    const menu = getMenuItems(userRole);
 
     return (
         <Layout>
@@ -76,6 +126,12 @@ const AdminLayout = () => {
                 />
             </Sider>
             <Layout>
+                <Header className='flex justify-end items-center pr-4' style={{ padding: 0, background: colorBgContainer }}>
+                    <Button className='' onClick={logout}>
+                        Logout
+                    </Button>
+                </Header>
+
                 <Content style={{ margin: '24px 16px 0' }}>
                     <div style={{ padding: 24, minHeight: "100%", background: colorBgContainer }}>
                         <Outlet />

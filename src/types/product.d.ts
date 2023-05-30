@@ -5,7 +5,7 @@ export interface IProduct {
   metaTitle: string;
   slug: string;
   summary: string;
-  image: string;
+  image: string | null;
   sku: string;
   price: number;
   discount: number;

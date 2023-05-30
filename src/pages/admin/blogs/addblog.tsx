@@ -11,6 +11,7 @@ import { createCategory, getAllBlogCategory } from '../../../services/blogCatego
 import { IBlog } from '../../../types/blog';
 import { IBlogCategory } from '../../../types/blogCategory';
 import { convertToSlug } from '../../../utils/string';
+import UploadSingleImage from '../../../components/SingleUploadImage';
 
 const { TextArea } = Input;
 
@@ -18,6 +19,7 @@ const AddBlog: React.FC = () => {
     const navigate = useNavigate();
 
     const [textEditValue, setTextEditValue] = useState('');
+    const [cover, setCover] = useState<string | null>(null);
 
     const onFinish = async (values: any) => {
         const username = localStorage.getItem("username");
@@ -26,7 +28,7 @@ const AddBlog: React.FC = () => {
             const blogData: IBlog = {
                 name: values.blogName,
                 content: textEditValue,
-                image: 'https://i.imgur.com/Keus9bC.jpeg',
+                image: cover,
                 slug: convertToSlug(values.blogName),
                 shortContent: values.blogDesc,
                 createdAt: '',
@@ -167,6 +169,13 @@ const AddBlog: React.FC = () => {
                         placeholder="Mô tả về danh mục"
                         autoSize={{ minRows: 3, maxRows: 5 }}
                     />
+                </Form.Item>
+
+                <Form.Item
+                    label="Ảnh bìa"
+                    name="coverImage"
+                >
+                    <UploadSingleImage valueProps={cover} setValueProps={setCover} />
                 </Form.Item>
 
                 <TextEditer valueProps={textEditValue} setValueProps={setTextEditValue} />

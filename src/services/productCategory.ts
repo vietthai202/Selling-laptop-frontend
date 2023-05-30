@@ -48,7 +48,7 @@ export function deleteProductCategory(id: string): Promise<string> {
 
 export function getProductCategoryById(id: string): Promise<IProductCategory> {
   return api
-    .get(`/category/get/${id}`)
+    .get(`/category/getById/${id}`)
     .then((response: AxiosResponse) => {
       return response.data;
     })

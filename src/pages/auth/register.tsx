@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import routes from '../../routes';
 import { isLoggedIn, login, register } from '../../services/auth';
 import type { IRegister } from '../../types/auth';
+import { password, phone } from '../../utils/validate';
 
 const Register: React.FC = () => {
     const navigate = useNavigate();
@@ -56,7 +57,6 @@ const Register: React.FC = () => {
                 name="registerForm"
                 layout="vertical"
                 labelCol={{ span: 8 }}
-                // wrapperCol={{ span: 16 }}
                 style={{ minWidth: 400 }}
                 initialValues={{ remember: true }}
                 onFinish={onFinish}
@@ -90,15 +90,15 @@ const Register: React.FC = () => {
                 <Form.Item
                     label="Điện thoại"
                     name="phone"
-                    rules={[{ required: true, message: 'Hãy nhập email!' }]}
+                    rules={[{ required: true, message: 'Hãy nhập điện thoại!', pattern: phone }]}
                 >
-                    <Input size="large" placeholder='+84352918986' />
+                    <Input size="large" placeholder='0352918986' />
                 </Form.Item>
 
                 <Form.Item
                     label="Mật khẩu"
                     name="password"
-                    rules={[{ required: true, message: 'Hãy nhập mật khẩu!' }]}
+                    rules={[{ required: true, message: 'Hãy nhập mật khẩu!', pattern: password }]}
                 >
                     <Input.Password size="large" placeholder='Mật khẩu của bạn' />
                 </Form.Item>
@@ -106,7 +106,7 @@ const Register: React.FC = () => {
                 <Form.Item
                     label="Địa chỉ"
                     name="address"
-                    rules={[{ required: false, message: 'Hãy nhập mật khẩu!' }]}
+                    rules={[{ required: false, message: 'Hãy nhập địa chỉ!' }]}
                 >
                     <Input size="large" placeholder='Địa chỉ, nơi ở...' />
                 </Form.Item>

@@ -11,6 +11,7 @@ import { createCategory, getAllBlogCategory } from '../../../services/blogCatego
 import { IBlog } from '../../../types/blog';
 import { IBlogCategory } from '../../../types/blogCategory';
 import { convertToSlug } from '../../../utils/string';
+import UploadSingleImage from '../../../components/SingleUploadImage';
 
 const { TextArea } = Input;
 
@@ -19,6 +20,8 @@ const EditBlog: React.FC = () => {
     const param: any = useParams();
 
     const navigate = useNavigate();
+
+    const [cover, setCover] = useState<string | null>(null);
 
     const [items, setItems] = useState<IBlogCategory[]>([{ id: 1, name: "okok", content: "c" }, { id: 1, name: "okok22", content: "ccccc" }]);
     const [textEditValue, setTextEditValue] = useState('');
@@ -35,7 +38,7 @@ const EditBlog: React.FC = () => {
                 ...blog,
                 name: values.blogName,
                 content: textEditValue,
-                image: 'https://i.imgur.com/Keus9bC.jpeg',
+                image: cover,
                 slug: convertToSlug(values.blogName),
                 shortContent: values.blogDesc,
                 createdAt: '',
@@ -103,6 +106,7 @@ const EditBlog: React.FC = () => {
                 console.log(data)
                 setBlog(data);
                 setTextEditValue(data.content);
+                setCover(data.image)
             }).catch(() => {
                 navigate("/404");
             });
@@ -182,6 +186,13 @@ const EditBlog: React.FC = () => {
                             placeholder="Mô tả về danh mục"
                             autoSize={{ minRows: 3, maxRows: 5 }}
                         />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Ảnh bìa"
+                        name="coverImage"
+                    >
+                        <UploadSingleImage valueProps={cover} setValueProps={setCover} />
                     </Form.Item>
 
                     <TextEditer valueProps={textEditValue} setValueProps={setTextEditValue} />

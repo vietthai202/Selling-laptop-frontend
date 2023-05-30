@@ -20,7 +20,7 @@ const ListBrand: React.FC = () => {
                     {blogs?.map((data: IBrand) => (
                         <Link to={"/"} key={data.id} className="rounded-md max-w-xs overflow-hidden hover:scale-105 hover:shadow-lg shadow-sm transition duration-500 cursor-pointer no-underline">
                             <Tooltip title={data.name}>
-                                <img className='w-full h-16' src={data.image} alt="" />
+                                <img className='w-full h-16' src={data.image ? data.image : "https://upload.wikimedia.org/wikipedia/commons/7/75/No_image_available.png"} alt="" />
                             </Tooltip>
                         </Link>
                     ))}

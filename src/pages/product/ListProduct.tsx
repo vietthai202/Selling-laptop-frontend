@@ -23,7 +23,7 @@ const ListProduct: React.FC = () => {
                     {laptops?.map((data: IProduct) => (
                         <Link to={`/product/${data.slug}`} key={data.id} className="max-w-xs rounded-md overflow-hidden shadow-lg hover:scale-105 transition duration-500 cursor-pointer no-underline">
                             <div>
-                                <img className='w-full' src={data.image || "https://media.ldlc.com/r1600/ld/products/00/05/82/02/LD0005820208_1.jpg"} alt="" />
+                                <img className='w-full h-48' src={data.image || "https://upload.wikimedia.org/wikipedia/commons/7/75/No_image_available.png"} alt="" />
                             </div>
                             <div className="py-4 px-4 bg-white">
                                 <h4 className="text-sm font-semibold text-[#CD1818]">Mã sản phẩm: {data.sku}</h4>

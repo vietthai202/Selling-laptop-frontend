@@ -8,7 +8,7 @@ import { logout } from '../../../services/auth';
 import { deleteBrand, getAllBrands } from '../../../services/brands';
 import { IBrand } from '../../../types/brand';
 
-const Brands: React.FC = () => {
+const Slides: React.FC = () => {
     const navigate = useNavigate();
     const [dataSource, setDataSource] = useState([]);
 
@@ -117,4 +117,4 @@ const Brands: React.FC = () => {
     )
 }
 
-export default Brands;
+export default Slides;

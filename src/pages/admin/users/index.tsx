@@ -205,7 +205,7 @@ const Users: React.FC = () => {
             }).finally(() => {
                 setLoading(false);
             });
-    }, [navigate, userDelete, userUpdate, isUpdateOpen]);
+    }, [navigate, userDelete, userUpdate, isUpdateOpen, isCreateOpen]);
 
     useEffect(() => {
         if (userUpdate)
@@ -217,6 +217,11 @@ const Users: React.FC = () => {
             title: 'Tên',
             dataIndex: 'name',
             key: 'name',
+        },
+        {
+            title: 'Username',
+            dataIndex: 'username',
+            key: 'username',
         },
         {
             title: 'Địa chỉ',

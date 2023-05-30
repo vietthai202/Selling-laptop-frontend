@@ -23,3 +23,25 @@ export function getProductBySlug(slug: string): Promise<IProduct> {
       throw new Error("Fetch failed");
     });
 }
+
+export function createProduct(product: IProduct): Promise<any> {
+  return api
+    .post("/laptop/create", product)
+    .then((response: AxiosResponse) => {
+      return response.data;
+    })
+    .catch((error: AxiosError) => {
+      throw new Error("Fetch failed");
+    });
+}
+
+export function updateProduct(product: IProduct): Promise<any> {
+  return api
+    .put(`/laptop/edit/${product.id}`, product)
+    .then((response: AxiosResponse) => {
+      return response.data;
+    })
+    .catch((error: AxiosError) => {
+      throw new Error("Fetch failed");
+    });
+}

@@ -2,39 +2,43 @@ import { Button, Form, Input, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import routes from '../../../routes';
-import { isLoggedIn } from '../../../services/auth';
+import { isLoggedIn, logout } from '../../../services/auth';
+import { editBrand, getBrandById } from '../../../services/brands';
+import { IBrand } from '../../../types/brand';
 import { convertToSlug } from '../../../utils/string';
-import { IProductCategory } from '../../../types/productCategory';
-import { editProductCategory, getProductCategoryById } from '../../../services/productCategory';
+import UploadSingleImage from '../../../components/SingleUploadImage';
 
 const { TextArea } = Input;
 
-const EditProductCategory: React.FC = () => {
+const EditSlide: React.FC = () => {
     const navigate = useNavigate();
     const param: any = useParams();
 
-    const [category, setCategory] = useState<IProductCategory>();
+    const [image, setImage] = useState<string | null>(null);
+
+    const [brand, setBrand] = useState<IBrand>();
 
     const onFinish = async (values: any) => {
         const username = localStorage.getItem("username");
 
-        if (isLoggedIn() && username && category) {
-            const newCate: IProductCategory = category;
-            newCate.name = values.name;
-            newCate.description = values.description;
-            newCate.slug = convertToSlug(values.name);
+        if (isLoggedIn() && username && brand) {
+            const newBrand: IBrand = brand;
+            newBrand.name = values.name;
+            newBrand.description = values.description;
+            newBrand.image = image;
+            newBrand.slug = convertToSlug(values.name);
 
-            await editProductCategory(newCate)
+            await editBrand(newBrand)
                 .then(() => {
                     message.success("Thành công!");
-                    navigate(routes.ADMIN_PRODUCTCATEGORIES);
+                    navigate(routes.ADMIN_BRANDS);
                 })
                 .catch(() => {
                     message.error("Thất bại!");
                 });
         } else {
             message.success("Hết hạn, đăng nhập lại!");
-            navigate(routes.ADMIN_LOGIN);
+            navigate(routes.LOGIN);
         }
     };
 
@@ -43,28 +47,31 @@ const EditProductCategory: React.FC = () => {
     };
 
     useEffect(() => {
-        if (param)
-            getProductCategoryById(param.id)
-                .then((data: IProductCategory) => {
-                    setCategory(data);
+        if (param) {
+            getBrandById(param.id)
+                .then((data: IBrand) => {
+                    setBrand(data);
+                    setImage(data.image);
+                    console.log(data);
                 }).catch(() => {
-                    navigate("/404");
-                }).finally(() => {
-
+                    message.error("Có lỗi khi lấy dữ liệu!");
+                    logout();
+                    navigate("/admin/login");
                 })
+        }
     }, [navigate, param])
 
     return (
         <div>
             {
-                category &&
+                brand &&
 
                 <Form
                     name="newBlogForm"
                     layout="vertical"
                     labelCol={{ span: 8 }}
                     style={{ minWidth: 400 }}
-                    initialValues={category}
+                    initialValues={brand}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
@@ -74,7 +81,7 @@ const EditProductCategory: React.FC = () => {
                         name="name"
                         rules={[{ required: true, message: 'Hãy nhập tiêu đề!' }]}
                     >
-                        <Input size="large" placeholder='Tiêu đề cho bài viết!' />
+                        <Input size="large" placeholder='Tiêu đề nhãn hàng!' />
                     </Form.Item>
 
                     <Form.Item
@@ -89,6 +96,8 @@ const EditProductCategory: React.FC = () => {
                         />
                     </Form.Item>
 
+                    <UploadSingleImage valueProps={image} setValueProps={setImage} />
+
                     <Button type="primary" className='bg-[#CD1818] hover:bg-[#6d6d6d] my-3' htmlType="submit">
                         Cập nhật
                     </Button>
@@ -98,4 +107,4 @@ const EditProductCategory: React.FC = () => {
     )
 }
 
-export default EditProductCategory;
+export default EditSlide;

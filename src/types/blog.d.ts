@@ -3,7 +3,7 @@ export interface IBlog {
   userName: string;
   name: string;
   content: string;
-  image: string;
+  image: string | null;
   createdAt: string;
   shortContent: string;
   slug: string;

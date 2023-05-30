@@ -30,25 +30,27 @@ const Blogs: React.FC = () => {
                     </div>
                 </div>
                 <div className="-mx-4 flex flex-wrap">
-                    {blogs?.map((data: IBlog) => (
-                        <Link to={`/blog/${data.slug}`} key={data.id} className="w-full px-4 md:w-1/2 lg:w-1/3 no-underline font-sans">
-                            <div className="mx-auto mb-10 max-w-[370px]">
-                                <div className="mb-8 overflow-hidden rounded">
-                                    <img src={data.image} alt="" className="w-full" />
-                                </div>
-                                <div>
-                                    <span
-                                        className="bg-primary mb-5 inline-block rounded py-1 px-4 text-center text-xs font-semibold leading-loose text-red-500"
-                                    >
-                                        {data.createdAt}
-                                    </span>
-                                    <div className='text-2xl text-black'>
-                                        {data.name}
+                    {
+                        blogs?.map((data: IBlog) => (
+                            <Link to={`/blog/${data.slug}`} key={data.id} className="w-full px-4 md:w-1/2 lg:w-1/3 no-underline font-sans">
+                                <div className="mx-auto mb-10 max-w-[370px] shadow-lg hover:scale-105 transition duration-500 cursor-pointer rounded-md p-5">
+                                    <div className="mb-8 overflow-hidden rounded">
+                                        <img className="w-full h-48" src={data.image ? data.image : "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"} alt="" />
+                                    </div>
+                                    <div>
+                                        <span
+                                            className="bg-primary mb-5 inline-block rounded py-1 px-4 text-center text-xs font-semibold leading-loose text-red-500"
+                                        >
+                                            {data.createdAt}
+                                        </span>
+                                        <div className='text-2xl text-black'>
+                                            {data.name}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </Link>
-                    ))}
+                            </Link>
+                        ))
+                    }
                 </div>
             </div>
         </section>

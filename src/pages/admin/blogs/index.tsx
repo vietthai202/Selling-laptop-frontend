@@ -51,7 +51,7 @@ const Blogs: React.FC = () => {
             })
             .catch(() => {
                 logout();
-                navigate("/login");
+                navigate("/admin/login");
                 console.error('Failed to fetch blog information');
             });
     }, [navigate, blogDelete])

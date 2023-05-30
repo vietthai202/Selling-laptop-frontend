@@ -41,6 +41,19 @@ export function register(userInfo: IRegister): Promise<boolean> {
     });
 }
 
+export function forgotPass(email: string): Promise<boolean> {
+  return api
+    .post("/user/loss-pass", { email: email })
+    .then((response: AxiosResponse) => {
+      return response.data;
+    })
+    .catch((error: AxiosError) => {
+      const errorData: any = error.response?.data;
+      message.error(errorData.message);
+      throw new Error("Register failed");
+    });
+}
+
 export function getUserInfo(username: string): Promise<IUser> {
   return api
     .get(`/user/get/${username}`)

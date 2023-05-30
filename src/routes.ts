@@ -1,6 +1,7 @@
 const routes = {
   HOME: "/",
   REGISTER: "/register",
+  FORGOT: "/losspass",
   LOGIN: "/login",
   BLOG_CATEGORIES: "/blog-categories",
   BLOGS: "/blogs",
@@ -25,6 +26,14 @@ const routes = {
   ADMIN_PRODUCTCATEGORIES: "/admin/product-categories",
   ADMIN_PRODUCTCATEGORIES_ADDNEW: "/admin/product-categories/new",
   ADMIN_PRODUCTCATEGORIES_EDIT: "/admin/product-categories/edit/:id",
+
+  ADMIN_PRODUCTS: "/admin/products",
+  ADMIN_PRODUCTS_ADDNEW: "/admin/products/new",
+  ADMIN_PRODUCTS_EDIT: "/admin/products/edit/:slug",
+
+  ADMIN_SLIDES: "/admin/slides",
+  ADMIN_SLIDES_ADDNEW: "/admin/slides/new",
+  ADMIN_SLIDES_EDIT: "/admin/slides/edit/:slug",
 };
 
 export default routes;

@@ -4,7 +4,7 @@ import { IBlogCategory } from "../types/blogCategory";
 
 export function getAllBlogCategory(): Promise<IBlogCategory[]> {
   return api
-    .get("/blog-category")
+    .get("/blog-category/list")
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -15,7 +15,7 @@ export function getAllBlogCategory(): Promise<IBlogCategory[]> {
 
 export function getBlogCategoryById(id: string): Promise<IBlogCategory> {
   return api
-    .get(`/blogcategories/${id}`)
+    .get(`/blog-category/get/${id}`)
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -26,7 +26,7 @@ export function getBlogCategoryById(id: string): Promise<IBlogCategory> {
 
 export function deleteBlogCategoryById(id: string): Promise<IBlogCategory> {
   return api
-    .delete(`/blogcategories/${id}`)
+    .delete(`/blog-category/delete/${id}`)
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -37,7 +37,7 @@ export function deleteBlogCategoryById(id: string): Promise<IBlogCategory> {
 
 export function updateBlogCategoryById(blogCate: IBlogCategory): Promise<string> {
   return api
-    .put(`/blogcategories/${blogCate.id}`, { name: blogCate.name, content: blogCate.content })
+    .put(`/blog-category/edit/${blogCate.id}`, { name: blogCate.name, content: blogCate.content })
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -48,7 +48,7 @@ export function updateBlogCategoryById(blogCate: IBlogCategory): Promise<string>
 
 export function createCategory(data: IBlogCategory): Promise<IBlogCategory> {
   return api
-    .post("/blogcategory", { name: data.name, content: data.content })
+    .post("/blog-category/create", { name: data.name, content: data.content })
     .then((response: AxiosResponse) => {
       return response.data;
     })

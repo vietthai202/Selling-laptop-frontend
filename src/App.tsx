@@ -23,6 +23,13 @@ import AddProductCategory from './pages/admin/product-categories/addProductCateg
 import EditProductCategory from './pages/admin/product-categories/editProductCategory';
 import ProductDetail from './pages/product/ProductDetail';
 import AdminLogin from './pages/admin/login';
+import AdminProducts from './pages/admin/products';
+import AddProduct from './pages/admin/products/addProduct';
+import EditProduct from './pages/admin/products/editProduct';
+import LossPass from './pages/auth/losspass';
+import Slides from './pages/admin/slides';
+import AddSlide from './pages/admin/slides/addSlide';
+import EditSlide from './pages/admin/slides/editSlide';
 
 function App() {
   return (
@@ -32,6 +39,7 @@ function App() {
           <Route path={routes.HOME} element={<Home />} />
           <Route path={routes.LOGIN} element={<Login />} />
           <Route path={routes.REGISTER} element={<Register />} />
+          <Route path={routes.FORGOT} element={<LossPass />} />
           <Route path={routes.BLOGS} element={<Blogs />} />
           <Route path={routes.BLOG_DETAIL} element={<BlogDetail />} />
           <Route path={routes.PRODUCT_DETAIL} element={<ProductDetail />} />
@@ -53,6 +61,14 @@ function App() {
           <Route path={routes.ADMIN_PRODUCTCATEGORIES} element={<ProductCategories />} />
           <Route path={routes.ADMIN_PRODUCTCATEGORIES_ADDNEW} element={<AddProductCategory />} />
           <Route path={routes.ADMIN_PRODUCTCATEGORIES_EDIT} element={<EditProductCategory />} />
+
+          <Route path={routes.ADMIN_PRODUCTS} element={<AdminProducts />} />
+          <Route path={routes.ADMIN_PRODUCTS_ADDNEW} element={<AddProduct />} />
+          <Route path={routes.ADMIN_PRODUCTS_EDIT} element={<EditProduct />} />
+
+          <Route path={routes.ADMIN_SLIDES} element={<Slides />} />
+          <Route path={routes.ADMIN_SLIDES_ADDNEW} element={<AddSlide />} />
+          <Route path={routes.ADMIN_SLIDES_EDIT} element={<EditSlide />} />
         </Route>
       </Routes>
     </div>
