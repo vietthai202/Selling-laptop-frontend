@@ -13,8 +13,17 @@ import routes from '../routes';
 import { getAllProductCategories } from '../services/productCategory';
 import { IUser } from '../types/auth';
 import { IProductCategory } from '../types/productCategory';
+import Search from './Search';
+
+export interface INewSearch {
+    value: string;
+    label: string;
+    image: string;
+    type: string;
+}
 
 const Header: React.FC = () => {
+
     const [user, setUser] = useState<IUser | null>(null);
 
     const [cate, setCate] = useState<IProductCategory[]>();
@@ -22,6 +31,8 @@ const Header: React.FC = () => {
     const navigate = useNavigate();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [dataNSearch, setDataNSearch] = useState<INewSearch[]>([]);
 
     const showProfile = () => {
         if (isLoggedIn()) {
@@ -65,15 +76,14 @@ const Header: React.FC = () => {
 
     return (
         <>
-            <div className='bg-[#cd1818] h-[64px] flex items-center justify-center'>
-                <div className='flex items-center space-x-10 w-3/5'>
+            <div className='bg-[#cd1818] h-[140px] sm:h-[64px] flex items-center justify-center'>
+                <div className='flex flex-col sm:flex-row items-center sm:space-x-10 w-3/5'>
                     <img className='h-[60px] cursor-pointer' src={Logo} alt="" onClick={() => navigate("/")} />
-                    <div className='flex'>
-                        <input className='h-[40px] min-w-[300px] w-[100%] p-3 ring-0 rounded-l-md border-none focus:outline-none' placeholder='Tìm kiếm sản phẩm....' type='text' ></input>
-                        <button className='h-[40px] whitespace-nowrap	 rounded-r-md cursor-pointer text-white bg-[#333] border-none'>Tìm kiếm</button>
+                    <div className='flex justify-center'>
+                        <Search options={dataNSearch} valueProps={dataNSearch} setDataNSearch={setDataNSearch}></Search>
                     </div>
                 </div>
-                <div className='flex space-x-3'>
+                <div className='space-x-3 hidden sm:flex'>
                     <a href='tel:0352918986' className='flex space-y-1 no-underline flex-col text-white items-center cursor-pointer'>
                         <div><img className='w-6' src={PhoneIcon} alt="" /></div>
                         <div className='font-bold whitespace-nowrap text-white'>0352918986</div>
@@ -95,7 +105,7 @@ const Header: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <div className='h-[40px] space-x-10 bg-[#333] text-white flex items-center justify-center'>
+            <div className='h-[40px] space-x-10 bg-[#333] text-white whitespace-nowrap w-full overflow-x-auto flex items-center px-4 sm:px-0 sm:justify-center'>
                 {
                     cate && cate.map((cate: IProductCategory) => (
                         <div key={cate.id} className='text-white cursor-pointer hover:font-bold'>

@@ -24,10 +24,11 @@ export function getProductBySlug(slug: string): Promise<IProduct> {
     });
 }
 
-export function createProduct(product: IProduct): Promise<any> {
+export function createProduct(product: IProduct): Promise<number> {
   return api
     .post("/laptop/create", product)
     .then((response: AxiosResponse) => {
+      console.log(response);
       return response.data;
     })
     .catch((error: AxiosError) => {

@@ -29,7 +29,7 @@ const ListProduct: React.FC = () => {
                                 <h4 className="text-sm font-semibold text-[#CD1818]">Mã sản phẩm: {data.sku}</h4>
                                 <h3 className="text-lg font-semibold text-gray-600">{data.title}</h3>
                                 <div className='flex justify-between items-center'>
-                                    <div className="text-lg font-mono font-extrabold text-white bg-[#CD1818] px-2 rounded-full">{data.price} VNĐ</div>
+                                    <div className="text-lg font-mono font-extrabold text-white bg-[#CD1818] px-2 rounded-full">{data.price && data.price.toLocaleString()} VNĐ</div>
                                     <Button danger>MUA NGAY</Button>
                                 </div>
                             </div>

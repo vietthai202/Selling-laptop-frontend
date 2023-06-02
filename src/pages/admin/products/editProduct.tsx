@@ -39,6 +39,16 @@ const EditProduct: React.FC = () => {
     const [textEditValue, setTextEditValue] = useState('');
     const [image, setImage] = useState<string | null>(null);
 
+    const formatNumber = (value: any) => {
+        if (!value) return '';
+        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    };
+
+    const parseNumber = (value: any) => {
+        // Remove commas and parse the number
+        return value.replace(/(,*)/g, '');
+    };
+
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCategoryName(event.target.value);
     };
@@ -208,7 +218,7 @@ const EditProduct: React.FC = () => {
                                     {menu}
                                     <Divider style={{ margin: '8px 0' }} />
                                     <Space style={{ padding: '0 8px 4px' }}>
-                                        <div className='flex flex-col'>
+                                        {/* <div className='flex flex-col'>
                                             <Input
                                                 placeholder="Nhập tên danh mục mới!"
                                                 ref={inputRef}
@@ -226,7 +236,7 @@ const EditProduct: React.FC = () => {
                                             <Button danger icon={<PlusOutlined />} onClick={addCategory}>
                                                 Thêm danh mục
                                             </Button>
-                                        </div>
+                                        </div> */}
                                     </Space>
                                 </>
                             )}
@@ -248,7 +258,7 @@ const EditProduct: React.FC = () => {
                                     {menu}
                                     <Divider style={{ margin: '8px 0' }} />
                                     <Space style={{ padding: '0 8px 4px' }}>
-                                        <div className='flex flex-col'>
+                                        {/* <div className='flex flex-col'>
                                             <Input
                                                 placeholder="Nhập tên thương hiệu mới!"
                                                 ref={inputRef}
@@ -268,7 +278,7 @@ const EditProduct: React.FC = () => {
                                             <Button danger icon={<PlusOutlined />} onClick={addBrand}>
                                                 Thêm brand
                                             </Button>
-                                        </div>
+                                        </div> */}
                                     </Space>
                                 </>
                             )}
@@ -284,7 +294,7 @@ const EditProduct: React.FC = () => {
                             name="price"
                             rules={[{ required: true, message: 'Hãy nhập tiêu đề!' }]}
                         >
-                            <InputNumber size="large" />
+                            <InputNumber size="large" formatter={formatNumber} parser={parseNumber} />
                         </Form.Item>
 
                         <Form.Item
@@ -293,7 +303,7 @@ const EditProduct: React.FC = () => {
                             name="discount"
                             rules={[{ required: true, message: 'Hãy nhập tiêu đề!' }]}
                         >
-                            <InputNumber size="large" />
+                            <InputNumber size="large" min={0} max={100} />
                         </Form.Item>
 
                         <Form.Item
@@ -302,7 +312,7 @@ const EditProduct: React.FC = () => {
                             name="quantity"
                             rules={[{ required: true, message: 'Hãy nhập tiêu đề!' }]}
                         >
-                            <InputNumber size="large" />
+                            <InputNumber size="large" formatter={formatNumber} parser={parseNumber} />
                         </Form.Item>
                     </div>
 

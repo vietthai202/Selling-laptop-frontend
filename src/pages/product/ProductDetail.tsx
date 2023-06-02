@@ -71,7 +71,7 @@ const ProductDetail: React.FC = () => {
                             </div>
                         </div>
                         <div className="md:flex-1 px-4 p-5">
-                            <div className="font-bold uppercase text-2xl text-[#CD1818]">{data.price} VNĐ</div>
+                            <div className="font-bold uppercase text-2xl text-[#CD1818]">{data.price && data.price.toLocaleString()} VNĐ</div>
                             <h2 className="mb-2 leading-tight tracking-tight font-bold text-gray-800 text-2xl md:text-3xl">{data.title}</h2>
                             <p className="text-gray-500">{data.metaTitle}</p>
                             <div className="flex py-4 space-x-4">
@@ -82,7 +82,7 @@ const ProductDetail: React.FC = () => {
                         </div>
                     </div>
                     <div className="flex flex-col md:flex-row -mx-4 mt-5 bg-white rounded-md p-5">
-                        hihi
+                        <div dangerouslySetInnerHTML={{ __html: data.summary || "No content" }} />
                     </div>
                 </div>
 

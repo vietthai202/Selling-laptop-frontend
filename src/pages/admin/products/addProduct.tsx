@@ -13,6 +13,9 @@ import { IProductCategory } from '../../../types/productCategory';
 import { addProductCategory, getAllProductCategories } from '../../../services/productCategory';
 import { IProduct } from '../../../types/product';
 import { createProduct } from '../../../services/product';
+import { getAllMetaDataGroup } from '../../../services/metadataGroup';
+import { IMetadata, IMetadataGroup } from '../../../types/metadatagroup';
+import { createMultipleMetadata } from '../../../services/metadata';
 
 const { TextArea } = Input;
 
@@ -32,6 +35,20 @@ const AddProduct: React.FC = () => {
 
     const [textEditValue, setTextEditValue] = useState('');
     const [image, setImage] = useState<string | null>(null);
+
+    const [listMetadataGroup, setListMetadataGroup] = useState<IMetadataGroup[]>();
+    const [metadataInGroup, setMetadataInGroup] = useState<IMetadata[]>([]);
+    const [itemMetadataTitle, setItemMetadateTitle] = useState<string[]>([""]);
+    const [itemMetadataContent, setItemMetadateContent] = useState<string[]>([""]);
+
+    const formatNumber = (value: any) => {
+        if (!value) return '';
+        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    };
+
+    const parseNumber = (value: any) => {
+        return value.replace(/(,*)/g, '');
+    };
 
     const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCategoryName(event.target.value);
@@ -96,6 +113,38 @@ const AddProduct: React.FC = () => {
     };
 
 
+    const addMetadata = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>, group_id: number) => {
+        e.preventDefault();
+
+        const newMetadata: IMetadata = {
+            id: 0,
+            icon: '',
+            iconType: '',
+            title: itemMetadataTitle[group_id],
+            content: itemMetadataContent[group_id],
+            laptop_id: 0,
+            group_id: group_id
+        }
+
+        if (newMetadata) {
+            metadataInGroup && setMetadataInGroup([...metadataInGroup, newMetadata]);
+        } else {
+            message.error("Lỗi khi tạo danh mục!");
+        }
+    };
+
+    const handleInputTitleChange = (index: number, value: string) => {
+        const newInputValues = [...itemMetadataTitle];
+        newInputValues[index] = value;
+        setItemMetadateTitle(newInputValues);
+    };
+
+    const handleInputContentChange = (index: number, value: string) => {
+        const newInputValues = [...itemMetadataContent];
+        newInputValues[index] = value;
+        setItemMetadateContent(newInputValues);
+    };
+
     const onFinish = async (values: any) => {
         const username = localStorage.getItem("username");
 
@@ -117,8 +166,11 @@ const AddProduct: React.FC = () => {
                 brandId: values.brandId
             }
 
+            console.log(metadataInGroup);
             await createProduct(product)
-                .then(() => {
+                .then((data: number) => {
+                    const laptopId = data;
+                    createMultipleMetadata(metadataInGroup, laptopId)
                     message.success("Thành công!");
                     navigate(routes.ADMIN_PRODUCTS);
                 })
@@ -143,6 +195,10 @@ const AddProduct: React.FC = () => {
         getAllBrands().then((data: IBrand[]) => {
             setBrands(data);
         })
+
+        getAllMetaDataGroup().then((data: IMetadataGroup[]) => {
+            setListMetadataGroup(data);
+        })
     }, []);
 
     return (
@@ -152,7 +208,7 @@ const AddProduct: React.FC = () => {
                 layout="vertical"
                 labelCol={{ span: 8 }}
                 style={{ minWidth: 400 }}
-                initialValues={{ remember: true }}
+                initialValues={{ title: "111123", categoryId: 2, brandId: 2, price: 111, discount: 111, quantity: 111, metaTitle: "hahaha" }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
@@ -178,7 +234,7 @@ const AddProduct: React.FC = () => {
                                 {menu}
                                 <Divider style={{ margin: '8px 0' }} />
                                 <Space style={{ padding: '0 8px 4px' }}>
-                                    <div className='flex flex-col'>
+                                    {/* <div className='flex flex-col'>
                                         <Input
                                             placeholder="Nhập tên danh mục mới!"
                                             ref={inputRef}
@@ -196,7 +252,7 @@ const AddProduct: React.FC = () => {
                                         <Button danger icon={<PlusOutlined />} onClick={addCategory}>
                                             Thêm danh mục
                                         </Button>
-                                    </div>
+                                    </div> */}
                                 </Space>
                             </>
                         )}
@@ -218,7 +274,7 @@ const AddProduct: React.FC = () => {
                                 {menu}
                                 <Divider style={{ margin: '8px 0' }} />
                                 <Space style={{ padding: '0 8px 4px' }}>
-                                    <div className='flex flex-col'>
+                                    {/* <div className='flex flex-col'>
                                         <Input
                                             placeholder="Nhập tên thương hiệu mới!"
                                             ref={inputRef}
@@ -238,7 +294,7 @@ const AddProduct: React.FC = () => {
                                         <Button danger icon={<PlusOutlined />} onClick={addBrand}>
                                             Thêm brand
                                         </Button>
-                                    </div>
+                                    </div> */}
                                 </Space>
                             </>
                         )}
@@ -254,7 +310,7 @@ const AddProduct: React.FC = () => {
                         name="price"
                         rules={[{ required: true, message: 'Hãy nhập tiêu đề!' }]}
                     >
-                        <InputNumber size="large" defaultValue={0} />
+                        <InputNumber size="large" defaultValue={0} formatter={formatNumber} parser={parseNumber} />
                     </Form.Item>
 
                     <Form.Item
@@ -263,7 +319,7 @@ const AddProduct: React.FC = () => {
                         name="discount"
                         rules={[{ required: true, message: 'Hãy nhập tiêu đề!' }]}
                     >
-                        <InputNumber size="large" defaultValue={0} />
+                        <InputNumber size="large" min={0} max={100} defaultValue={0} />
                     </Form.Item>
 
                     <Form.Item
@@ -272,7 +328,7 @@ const AddProduct: React.FC = () => {
                         name="quantity"
                         rules={[{ required: true, message: 'Hãy nhập tiêu đề!' }]}
                     >
-                        <InputNumber size="large" defaultValue={0} />
+                        <InputNumber size="large" formatter={formatNumber} parser={parseNumber} defaultValue={0} />
                     </Form.Item>
                 </div>
 
@@ -295,6 +351,45 @@ const AddProduct: React.FC = () => {
                 </Form.Item>
 
                 <TextEditer valueProps={textEditValue} setValueProps={setTextEditValue} />
+
+                <Divider dashed />
+
+                {
+                    listMetadataGroup && listMetadataGroup?.map((metadataGroup: IMetadataGroup) => (
+                        <div key={metadataGroup.id} className='flex flex-col'>
+                            <div className='font-bold text-lg'>
+                                {metadataGroup.name}
+                            </div>
+
+                            {
+                                metadataInGroup?.map((metadata: IMetadata) => (
+                                    metadataGroup.id === metadata.group_id &&
+                                    <div key={metadata.id}>
+                                        <div><b>{metadata.title}</b>: {metadata.content}</div>
+                                    </div>
+                                ))
+                            }
+
+                            <div className='flex flex-col space-y-2 max-w-md'>
+                                <Input
+                                    placeholder={`Nhập ${metadataGroup.name.toLowerCase()} mới`}
+                                    ref={inputRef}
+                                    value={itemMetadataTitle[metadataGroup.id]}
+                                    onChange={(e) => handleInputTitleChange(metadataGroup.id, e.target.value)}
+                                />
+                                <TextArea
+                                    value={itemMetadataContent[metadataGroup.id]}
+                                    onChange={(e) => handleInputContentChange(metadataGroup.id, e.target.value)}
+                                    autoSize={{ minRows: 3, maxRows: 5 }}
+                                />
+                                <Button danger icon={<PlusOutlined />} onClick={(e) => { addMetadata(e, metadataGroup.id) }}>
+                                    Thêm
+                                </Button>
+                            </div>
+                        </div>
+                    ))
+                }
+
 
                 <Button type="primary" className='bg-[#CD1818] hover:bg-[#6d6d6d] my-3' htmlType="submit">
                     Thêm mới

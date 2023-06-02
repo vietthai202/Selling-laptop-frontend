@@ -3,6 +3,7 @@ import type { InputRef } from 'antd';
 import { Button, Divider, Form, Input, Select, Space, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import UploadSingleImage from '../../../components/SingleUploadImage';
 import TextEditer from '../../../components/TextEditer';
 import routes from '../../../routes';
 import { isLoggedIn } from '../../../services/auth';
@@ -11,7 +12,6 @@ import { createCategory, getAllBlogCategory } from '../../../services/blogCatego
 import { IBlog } from '../../../types/blog';
 import { IBlogCategory } from '../../../types/blogCategory';
 import { convertToSlug } from '../../../utils/string';
-import UploadSingleImage from '../../../components/SingleUploadImage';
 
 const { TextArea } = Input;
 
