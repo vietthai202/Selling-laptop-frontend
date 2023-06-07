@@ -63,7 +63,6 @@ const EditProductCategory: React.FC = () => {
                     name="newBlogForm"
                     layout="vertical"
                     labelCol={{ span: 8 }}
-                    style={{ minWidth: 400 }}
                     initialValues={category}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}

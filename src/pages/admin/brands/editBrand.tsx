@@ -70,7 +70,6 @@ const EditBrand: React.FC = () => {
                     name="newBlogForm"
                     layout="vertical"
                     labelCol={{ span: 8 }}
-                    style={{ minWidth: 400 }}
                     initialValues={brand}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}

@@ -63,7 +63,7 @@ const Users: React.FC = () => {
 
     const [userDelete, setUserDelete] = useState<string>("");
     const [userUpdate, setUserUpdate] = useState<IUser>();
-    const [formValue, setFromValue] = useState<any>();
+    const [formValue, setFormValue] = useState<any>();
 
     const buttonCreate = () => {
         setIsCreateOpen(true);
@@ -110,7 +110,7 @@ const Users: React.FC = () => {
             .then((data: IUser) => {
                 setUserUpdate(data);
 
-                setFromValue(
+                setFormValue(
                     {
                         name: data.name,
                         email: data.email,
@@ -289,7 +289,6 @@ const Users: React.FC = () => {
                             name="updateForm"
                             layout="vertical"
                             labelCol={{ span: 8 }}
-                            style={{ minWidth: 400 }}
                             initialValues={formValue}
                             autoComplete="off"
                         >
@@ -372,7 +371,6 @@ const Users: React.FC = () => {
                         name="createForm"
                         layout="vertical"
                         labelCol={{ span: 8 }}
-                        style={{ minWidth: 400 }}
                         initialValues={formValue}
                         autoComplete="off"
                     >

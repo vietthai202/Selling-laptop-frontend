@@ -13,7 +13,7 @@ export function getAllProductCategories(): Promise<IProductCategory[]> {
     });
 }
 
-export function addProductCategory(data: IProductCategory): Promise<string> {
+export function addProductCategory(data: IProductCategory): Promise<IProductCategory> {
   return api
     .post("/category/create", { name: data.name, slug: data.slug, description: data.description, image: data.image })
     .then((response: AxiosResponse) => {

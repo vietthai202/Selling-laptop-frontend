@@ -1,3 +1,5 @@
+import { IMetadata } from "./metadatagroup";
+
 export interface IProduct {
   id: number;
   userName: string;
@@ -7,6 +9,7 @@ export interface IProduct {
   summary: string;
   image: string | null;
   sku: string;
+  metadataDtoSet?: IMetadata[];
   price: number;
   discount: number;
   quantity: number;

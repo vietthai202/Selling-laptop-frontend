@@ -1,10 +1,11 @@
 import { Button, Modal, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { IProduct } from "../../types/product";
-import { getProductBySlug } from "../../services/product";
+import ShowIcon from "../../components/ShowIcon";
 import { getMetadataWithMetadataGroup } from "../../services/metadataGroup";
+import { getProductBySlug } from "../../services/product";
 import { IMetadata, IMetadataGroup } from "../../types/metadatagroup";
+import { IProduct } from "../../types/product";
 
 const ProductDetail: React.FC = () => {
     const param: any = useParams();
@@ -65,9 +66,40 @@ const ProductDetail: React.FC = () => {
                             <div className="h-64 md:h-80 p-2 bg-[#CD1818] mb-4 rounded-xl">
                                 <img className="w-full h-full rounded-xl" src={data.image || "https://media.ldlc.com/r1600/ld/products/00/05/82/02/LD0005820208_1.jpg"} alt="" />
                             </div>
-                            <div className="bg-slate-100 p-5 rounded-md">
+                            <div className="bg-[#F8F9FA] p-5 rounded-md border-solid border border-[#f8f9fa]">
                                 <div>ok</div>
                                 <div onClick={openDetail} className="text-blue-600 mt-2 cursor-pointer">Xem chi tiết thông số kỹ thuật</div>
+                            </div>
+
+                            <div className="mt-2 p-5 rounded-md grid grid-cols-1 md:grid-cols-2 gap-2">
+                                <div className="flex justify-start items-center space-x-2">
+                                    <ShowIcon name="FcApproval" size={25} />
+                                    <div>Hàng chính hãng</div>
+                                </div>
+                                <div className="flex justify-start items-center space-x-2">
+                                    <ShowIcon name="FcOvertime" size={25} />
+                                    <div>Bảo hành 24 Tháng</div>
+                                </div>
+
+                                <div className="flex justify-start items-center space-x-2">
+                                    <ShowIcon name="FcInTransit" size={25} />
+                                    <div>Giao hàng miễn phí trong 90 phút</div>
+                                </div>
+
+                                <div className="flex justify-start items-center space-x-2">
+                                    <ShowIcon name="FcSettings" size={25} />
+                                    <div>Hỗ trợ cài đặt miễn phí</div>
+                                </div>
+
+                                <div className="flex justify-start items-center space-x-2">
+                                    <ShowIcon name="FcSynchronize" size={25} />
+                                    <div>Chính sách đổi trả</div>
+                                </div>
+
+                                <div className="flex justify-start items-center space-x-2">
+                                    <ShowIcon name="FcMoneyTransfer" size={25} />
+                                    <div>Chính sách trả góp</div>
+                                </div>
                             </div>
                         </div>
                         <div className="md:flex-1 px-4 p-5">

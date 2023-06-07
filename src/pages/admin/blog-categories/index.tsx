@@ -26,7 +26,7 @@ const BlogCategories: React.FC = () => {
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const [cateUpdate, setCateUpdate] = useState<IBlogCategory>();
-    const [formValue, setFromValue] = useState<any>();
+    const [formValue, setFormValue] = useState<any>();
     const [idDelete, setIdDelete] = useState<string>("");
 
     const doCreate = () => {
@@ -64,7 +64,7 @@ const BlogCategories: React.FC = () => {
             .then((data: IBlogCategory) => {
                 console.log(data);
                 setCateUpdate(data);
-                setFromValue(
+                setFormValue(
                     {
                         name: data.name,
                         content: data.content
@@ -199,7 +199,6 @@ const BlogCategories: React.FC = () => {
                         name="blogCategoryForm"
                         layout="vertical"
                         labelCol={{ span: 8 }}
-                        style={{ minWidth: 400 }}
                         autoComplete="off"
                     >
 
@@ -245,7 +244,6 @@ const BlogCategories: React.FC = () => {
                         name="blogCategoryForm"
                         layout="vertical"
                         labelCol={{ span: 8 }}
-                        style={{ minWidth: 400 }}
                         autoComplete="off"
                     >
 

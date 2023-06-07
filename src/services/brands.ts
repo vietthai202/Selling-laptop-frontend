@@ -13,7 +13,7 @@ export function getAllBrands(): Promise<IBrand[]> {
     });
 }
 
-export function addBrand(brand: IBrand): Promise<string> {
+export function addBrand(brand: IBrand): Promise<IBrand> {
   return api
     .post("/brand/create", { name: brand.name, description: brand.description, slug: brand.slug, image: brand.image })
     .then((response: AxiosResponse) => {

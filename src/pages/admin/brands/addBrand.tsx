@@ -53,7 +53,6 @@ const AddBrand: React.FC = () => {
                 name="newBlogForm"
                 layout="vertical"
                 labelCol={{ span: 8 }}
-                style={{ minWidth: 400 }}
                 initialValues={{ remember: true }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}

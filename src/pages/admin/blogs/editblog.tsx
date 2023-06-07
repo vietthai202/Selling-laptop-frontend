@@ -120,7 +120,6 @@ const EditBlog: React.FC = () => {
                     name="newBlogForm"
                     layout="vertical"
                     labelCol={{ span: 8 }}
-                    style={{ minWidth: 400 }}
                     initialValues={{ blogName: blog.name, blogCategory: blog.categoryId, blogDesc: blog.shortContent }}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}

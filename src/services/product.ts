@@ -13,6 +13,17 @@ export function getAllProduct(): Promise<IProduct[]> {
     });
 }
 
+export function getProductWithPage(pageNumber: number): Promise<any> {
+  return api
+    .get(`/laptop/page?page=${pageNumber}`)
+    .then((response: AxiosResponse) => {
+      return response.data;
+    })
+    .catch((error: AxiosError) => {
+      throw new Error("Fetch failed");
+    });
+}
+
 export function getProductBySlug(slug: string): Promise<IProduct> {
   return api
     .get(`/laptop/get/${slug}`)
