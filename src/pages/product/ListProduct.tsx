@@ -1,22 +1,53 @@
-import { Button, Pagination } from 'antd';
+import { Button, Pagination, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getProductWithPage } from '../../services/product';
 import { IProduct } from '../../types/product';
+import { IBrand } from '../../types/brand';
+import { getAllBrands } from '../../services/brands';
 
 const ListProduct: React.FC = () => {
     const [laptops, setLaptops] = useState<IProduct[]>([]);
 
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPage, setTotalPage] = useState<number>(0);
+    // const [brands, setBrands] = useState<IBrand[]>();
+    const [inputBrands, setInputBrands] = useState<{value: string, label: string}[]>();
+    const [selectedBrand, setSelectedBrand] = useState<string>("");
+
+    const handleBrandChange = (value: string) => {
+        console.log(value);
+        setSelectedBrand(value);
+    }
 
     useEffect(() => {
-        getProductWithPage(currentPage).then((data) => {
+
+        getAllBrands().then((data: IBrand[]) => {
+            // setBrands(data);
+            const list: {value: string, label: string}[] = [];
+            list.push({
+                value: "",
+                label: "Select Brand"
+            })
+            data.map((item) => {
+                list.push({
+                    value: item.name,
+                    label: item.name
+                })
+            })
+            
+            setInputBrands(list)
+        })
+    }, []);
+
+    useEffect(() => {
+
+        getProductWithPage(currentPage, selectedBrand).then((data) => {
             console.log(data);
             setLaptops(data.content);
             setTotalPage(data.totalElements);
         })
-    }, [currentPage]);
+    }, [currentPage, selectedBrand]);
 
     // Logic to handle page change
     const handlePageChange = (page: number) => {
@@ -49,6 +80,14 @@ const ListProduct: React.FC = () => {
                 <div className="container mx-auto">
                     <div className="text-dark mb-4 text-2xl font-bold sm:text-4xl md:text-[40px]">
                         Laptop mới nhất
+                    </div>
+                    <div className='flex justify-end mb-4'>
+                    <Select
+                        defaultValue={"Select Brand"}
+                        style={{ width: 120 }}
+                        onChange={handleBrandChange}
+                        options={inputBrands}
+                    />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
                         {renderItems()}
