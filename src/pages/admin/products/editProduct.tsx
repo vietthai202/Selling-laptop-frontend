@@ -22,6 +22,8 @@ const { TextArea } = Input;
 let metadataId = 0;
 const EditProduct: React.FC = () => {
 
+    const [form] = Form.useForm();
+
     const param: any = useParams();
 
     const navigate = useNavigate();
@@ -33,6 +35,7 @@ const EditProduct: React.FC = () => {
     const [idEditMeta, setIdEditMeta] = useState<number | null>(null);
     const [metadataTitleEdit, setMetadataTitleEdit] = useState<string>();
     const [metadataContentEdit, setMetadataContentEdit] = useState<string>();
+    const [metadataEdit, setMetadataEdit] = useState<IMetadata>();
 
     const inputRef0 = useRef<InputRef>(null);
     const inputRef1 = useRef<InputRef>(null);
@@ -56,16 +59,14 @@ const EditProduct: React.FC = () => {
     const [itemMetadataTitle, setItemMetadataTitle] = useState<string[]>([""]);
     const [itemMetadataContent, setItemMetadateContent] = useState<string[]>([""]);
 
-    const showEditMetadata = async (id: number) => {
+    const hideEditMetadata = async () => {
+        setIdEditMeta(null);
+        setShowEditMeta(false);
+    }
 
-        await getMetadataById(id)
-            .then((data: IMetadata) => {
-                setMetadataTitleEdit(data.title);
-                setMetadataContentEdit(data.content);
-                setShowEditMeta(true);
-                setIdEditMeta(id);
-                console.log(data);
-            })
+    const showEditMetadata = async (id: number) => {
+        setIdEditMeta(id);
+        setShowEditMeta(true);
     }
 
     const doEditMetadata = async () => {
@@ -240,16 +241,16 @@ const EditProduct: React.FC = () => {
                 brandId: values.brandId
             }
 
-            await createProduct(product)
-                .then((data: number) => {
-                    const laptopId = data;
-                    createMultipleMetadata(metadataInGroup, laptopId)
-                    message.success("Thành công!");
-                    navigate(routes.ADMIN_PRODUCTS);
-                })
-                .catch(() => {
-                    message.error("Thất bại!");
-                });
+            // await createProduct(product)
+            //     .then((data: number) => {
+            //         const laptopId = data;
+            //         createMultipleMetadata(metadataInGroup, laptopId)
+            //         message.success("Thành công!");
+            //         navigate(routes.ADMIN_PRODUCTS);
+            //     })
+            //     .catch(() => {
+            //         message.error("Thất bại!");
+            //     });
         } else {
             message.success("Hết hạn, đăng nhập lại!");
             navigate(routes.LOGIN);
@@ -260,6 +261,17 @@ const EditProduct: React.FC = () => {
         console.log('Failed:', errorInfo);
     };
 
+    useEffect(() => {
+        if (idEditMeta) {
+            getMetadataById(idEditMeta)
+                .then((data: IMetadata) => {
+                    setMetadataEdit(data);
+                    // setMetadataTitleEdit(data.title);
+                    // setMetadataContentEdit(data.content);
+                    console.log(data);
+                })
+        }
+    }, [idEditMeta]);
 
     useEffect(() => {
         if (param) {
@@ -499,7 +511,7 @@ const EditProduct: React.FC = () => {
                     }
 
                     <Button type="primary" className='bg-[#CD1818] hover:bg-[#6d6d6d] my-3' htmlType="submit">
-                        Thêm mới
+                        Sửa
                     </Button>
                 </Form>
             }
@@ -517,21 +529,53 @@ const EditProduct: React.FC = () => {
             </Modal>
 
             <Modal
+                destroyOnClose={true}
                 title="Sửa metadata!"
                 open={showEditMeta}
-                onCancel={() => { setShowEditMeta(false); }}
+                onCancel={hideEditMetadata}
                 footer={null}
             >
                 <div className='flex flex-col space-y-2 max-w-md'>
                     <div className='flex space-x-2'>
-                        <Input
-                            value={metadataTitleEdit}
+                        {
+                            metadataEdit &&
+                            <Form
+                                preserve={true}
+                                form={form}
+                                name="createForm"
+                                layout="vertical"
+                                labelCol={{ span: 8 }}
+                                initialValues={{ title: metadataEdit.title, content: metadataEdit.content }}
+                            >
+                                <div className='flex space-x-2 justify-center'>
+                                    <Form.Item
+                                        style={{ minWidth: 150 }}
+                                        label="Tiêu đề"
+                                        name="title"
+                                        rules={[{ required: true, message: 'Hãy nhập tiêu đề!' }]}
+                                    >
+                                        <Input size="large" placeholder='xxx' />
+                                    </Form.Item>
+
+                                    <Form.Item
+                                        style={{ minWidth: 150 }}
+                                        label="Content"
+                                        name="content"
+                                        rules={[{ required: true, message: 'Hãy nhập content!' }]}
+                                    >
+                                        <Input size="large" placeholder='xxx' />
+                                    </Form.Item>
+                                </div>
+                            </Form>
+                        }
+                        {/* <Input
+                        value={metadataEdit?.title}
                             onChange={(e) => { }}
                         />
                         <Input
-                            value={metadataContentEdit}
+                            value={metadataEdit?.content}
                             onChange={(e) => { }}
-                        />
+                        /> */}
                     </div>
                     <Button danger icon={<SaveOutlined />} onClick={(e) => { doEditMetadata() }}>
                         Save
