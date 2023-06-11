@@ -13,9 +13,9 @@ export function getAllProduct(): Promise<IProduct[]> {
     });
 }
 
-export function getProductWithPage(pageNumber: number): Promise<any> {
+export function getProductWithPage(pageNumber: number, brandName: string, categoryName: string, priceOrder: string): Promise<any> {
   return api
-    .get(`/laptop/page?page=${pageNumber}`)
+    .get(`/laptop/products?pageNumber=${pageNumber}&brandName=${brandName}&categoryName=${categoryName}&priceOrder=${priceOrder}`)
     .then((response: AxiosResponse) => {
       return response.data;
     })

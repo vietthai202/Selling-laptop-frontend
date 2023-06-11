@@ -7,6 +7,7 @@ const routes = {
   BLOGS: "/blogs",
   BLOG_DETAIL: "/blog/:slug",
   PRODUCT_DETAIL: "/product/:slug",
+  SEARCH: "/search/:name",
 
   ADMIN: "/admin",
   ADMIN_LOGIN: "/admin/login",

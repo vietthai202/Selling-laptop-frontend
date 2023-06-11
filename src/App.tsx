@@ -30,6 +30,7 @@ import LossPass from './pages/auth/losspass';
 import Slides from './pages/admin/slides';
 import AddSlide from './pages/admin/slides/addSlide';
 import EditSlide from './pages/admin/slides/editSlide';
+import SearchPage from './pages/search';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
           <Route path={routes.BLOGS} element={<Blogs />} />
           <Route path={routes.BLOG_DETAIL} element={<BlogDetail />} />
           <Route path={routes.PRODUCT_DETAIL} element={<ProductDetail />} />
+          <Route path={routes.SEARCH} element={<SearchPage />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
         <Route element={<AdminLayout />}>
