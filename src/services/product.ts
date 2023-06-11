@@ -15,7 +15,7 @@ export function getAllProduct(): Promise<IProduct[]> {
 
 export function getProductWithPage(pageNumber: number, brandName: string, categoryName: string, priceOrder: string): Promise<any> {
   return api
-    .get(`/laptop/products?pageNumber=${pageNumber}&brandName=${brandName}&categoryName=${categoryName}&priceOrder=${priceOrder}`)
+    .get(`/laptop/products`)
     .then((response: AxiosResponse) => {
       return response.data;
     })

@@ -1,13 +1,13 @@
-import { Button, Pagination, Select, Tooltip } from 'antd';
+import { Button, Carousel, Checkbox, Col, Pagination, Row, Select, Tooltip } from 'antd';
+import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getProductWithPage } from '../../services/product';
-import { IProduct } from '../../types/product';
-import { IBrand } from '../../types/brand';
-import { IProductCategory } from '../../types/productCategory';
 import { getAllBrands } from '../../services/brands';
+import { getProductWithPage } from '../../services/product';
 import { getAllProductCategories } from '../../services/productCategory';
-
+import { IBrand } from '../../types/brand';
+import { IProduct } from '../../types/product';
+import { IProductCategory } from '../../types/productCategory';
 
 const ListProduct: React.FC = () => {
     const [laptops, setLaptops] = useState<IProduct[]>([]);
@@ -20,7 +20,8 @@ const ListProduct: React.FC = () => {
     const [inputCategory, setInputCategory] = useState<{ value: string, label: string }[]>();
     const [selectedCategory, setSelectedCategory] = useState<string>("");
     const [selectedPrice, setSelectedPrice] = useState<string>("");
-    const [blogs, setBlogs] = useState<IBrand[]>();
+    const [brands, setBrands] = useState<IBrand[]>([]);
+    const [categories, setCategories] = useState<IProductCategory[]>([]);
 
     const handleBrandChange = (value: string) => {
         console.log(value);
@@ -40,21 +41,21 @@ const ListProduct: React.FC = () => {
 
     useEffect(() => {
         getAllBrands().then((data: IBrand[]) => {
-            setBlogs(data);
+            setBrands(data);
         });
     }, []);
 
     useEffect(() => {
 
         getAllProductCategories().then((data: IProductCategory[]) => {
-            // setBrands(data);
+            setCategories(data);
             const list: { value: string, label: string }[] = [];
             list.push({
                 value: "",
                 label: "Select Category"
             })
             data.map((item) => {
-                list.push({
+                return list.push({
                     value: item.name,
                     label: item.name
                 })
@@ -73,7 +74,7 @@ const ListProduct: React.FC = () => {
                 label: "Select Brand"
             })
             data.map((item) => {
-                list.push({
+                return list.push({
                     value: item.name,
                     label: item.name
                 })
@@ -117,29 +118,44 @@ const ListProduct: React.FC = () => {
         ));
     };
 
+    const contentStyle: React.CSSProperties = {
+        margin: 0,
+        height: '160px',
+        color: '#fff',
+        lineHeight: '160px',
+        textAlign: 'center',
+        background: '#364d79',
+    };
+
+    const onChange = (checkedValues: CheckboxValueType[]) => {
+        console.log('checked = ', checkedValues);
+    };
+
     return (
-        <>  <section className="pt-10 pb-10">
-            <div className="container mx-auto">
-                <div className="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 bg-gray-200 rounded-md p-3">
-                    {blogs?.map((data: IBrand) => (
-                        <div onClick={() => { setSelectedBrand(data.name) }} key={data.id} className="rounded-md max-w-xs overflow-hidden hover:scale-105 hover:shadow-lg shadow-sm transition duration-500 cursor-pointer no-underline">
-                            <Tooltip title={data.name}>
-                                <img className='w-full h-16' src={data.image ? data.image : "https://upload.wikimedia.org/wikipedia/commons/7/75/No_image_available.png"} alt="" />
-                            </Tooltip>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-            <section className="pt-10 pb-10 lg:pb-20">
+        <>
+            <section className="pt-2 pb-10 lg:pb-20">
                 <div className="container mx-auto">
-                    <div className="text-dark mb-4 text-2xl font-bold sm:text-4xl md:text-[40px]">
-                        Laptop mới nhất
-                    </div>
-                    <div className='flex justify-end space-x-2 mb-2'>
+                    <Carousel
+                        arrows={true}
+                    >
+                        <div>
+                            <h3 style={contentStyle}>1</h3>
+                        </div>
+                        <div>
+                            <h3 style={contentStyle}>2</h3>
+                        </div>
+                        <div>
+                            <h3 style={contentStyle}>3</h3>
+                        </div>
+                        <div>
+                            <h3 style={contentStyle}>4</h3>
+                        </div>
+                    </Carousel>
+
+                    <div className='flex justify-end space-x-2 my-4'>
                         <Select
                             defaultValue={"Select Price Order"}
-                            style={{ width: 120 }}
+                            style={{ width: 180 }}
                             onChange={handlePriceChange}
                             options={[
                                 {
@@ -163,17 +179,71 @@ const ListProduct: React.FC = () => {
                             options={inputBrands}
                         />
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-                        {renderItems()}
-                    </div>
-                    <div className='mt-5 flex justify-center'>
-                        <Pagination
-                            current={currentPage}
-                            pageSize={10}
-                            total={totalPage}
-                            onChange={handlePageChange}
-                            onShowSizeChange={handlePageChange}
-                        />
+                    <div className='flex'>
+                        <div className='flex-1'>
+                            <div className='mb-5'>
+                                <div className='font-bold mb-3'>Hãng sản xuất</div>
+                                <div>
+                                    <Checkbox.Group style={{ width: '100%' }} onChange={onChange}>
+                                        <Row>
+                                            {
+                                                brands.map((brand: IBrand) => (
+                                                    <Col key={brand.id} span={12}>
+                                                        <Checkbox value={brand.id}>{brand.name}</Checkbox>
+                                                    </Col>
+                                                ))
+                                            }
+                                        </Row>
+                                    </Checkbox.Group>
+                                </div>
+                            </div>
+                            <div className='mb-5'>
+                                <div className='font-bold mb-3'>Danh mục</div>
+                                <div>
+                                    <Checkbox.Group style={{ width: '100%' }} onChange={onChange}>
+                                        <Row>
+                                            {
+                                                categories.map((cat: IProductCategory) => (
+                                                    <Col key={cat.id} span={12}>
+                                                        <Checkbox value={cat.id}>{cat.name}</Checkbox>
+                                                    </Col>
+                                                ))
+                                            }
+                                        </Row>
+                                    </Checkbox.Group>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className='w-3/4'>
+
+                            <section className="pt-10 pb-10">
+                                <div className="container mx-auto">
+                                    <div className="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 bg-gray-200 rounded-md p-3">
+                                        {brands?.map((data: IBrand) => (
+                                            <div onClick={() => { setSelectedBrand(data.name) }} key={data.id} className="rounded-md max-w-xs overflow-hidden hover:scale-105 hover:shadow-lg shadow-sm transition duration-500 cursor-pointer no-underline">
+                                                <Tooltip title={data.name}>
+                                                    <img className='w-full h-16' src={data.image ? data.image : "https://upload.wikimedia.org/wikipedia/commons/7/75/No_image_available.png"} alt="" />
+                                                </Tooltip>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </section>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10">
+                                {renderItems()}
+                            </div>
+                            <div className='mt-5 flex justify-center'>
+                                <Pagination
+                                    current={currentPage}
+                                    pageSize={10}
+                                    total={totalPage}
+                                    onChange={handlePageChange}
+                                    onShowSizeChange={handlePageChange}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section >
