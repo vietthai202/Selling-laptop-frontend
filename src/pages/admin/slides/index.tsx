@@ -7,16 +7,14 @@ import routes from "../../../routes";
 import { logout } from "../../../services/auth";
 import {
   deleteSlideabc,
-  editSlide,
   getAllSlide,
-  getSlideById,
+  onOffSlide
 } from "../../../services/slides";
 import { ISlide } from "../../../types/slide";
 
 const Slides: React.FC = () => {
   const navigate = useNavigate();
   const [dataSource, setDataSource] = useState([]);
-  const [slideEdit, setSlideEdit] = useState<ISlide>();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   const [deleteSlide, setBrandDelete] = useState<string>("");
@@ -49,24 +47,7 @@ const Slides: React.FC = () => {
   const cancelDelete = () => {
     setIsDeleteOpen(false);
   };
-  const changeStatus = async (id: number) => {
-    await getSlideById(id.toString())
-      .then((data: ISlide) => {
-        setSlideEdit(data);
-        // await editSlide(newSlide)
-        //   .then(() => {
-        //     message.success("Thành công!");
-        //     navigate(routes.ADMIN_SLIDES);
-        //   })
-        //   .catch(() => {
-        //     message.error("Thất bại!");
-        //   });
-        message.success("Thành công!");
-      })
-      .catch(() => {
-        message.error("Thất bại!");
-      });
-  };
+
   useEffect(() => {
     getAllSlide()
       .then((data: any) => {
@@ -111,7 +92,9 @@ const Slides: React.FC = () => {
         return (
           <Switch
             defaultChecked={record.status}
-            onChange={() =>{}}
+            onChange={() => {
+              onOffSlide(record.id).then(() => { message.success("Cập nhật thành công!") }).catch(() => { message.error("Cập nhật thất bại!") });
+            }}
           />
         );
       },

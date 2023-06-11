@@ -56,3 +56,25 @@ export function getSlideById(slideId: string): Promise<ISlide> {
       throw new Error("Fetch failed");
     });
 }
+
+export function getSlideWithStatus(): Promise<ISlide[]> {
+  return api
+    .get(`/slide/getAllWithStatus`)
+    .then((response: AxiosResponse) => {
+      return response.data;
+    })
+    .catch((error: AxiosError) => {
+      throw new Error("Fetch failed");
+    });
+}
+
+export function onOffSlide(id: number): Promise<string> {
+  return api
+    .put(`/slide/onOffSlide/${id}`)
+    .then((response: AxiosResponse) => {
+      return response.data;
+    })
+    .catch((error: AxiosError) => {
+      throw new Error("Fetch failed");
+    });
+}

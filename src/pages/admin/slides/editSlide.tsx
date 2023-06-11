@@ -1,13 +1,11 @@
 import { Button, Form, Input, Switch, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import routes from "../../../routes";
-import { isLoggedIn, logout } from "../../../services/auth";
 import UploadSingleImage from "../../../components/SingleUploadImage";
-import { ISlide } from "../../../types/slide";
+import routes from "../../../routes";
+import { isLoggedIn } from "../../../services/auth";
 import { editSlide, getSlideById } from "../../../services/slides";
-
-const { TextArea } = Input;
+import { ISlide } from "../../../types/slide";
 
 const EditSlide: React.FC = () => {
   const navigate = useNavigate();
@@ -24,7 +22,7 @@ const EditSlide: React.FC = () => {
       const newSlide: ISlide = slide;
       newSlide.name = values.name;
       newSlide.image = image;
-      newSlide.slug = values.slug;
+      newSlide.url = values.url;
       newSlide.status = values.status;
 
       await editSlide(newSlide)
@@ -86,7 +84,7 @@ const EditSlide: React.FC = () => {
           </Form.Item>
           <Form.Item
             label="URL"
-            name="slug"
+            name="url"
             rules={[{ required: true, message: "Hãy nhập tiêu đề!" }]}
           >
             <Input size="large" placeholder="Tiêu đề nhãn hàng!" />

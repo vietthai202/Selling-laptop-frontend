@@ -20,7 +20,7 @@ const AddSlide: React.FC = () => {
         id: 0,
         name: values.name,
         image: image,
-        slug: values.url,
+        url: values.url,
         status: values.status,
       };
 

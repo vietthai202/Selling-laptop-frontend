@@ -1,8 +1,7 @@
 export interface ISlide {
-    id: number;
-    name: string;
-    image: string | null;
-    slug: string;
-    status: boolean;
- }
-  
+  id: number;
+  name: string;
+  image: string | null;
+  url: string;
+  status: boolean;
+}
