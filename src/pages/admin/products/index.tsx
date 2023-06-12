@@ -12,38 +12,10 @@ const AdminProducts: React.FC = () => {
     const navigate = useNavigate();
     const [dataSource, setDataSource] = useState([]);
 
-    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-
-    const [brandDelete, setBrandDelete] = useState<string>("");
-
     const buttonUpdate = (slug: string) => {
         navigate(`/admin/products/edit/${slug}`);
     }
 
-    const buttonDelete = (blogid: string) => {
-        setIsDeleteOpen(true);
-        setBrandDelete(blogid);
-    }
-
-    const doDelete = () => {
-        if (brandDelete) {
-            // deleteBrand(brandDelete)
-            //     .then((data: any) => {
-            //         setIsDeleteOpen(false);
-            //         setBrandDelete("");
-            //         message.success(data.message);
-            //     })
-            //     .catch(() => {
-            //         setIsDeleteOpen(false);
-            //         setBrandDelete("");
-            //         message.error("Có lỗi khi xóa brand!");
-            //     })
-        }
-    }
-
-    const cancelDelete = () => {
-        setIsDeleteOpen(false);
-    }
 
     useEffect(() => {
 
@@ -56,17 +28,7 @@ const AdminProducts: React.FC = () => {
                 navigate("/admin/login");
                 console.error('Failed to fetch blog information');
             });
-
-        // getAllBrands()
-        //     .then((data: any) => {
-        //         setDataSource(data);
-        //     })
-        //     .catch(() => {
-        //         logout();
-        //         navigate("/login");
-        //         console.error('Failed to fetch blog information');
-        //     });
-    }, [navigate, brandDelete])
+    }, [navigate])
 
     const columns: ColumnsType<IProduct> = [
         {
@@ -120,9 +82,6 @@ const AdminProducts: React.FC = () => {
             <Modal
                 okButtonProps={{ style: { backgroundColor: '#CD1818' } }}
                 title="Xóa thương hiệu!"
-                open={isDeleteOpen}
-                onOk={doDelete}
-                onCancel={cancelDelete}
                 okText="Xóa"
             >
                 <div className='flex flex-col items-center'>
