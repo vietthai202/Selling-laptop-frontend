@@ -1,11 +1,11 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Modal, Space, Table } from 'antd';
+import { Button, Modal, Space, Switch, Table, message } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import routes from '../../../routes';
 import { logout } from '../../../services/auth';
-import { getAllProduct } from '../../../services/product';
+import { getAllProduct, onOffLaptop } from '../../../services/product';
 import { IProduct } from '../../../types/product';
 
 const AdminProducts: React.FC = () => {
@@ -67,7 +67,22 @@ const AdminProducts: React.FC = () => {
                     </Space>
                 )
             }
-        }
+        },
+        {
+            title: "Status",
+            dataIndex: "status",
+            key: "status",
+            render: (_, record) => {
+              return (
+                <Switch
+                  defaultChecked={record.status}
+                  onChange={() => {
+                    onOffLaptop(record.id).then(() => { message.success("Cập nhật thành công!") }).catch(() => { message.error("Cập nhật thất bại!") });
+                  }}
+                />
+              );
+            },
+          }
     ];
 
     return (
