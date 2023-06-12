@@ -57,3 +57,14 @@ export function updateProduct(product: IProduct): Promise<any> {
       throw new Error("Fetch failed");
     });
 }
+
+export function onOffLaptop(id: number): Promise<string> {
+  return api
+    .put(`/laptop/onOffLaptop/${id}`)
+    .then((response: AxiosResponse) => {
+      return response.data;
+    })
+    .catch((error: AxiosError) => {
+      throw new Error("Fetch failed");
+    });
+}

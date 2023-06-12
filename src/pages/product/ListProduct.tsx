@@ -50,7 +50,6 @@ const ListProduct: React.FC = () => {
         setMaxPrice(max);
     }
 
-
     const handleBrandChange = (checkedValues: CheckboxValueType[]) => {
         let listBrandId = "";
         checkedValues.map((data) => {

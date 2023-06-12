@@ -12,6 +12,7 @@ export interface IProduct {
   metadataDtoSet?: IMetadata[];
   price: number;
   discount: number;
+  status?: boolean;
   quantity: number;
   categoryId: number;
   brandId: number;
