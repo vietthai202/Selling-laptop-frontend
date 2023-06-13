@@ -45,3 +45,14 @@ export function getMetadataById(id: number): Promise<IMetadata> {
       throw new Error("Fetch failed");
     });
 }
+
+export function updateMetaData(metadata: IMetadata): Promise<IMetadata> {
+  return api
+    .post(`/metadata/edit/${metadata.id}`, metadata)
+    .then((response: AxiosResponse) => {
+      return response.data;
+    })
+    .catch((error: AxiosError) => {
+      throw new Error("Fetch failed");
+    });
+}

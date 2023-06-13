@@ -1,49 +1,21 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Modal, Space, Table } from 'antd';
+import { Button, Modal, Space, Switch, Table, message } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import routes from '../../../routes';
 import { logout } from '../../../services/auth';
-import { getAllProduct } from '../../../services/product';
+import { getAllProduct, onOffLaptop } from '../../../services/product';
 import { IProduct } from '../../../types/product';
 
 const AdminProducts: React.FC = () => {
     const navigate = useNavigate();
     const [dataSource, setDataSource] = useState([]);
 
-    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-
-    const [brandDelete, setBrandDelete] = useState<string>("");
-
     const buttonUpdate = (slug: string) => {
         navigate(`/admin/products/edit/${slug}`);
     }
 
-    const buttonDelete = (blogid: string) => {
-        setIsDeleteOpen(true);
-        setBrandDelete(blogid);
-    }
-
-    const doDelete = () => {
-        if (brandDelete) {
-            // deleteBrand(brandDelete)
-            //     .then((data: any) => {
-            //         setIsDeleteOpen(false);
-            //         setBrandDelete("");
-            //         message.success(data.message);
-            //     })
-            //     .catch(() => {
-            //         setIsDeleteOpen(false);
-            //         setBrandDelete("");
-            //         message.error("Có lỗi khi xóa brand!");
-            //     })
-        }
-    }
-
-    const cancelDelete = () => {
-        setIsDeleteOpen(false);
-    }
 
     useEffect(() => {
 
@@ -56,17 +28,7 @@ const AdminProducts: React.FC = () => {
                 navigate("/admin/login");
                 console.error('Failed to fetch blog information');
             });
-
-        // getAllBrands()
-        //     .then((data: any) => {
-        //         setDataSource(data);
-        //     })
-        //     .catch(() => {
-        //         logout();
-        //         navigate("/login");
-        //         console.error('Failed to fetch blog information');
-        //     });
-    }, [navigate, brandDelete])
+    }, [navigate])
 
     const columns: ColumnsType<IProduct> = [
         {
@@ -105,7 +67,22 @@ const AdminProducts: React.FC = () => {
                     </Space>
                 )
             }
-        }
+        },
+        {
+            title: "Status",
+            dataIndex: "status",
+            key: "status",
+            render: (_, record) => {
+              return (
+                <Switch
+                  defaultChecked={record.status}
+                  onChange={() => {
+                    onOffLaptop(record.id).then(() => { message.success("Cập nhật thành công!") }).catch(() => { message.error("Cập nhật thất bại!") });
+                  }}
+                />
+              );
+            },
+          }
     ];
 
     return (
@@ -120,9 +97,6 @@ const AdminProducts: React.FC = () => {
             <Modal
                 okButtonProps={{ style: { backgroundColor: '#CD1818' } }}
                 title="Xóa thương hiệu!"
-                open={isDeleteOpen}
-                onOk={doDelete}
-                onCancel={cancelDelete}
                 okText="Xóa"
             >
                 <div className='flex flex-col items-center'>

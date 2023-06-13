@@ -7,7 +7,6 @@ export interface IMetadataGroup {
 export interface IMetadata {
   id: number;
   icon: string;
-  iconType: string;
   title: string;
   content: string;
   laptop_id: number;

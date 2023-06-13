@@ -6,6 +6,8 @@ import { getMetadataWithMetadataGroup } from "../../services/metadataGroup";
 import { getProductBySlug } from "../../services/product";
 import { IMetadata, IMetadataGroup } from "../../types/metadatagroup";
 import { IProduct } from "../../types/product";
+import FAQs from "./ProductFAQs";
+
 
 const ProductDetail: React.FC = () => {
     const param: any = useParams();
@@ -59,7 +61,6 @@ const ProductDetail: React.FC = () => {
     return (
         data ?
             <>
-
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
                     <div className="flex flex-col md:flex-row -mx-4 bg-white rounded-md">
                         <div className="md:flex-1 px-4 p-5">
@@ -113,9 +114,17 @@ const ProductDetail: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-col md:flex-row -mx-4 mt-5 bg-white rounded-md p-5">
-                        <div dangerouslySetInnerHTML={{ __html: data.summary || "No content" }} />
+
+                    <div className="md:flex justify-between md:space-x-4 -mx-4">
+                        <div className="md:w-2/3 flex flex-col md:flex-row mt-5 bg-white rounded-md p-5">
+                            <div dangerouslySetInnerHTML={{ __html: data.summary || "No content" }} />
+                        </div>
+                        <div className="flex md:w-1/3 flex-col mt-5 bg-white rounded-md p-5">
+                            <div className="font-bold mb-3">Câu hỏi thường gặp</div>
+                            <FAQs />
+                        </div>
                     </div>
+
                 </div>
 
                 <Modal

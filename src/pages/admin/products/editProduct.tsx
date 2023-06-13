@@ -7,9 +7,9 @@ import TextEditer from '../../../components/TextEditer';
 import routes from '../../../routes';
 import { isLoggedIn } from '../../../services/auth';
 import { addBrand, getAllBrands } from '../../../services/brands';
-import { addNewMetadata, createMultipleMetadata, deleteMetadataById, getMetadataById } from '../../../services/metadata';
+import { addNewMetadata, deleteMetadataById, getMetadataById, updateMetaData } from '../../../services/metadata';
 import { getAllMetaDataGroup } from '../../../services/metadataGroup';
-import { createProduct, getProductBySlug } from '../../../services/product';
+import { getProductBySlug, updateProduct } from '../../../services/product';
 import { addProductCategory, getAllProductCategories } from '../../../services/productCategory';
 import { IBrand } from '../../../types/brand';
 import { IMetadata, IMetadataGroup } from '../../../types/metadatagroup';
@@ -32,10 +32,6 @@ const EditProduct: React.FC = () => {
     const [idDeleteMeta, setIdDeleteMeta] = useState<number | null>(null);
 
     const [showEditMeta, setShowEditMeta] = useState(false);
-    const [idEditMeta, setIdEditMeta] = useState<number | null>(null);
-    const [metadataTitleEdit, setMetadataTitleEdit] = useState<string>();
-    const [metadataContentEdit, setMetadataContentEdit] = useState<string>();
-    const [metadataEdit, setMetadataEdit] = useState<IMetadata>();
 
     const inputRef0 = useRef<InputRef>(null);
     const inputRef1 = useRef<InputRef>(null);
@@ -60,17 +56,38 @@ const EditProduct: React.FC = () => {
     const [itemMetadataContent, setItemMetadateContent] = useState<string[]>([""]);
 
     const hideEditMetadata = async () => {
-        setIdEditMeta(null);
         setShowEditMeta(false);
     }
 
     const showEditMetadata = async (id: number) => {
-        setIdEditMeta(id);
-        setShowEditMeta(true);
+        try {
+            const data: IMetadata = await getMetadataById(id);
+            setShowEditMeta(true);
+            form.setFieldsValue(data);
+        } catch (error) {
+            message.error("Có lỗi")
+        }
     }
 
     const doEditMetadata = async () => {
-        console.log("hahaha");
+        const formData: any = form.getFieldsValue()
+        const metaEdit: IMetadata = {
+            id: formData.id,
+            icon: '',
+            title: formData.title,
+            content: formData.content,
+            laptop_id: 0,
+            group_id: 0
+        }
+        updateMetaData(metaEdit)
+            .then(() => {
+                message.success("Cập nhật metadata thành công!");
+                setShowEditMeta(false);
+            })
+            .catch(() => {
+                message.error("Cập nhật thất bại!");
+                setShowEditMeta(false);
+            });
     }
 
     const formatNumber = (value: any) => {
@@ -154,7 +171,6 @@ const EditProduct: React.FC = () => {
             const newMetadata: IMetadata = {
                 id: metadataId,
                 icon: '',
-                iconType: '',
                 title: itemMetadataTitle[group_id],
                 content: itemMetadataContent[group_id],
                 laptop_id: product.id,
@@ -223,10 +239,10 @@ const EditProduct: React.FC = () => {
     const onFinish = async (values: any) => {
         const username = localStorage.getItem("username");
 
-        if (isLoggedIn() && username) {
+        if (isLoggedIn() && username && product) {
 
-            const product: IProduct = {
-                id: 0,
+            const newProduct: IProduct = {
+                id: product.id,
                 userName: username,
                 title: values.title,
                 metaTitle: values.metaTitle,
@@ -241,16 +257,14 @@ const EditProduct: React.FC = () => {
                 brandId: values.brandId
             }
 
-            // await createProduct(product)
-            //     .then((data: number) => {
-            //         const laptopId = data;
-            //         createMultipleMetadata(metadataInGroup, laptopId)
-            //         message.success("Thành công!");
-            //         navigate(routes.ADMIN_PRODUCTS);
-            //     })
-            //     .catch(() => {
-            //         message.error("Thất bại!");
-            //     });
+            await updateProduct(newProduct)
+                .then(() => {
+                    message.success("Thành công!");
+                    navigate(routes.ADMIN_PRODUCTS);
+                })
+                .catch(() => {
+                    message.error("Thất bại!");
+                });
         } else {
             message.success("Hết hạn, đăng nhập lại!");
             navigate(routes.LOGIN);
@@ -262,18 +276,6 @@ const EditProduct: React.FC = () => {
     };
 
     useEffect(() => {
-        if (idEditMeta) {
-            getMetadataById(idEditMeta)
-                .then((data: IMetadata) => {
-                    setMetadataEdit(data);
-                    // setMetadataTitleEdit(data.title);
-                    // setMetadataContentEdit(data.content);
-                    console.log(data);
-                })
-        }
-    }, [idEditMeta]);
-
-    useEffect(() => {
         if (param) {
             getProductBySlug(param.slug)
                 .then((data: IProduct) => {
@@ -283,7 +285,7 @@ const EditProduct: React.FC = () => {
                     setTextEditValue(data.summary);
                 })
         }
-    }, [param]);
+    }, [param, showEditMeta]);
 
     useEffect(() => {
         getAllProductCategories().then((data: IProductCategory[]) => {
@@ -305,7 +307,7 @@ const EditProduct: React.FC = () => {
                 product &&
 
                 <Form
-                    name="newBlogForm"
+                    name="editProductForm"
                     layout="vertical"
                     labelCol={{ span: 8 }}
                     initialValues={
@@ -473,12 +475,12 @@ const EditProduct: React.FC = () => {
                                 </div>
 
                                 {
-                                    metadataInGroup?.map((metadata: IMetadata) => (
+                                    metadataInGroup.map((metadata: IMetadata) => (
                                         metadataGroup.id === metadata.group_id &&
                                         <div key={metadata.id} id={metadata.id.toFixed()} className='flex flex-col space-y-2 max-w-md mb-2'>
                                             <div className='flex space-x-2 items-center'>
                                                 <div><b>{metadata.title} : </b>{metadata.content}</div>
-                                                <Button danger icon={<EditOutlined />} onClick={(e) => { showEditMetadata(metadata.id) }}>
+                                                <Button danger icon={<EditOutlined />} onClick={async () => { await showEditMetadata(metadata.id) }}>
                                                     Sửa
                                                 </Button>
                                                 <Button danger icon={<DeleteOutlined />} onClick={() => { handleDeleteMetadata(metadata.id) }}>
@@ -537,45 +539,42 @@ const EditProduct: React.FC = () => {
             >
                 <div className='flex flex-col space-y-2 max-w-md'>
                     <div className='flex space-x-2'>
-                        {
-                            metadataEdit &&
-                            <Form
-                                preserve={true}
-                                form={form}
-                                name="createForm"
-                                layout="vertical"
-                                labelCol={{ span: 8 }}
-                                initialValues={{ title: metadataEdit.title, content: metadataEdit.content }}
-                            >
-                                <div className='flex space-x-2 justify-center'>
-                                    <Form.Item
-                                        style={{ minWidth: 150 }}
-                                        label="Tiêu đề"
-                                        name="title"
-                                        rules={[{ required: true, message: 'Hãy nhập tiêu đề!' }]}
-                                    >
-                                        <Input size="large" placeholder='xxx' />
-                                    </Form.Item>
+                        <Form
+                            preserve={true}
+                            form={form}
+                            name="createForm"
+                            layout="vertical"
+                            labelCol={{ span: 8 }}
+                        >
+                            <div className='flex space-x-2 justify-center'>
+                                <Form.Item
+                                    style={{ minWidth: 150 }}
+                                    label="ID"
+                                    name="id"
+                                    hidden
+                                >
+                                    <Input size="large" placeholder='xxx' />
+                                </Form.Item>
 
-                                    <Form.Item
-                                        style={{ minWidth: 150 }}
-                                        label="Content"
-                                        name="content"
-                                        rules={[{ required: true, message: 'Hãy nhập content!' }]}
-                                    >
-                                        <Input size="large" placeholder='xxx' />
-                                    </Form.Item>
-                                </div>
-                            </Form>
-                        }
-                        {/* <Input
-                        value={metadataEdit?.title}
-                            onChange={(e) => { }}
-                        />
-                        <Input
-                            value={metadataEdit?.content}
-                            onChange={(e) => { }}
-                        /> */}
+                                <Form.Item
+                                    style={{ minWidth: 150 }}
+                                    label="Tiêu đề"
+                                    name="title"
+                                    rules={[{ required: true, message: 'Hãy nhập tiêu đề!' }]}
+                                >
+                                    <Input size="large" placeholder='xxx' />
+                                </Form.Item>
+
+                                <Form.Item
+                                    style={{ minWidth: 150 }}
+                                    label="Content"
+                                    name="content"
+                                    rules={[{ required: true, message: 'Hãy nhập content!' }]}
+                                >
+                                    <Input size="large" placeholder='xxx' />
+                                </Form.Item>
+                            </div>
+                        </Form>
                     </div>
                     <Button danger icon={<SaveOutlined />} onClick={(e) => { doEditMetadata() }}>
                         Save

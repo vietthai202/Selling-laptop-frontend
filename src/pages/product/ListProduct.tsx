@@ -1,15 +1,15 @@
-import { Button, Carousel, Checkbox, Col, InputNumber, Pagination, Row, Select, Slider } from 'antd';
-import type { CheckboxValueType } from 'antd/es/checkbox/Group';
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { getAllBrands } from '../../services/brands';
-import { getProductWithPage } from '../../services/product';
-import { getAllProductCategories } from '../../services/productCategory';
-import { getSlideWithStatus } from '../../services/slides';
-import { IBrand } from '../../types/brand';
-import { IProduct } from '../../types/product';
-import { IProductCategory } from '../../types/productCategory';
-import { ISlide } from '../../types/slide';
+import { Button, Carousel, Checkbox, Col, InputNumber, Pagination, Row, Select, Slider } from "antd";
+import type { CheckboxValueType } from "antd/es/checkbox/Group";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { getAllBrands } from "../../services/brands";
+import { getProductWithPage } from "../../services/product";
+import { getAllProductCategories } from "../../services/productCategory";
+import { getSlideWithStatus } from "../../services/slides";
+import { IBrand } from "../../types/brand";
+import { IProduct } from "../../types/product";
+import { IProductCategory } from "../../types/productCategory";
+import { ISlide } from "../../types/slide";
 
 const ListProduct: React.FC = () => {
     const [laptops, setLaptops] = useState<IProduct[]>([]);
@@ -29,19 +29,26 @@ const ListProduct: React.FC = () => {
     const [maxPrice, setMaxPrice] = useState<number>(0);
 
     const onSliderChange = (value: number | [number, number]) => {
-        setMin(Number(value.toString().split(",")[0]));
-        setMax(Number(value.toString().split(",")[1]));
+        onMinChange(Number(value.toString().split(",")[0] || 1000000));
+        onMaxChange(Number(value.toString().split(",")[1] || 99999999));
     };
 
+    const onMinChange = (value: number | null) => {
+        setMin(value || 1000000);
+    }
+
+    const onMaxChange = (value: number | null) => {
+        setMax(value || 99999999);
+    }
+
     const onSliderAfterChange = (value: number | [number, number]) => {
-        // console.log('onAfterChange: ', value);
+        // console.log("onAfterChange: ", value);
     };
 
     const onFilterPrice = () => {
         setMinPrice(min);
         setMaxPrice(max);
     }
-
 
     const handleBrandChange = (checkedValues: CheckboxValueType[]) => {
         let listBrandId = "";
@@ -96,18 +103,18 @@ const ListProduct: React.FC = () => {
 
     const renderItems = () => {
         return laptops.map((data: IProduct) => (
-            <Link to={`/product/${data.slug}`} key={data.id} className="flex flex-col justify-between max-w-xs rounded-md overflow-hidden shadow-lg hover:scale-105 transition duration-500 cursor-pointer no-underline bg-white">
+            <Link to={`/product/${data.slug}`} key={data.id} className="flex flex-col justify-between rounded-md overflow-hidden shadow-lg hover:scale-105 transition duration-500 cursor-pointer no-underline bg-white">
                 <div>
-                    <img className='w-full h-48' src={data.image || "https://upload.wikimedia.org/wikipedia/commons/7/75/No_image_available.png"} alt="" />
+                    <img className="w-full h-48" src={data.image || "https://upload.wikimedia.org/wikipedia/commons/7/75/No_image_available.png"} alt="" />
                 </div>
                 <div className="py-4 px-4 flex flex-col justify-between align-bottom">
                     <div className="text-sm font-semibold text-[#CD1818]">Mã sản phẩm: {data.sku}</div>
                     <div className="text-lg font-semibold text-gray-600">{data.title}</div>
                 </div>
                 <div className="py-4 px-4 flex flex-col justify-between align-bottom">
-                    <div className='flex justify-between items-center'>
+                    <div className="flex justify-between items-center">
                         <div className="text-base font-mono font-extrabold text-white bg-[#CD1818] px-2 rounded-full">{data.price && data.price.toLocaleString()} VNĐ</div>
-                        <Button danger className='rounded-full' size='small'>MUA NGAY</Button>
+                        <Button danger className="rounded-full" size="small">MUA NGAY</Button>
                     </div>
                 </div>
             </Link>
@@ -116,9 +123,9 @@ const ListProduct: React.FC = () => {
 
     const contentStyle: React.CSSProperties = {
         margin: 0,
-        color: '#fff',
-        textAlign: 'center',
-        background: '#364d79',
+        color: "#fff",
+        textAlign: "center",
+        background: "#364d79",
     };
 
     return (
@@ -131,8 +138,8 @@ const ListProduct: React.FC = () => {
                         {
                             slides.map((data: ISlide) => (
 
-                                <div key={data.id} className='cursor-pointer' style={contentStyle} onClick={() => { window.location.href = `${data.url}`; }}>
-                                    <img width="100%" src={data.image || ""} alt='' />
+                                <div key={data.id} className="cursor-pointer" style={contentStyle} onClick={() => { window.location.href = `${data.url}`; }}>
+                                    <img width="100%" src={data.image || ""} alt="" />
                                 </div>
 
                             ))
@@ -140,12 +147,15 @@ const ListProduct: React.FC = () => {
 
                     </Carousel>
 
-                    <div className='flex justify-end space-x-2 my-4'>
+                    <div className="flex justify-end space-x-2 my-4">
                         <Select
                             defaultValue={"Select Price Order"}
-                            style={{ width: 180 }}
+                            className="min-w-fit"
                             onChange={handlePriceChange}
                             options={[
+                                {
+                                    label: "Select Price Order", value: ""
+                                },
                                 {
                                     label: "Giá tăng", value: "asc"
                                 },
@@ -155,12 +165,12 @@ const ListProduct: React.FC = () => {
                             ]}
                         />
                     </div>
-                    <div className='flex'>
-                        <div className='flex-1'>
-                            <div className='mb-5'>
-                                <div className='font-bold mb-3'>Hãng sản xuất</div>
+                    <div className="blog md:flex">
+                        <div className="flex-1">
+                            <div className="mb-5">
+                                <div className="font-bold mb-3">Hãng sản xuất</div>
                                 <div>
-                                    <Checkbox.Group style={{ width: '100%' }} onChange={handleBrandChange}>
+                                    <Checkbox.Group style={{ width: "100%" }} onChange={handleBrandChange}>
                                         <Row>
                                             {
                                                 brands.map((brand: IBrand) => (
@@ -173,10 +183,10 @@ const ListProduct: React.FC = () => {
                                     </Checkbox.Group>
                                 </div>
                             </div>
-                            <div className='mb-5'>
-                                <div className='font-bold mb-3'>Danh mục</div>
+                            <div className="mb-5">
+                                <div className="font-bold mb-3">Danh mục</div>
                                 <div>
-                                    <Checkbox.Group style={{ width: '100%' }} onChange={handleCategoryChange}>
+                                    <Checkbox.Group style={{ width: "100%" }} onChange={handleCategoryChange}>
                                         <Row>
                                             {
                                                 categories.map((cat: IProductCategory) => (
@@ -190,30 +200,30 @@ const ListProduct: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className='mb-5'>
-                                <div className='font-bold mb-3'>Khoảng giá</div>
-                                <div className='px-5'>
-                                    <Slider onChange={onSliderChange} onAfterChange={onSliderAfterChange} min={1000000} max={99999999} range step={1000000} defaultValue={[100000, 999999999]} />
-                                    <div className='flex justify-around'>
-                                        <div className='flex items-center space-x-2'>
+                            <div className="mb-5">
+                                <div className="font-bold mb-3">Khoảng giá</div>
+                                <div className="pr-5">
+                                    <Slider onChange={onSliderChange} onAfterChange={onSliderAfterChange} min={1000000} max={99999999} range step={1000000} value={[min, max]} />
+                                    <div className="flex justify-around">
+                                        <div className="flex items-center space-x-2">
                                             <div>Min:</div>
-                                            <div><InputNumber min={1000000} max={99999999} value={min} onChange={() => { }} /></div>
+                                            <div><InputNumber className="min-w-fit" value={min} min={1000000} max={99999999} step={1000000} onChange={onMinChange} /></div>
                                         </div>
-                                        <div className='flex items-center space-x-2'>
+                                        <div className="flex items-center space-x-2">
                                             <div>Max:</div>
-                                            <div><InputNumber min={1000000} max={99999999} value={max} onChange={() => { }} /></div>
+                                            <div><InputNumber className="min-w-fit" value={max} min={1000000} max={99999999} step={1000000} onChange={onMaxChange} /></div>
                                         </div>
                                     </div>
-                                    <Button onClick={onFilterPrice} className='w-full my-3'>Lọc</Button>
+                                    <Button onClick={onFilterPrice} className="w-full my-3">Lọc</Button>
                                 </div>
                             </div>
                         </div>
 
-                        <div className='w-3/4'>
+                        <div className="md:w-3/4">
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-10">
                                 {renderItems()}
                             </div>
-                            <div className='mt-5 flex justify-center'>
+                            <div className="mt-5 flex justify-center">
                                 <Pagination
                                     current={currentPage}
                                     pageSize={10}

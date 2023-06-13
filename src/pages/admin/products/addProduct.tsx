@@ -129,7 +129,6 @@ const AddProduct: React.FC = () => {
         const newMetadata: IMetadata = {
             id: metadataId,
             icon: itemMetadataIcon[group_id],
-            iconType: '',
             title: itemMetadataTitle[group_id],
             content: itemMetadataContent[group_id],
             laptop_id: 0,
