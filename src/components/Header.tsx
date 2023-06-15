@@ -1,4 +1,4 @@
-import { Modal } from 'antd';
+import { Badge, Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getUserInfo, isLoggedIn, logout } from '../services/auth';
@@ -14,6 +14,9 @@ import { getAllProductCategories } from '../services/productCategory';
 import { IUser } from '../types/auth';
 import { IProductCategory } from '../types/productCategory';
 import Search from './Search';
+import { useDispatch, useSelector } from 'react-redux';
+import { setTotalCartItem } from '../store/cartSlice';
+import { setUserInfo } from '../store/userSlice';
 
 export interface INewSearch {
     value: string;
@@ -23,6 +26,10 @@ export interface INewSearch {
 }
 
 const Header: React.FC = () => {
+
+    const dispatch = useDispatch();
+
+    const totalCart: number = useSelector((state: any) => state.cart.totalCartItem);
 
     const [user, setUser] = useState<IUser | null>(null);
 
@@ -65,14 +72,25 @@ const Header: React.FC = () => {
             getUserInfo(username)
                 .then((userData: IUser) => {
                     setUser(userData);
+                    dispatch(setUserInfo({ username: userData.username, role: userData.userRole }));
                 })
                 .catch((error: Error) => {
                     logout();
                     navigate("/login");
                     console.error('Failed to fetch user information');
                 });
+
+            const cart = localStorage.getItem("cart-item");
+            if (cart !== null) {
+                let count = 0;
+                const ic = JSON.parse(cart);
+                ic.forEach(() => {
+                    count += 1;
+                })
+                dispatch(setTotalCartItem(count));
+            }
         }
-    }, [navigate]);
+    }, [dispatch, navigate]);
 
     return (
         <>
@@ -99,10 +117,12 @@ const Header: React.FC = () => {
                         <div className='font-bold whitespace-nowrap'>Tài khoản</div>
                     </div>
 
-                    <div className='flex space-y-1 flex-col text-white items-center cursor-pointer no-underline'>
-                        <div><img className='w-6' src={CartIcon} alt="" /></div>
-                        <div className='font-bold whitespace-nowrap'>Giỏ hàng</div>
-                    </div>
+                    <Badge color='#faad14' count={totalCart}>
+                        <div className='flex space-y-1 flex-col text-white items-center cursor-pointer no-underline' onClick={() => navigate("/cart")}>
+                            <div><img className='w-6' src={CartIcon} alt="" /></div>
+                            <div className='font-bold whitespace-nowrap'>Giỏ hàng</div>
+                        </div>
+                    </Badge>
                 </div>
             </div>
             <div className='h-[40px] space-x-10 bg-[#333] text-white whitespace-nowrap w-full overflow-x-auto flex items-center px-4 sm:px-0 sm:justify-center'>

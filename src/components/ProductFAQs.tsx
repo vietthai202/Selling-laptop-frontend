@@ -2,35 +2,32 @@ import { CaretRightOutlined } from '@ant-design/icons';
 import { Collapse, Typography, ConfigProvider } from 'antd';
 import { CSSProperties, useState } from 'react';
 import React from 'react';
+import { IFAQs } from '../types/faqs';
 
 const { Panel } = Collapse;
 const { Text } = Typography;
 
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`;
-
-const getPanels: (panelStyle: CSSProperties) => React.ReactNode = (panelStyle) => {
-    const panelData = [
-        { key: '1', header: 'This is panel header 1' },
-        { key: '2', header: 'This is panel header 2' },
-        { key: '3', header: 'This is panel header 3' },
-    ];
-
-    return panelData.map((item) => (
+const getPanels: (panelStyle: CSSProperties, listFaq: IFAQs[]) => React.ReactNode = (panelStyle, listFaq) => {
+    const panelData: IFAQs[] = [];
+    if (listFaq.length === 0) {
+        listFaq = panelData;
+    }
+    return listFaq.map((item) => (
         <Panel
-            key={item.key}
-            header={item.header}
+            key={item.id}
+            header={item.title}
             style={panelStyle}
         >
-            <Text>{text}</Text>
+            <Text>{item.content}</Text>
         </Panel>
     ));
 };
 
-const FAQs: React.FC = () => {
+interface Props {
+    listFaq: IFAQs[];
+}
+
+const FAQs: React.FC<Props> = ({ listFaq }) => {
     const panelStyle: CSSProperties = {
         marginBottom: 24,
         background: '#f5f5f5',
@@ -59,7 +56,7 @@ const FAQs: React.FC = () => {
                 )}
                 style={{ background: '#ffffff' }}
             >
-                {getPanels(panelStyle)}
+                {getPanels(panelStyle, listFaq)}
             </Collapse>
         </ConfigProvider>
     );

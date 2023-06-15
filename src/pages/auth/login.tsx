@@ -77,6 +77,12 @@ const Login: React.FC = () => {
                     </span>
                 </Form.Item>
 
+                <div className='flex justify-center'>
+                    <Button type="primary" className='bg-[#CD1818] hover:bg-[#6d6d6d] mx-5' href='/login/phone'>
+                        ĐĂNG NHẬP BẰNG SỐ ĐIỆN THOẠI
+                    </Button>
+                </div>
+
             </Form>
         </div>
     )

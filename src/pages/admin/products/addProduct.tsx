@@ -18,10 +18,13 @@ import { IMetadata, IMetadataGroup } from '../../../types/metadatagroup';
 import { IProduct } from '../../../types/product';
 import { IProductCategory } from '../../../types/productCategory';
 import { convertToSlug } from '../../../utils/string';
+import { IFAQs } from '../../../types/faqs';
+import { createMultipleFAQ } from '../../../services/faq';
 
 const { TextArea } = Input;
 
 let metadataId = 0;
+let faqId = 0;
 const AddProduct: React.FC = () => {
     const navigate = useNavigate();
 
@@ -47,6 +50,10 @@ const AddProduct: React.FC = () => {
     const [itemMetadataIcon, setItemMetadataIcon] = useState<string[]>([""]);
     const [itemMetadataTitle, setItemMetadataTitle] = useState<string[]>([""]);
     const [itemMetadataContent, setItemMetadateContent] = useState<string[]>([""]);
+
+    const [faqs, setFaqs] = useState<IFAQs[]>([]);
+    const [itemFAQTitle, setItemFAQTitle] = useState<string>("");
+    const [itemFAQContent, setItemFAQContent] = useState<string>("");
 
     const formatNumber = (value: any) => {
         if (!value) return '';
@@ -150,6 +157,32 @@ const AddProduct: React.FC = () => {
         setMetadataInGroup(metadata);
     }
 
+    const addFAQ = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+        e.preventDefault();
+
+        faqId += 1;
+
+        const faq: IFAQs = {
+            id: faqId,
+            title: itemFAQTitle,
+            content: itemFAQContent,
+            laptop_id: 0
+        }
+
+        if (faq && faq.title && faq.content) {
+            faqs && setFaqs([...faqs, faq]);
+            setItemFAQTitle("");
+            setItemFAQContent("");
+        } else {
+            message.error("Lỗi khi tạo danh mục!");
+        }
+    };
+
+    const removeFAQ = async (id: number) => {
+        const faqsRm = faqs.filter(item => item.id !== id);
+        setFaqs(faqsRm);
+    }
+
     // const handleInputIconChange = (index: number, value: string) => {
     //     const newInputValues = [...itemMetadataTitle];
     //     newInputValues[index] = value
@@ -192,7 +225,8 @@ const AddProduct: React.FC = () => {
             await createProduct(product)
                 .then((data: number) => {
                     const laptopId = data;
-                    createMultipleMetadata(metadataInGroup, laptopId)
+                    createMultipleMetadata(metadataInGroup, laptopId);
+                    createMultipleFAQ(faqs, laptopId);
                     message.success("Thành công!");
                     navigate(routes.ADMIN_PRODUCTS);
                 })
@@ -372,57 +406,95 @@ const AddProduct: React.FC = () => {
                 <TextEditer valueProps={textEditValue} setValueProps={setTextEditValue} />
 
                 <Divider dashed />
-
-                {
-                    listMetadataGroup && listMetadataGroup?.map((metadataGroup: IMetadataGroup) => (
-                        <div key={metadataGroup.id} id={metadataGroup.id.toFixed()} className='flex flex-col'>
-                            <div className='font-bold text-lg'>
-                                {metadataGroup.name}
-                            </div>
-
-                            {
-                                metadataInGroup?.map((metadata: IMetadata) => (
-                                    metadataGroup.id === metadata.group_id &&
-                                    <div key={metadata.id} id={metadata.id.toFixed()} className='flex flex-col space-y-2 max-w-md mb-2'>
-                                        <div className='flex space-x-2 items-center'>
-                                            {
-                                                metadata.icon && metadata.icon !== "" &&
-                                                <ShowIcon name={metadata.icon} />
-                                            }
-                                            <div><b>{metadata.title} : </b>{metadata.content}</div>
-
-                                            <Button danger icon={<DeleteOutlined />} onClick={() => { removeMetadata(metadata.id) }} >
-                                                Xóa
-                                            </Button>
-                                        </div>
+                <div className='flex space-x-2'>
+                    <div className='flex-1'>
+                        {
+                            listMetadataGroup && listMetadataGroup?.map((metadataGroup: IMetadataGroup) => (
+                                <div key={metadataGroup.id} id={metadataGroup.id.toFixed()} className='flex flex-col'>
+                                    <div className='font-bold text-lg'>
+                                        {metadataGroup.name}
                                     </div>
-                                ))
-                            }
 
-                            <div className='flex flex-col space-y-2 max-w-md'>
-                                <div className='flex space-x-2'>
-                                    <ShowIcon name={itemMetadataIcon[metadataGroup.id] || "FcAddImage"} size={30} className='cursor-pointer' onClick={() => setSelectIcon(true)} />
-                                    <div className='flex space-x-2'>
-                                        <Input
-                                            placeholder={`Nhập ${metadataGroup.name.toLowerCase()} mới`}
-                                            value={itemMetadataTitle[metadataGroup.id]}
-                                            onChange={(e) => handleInputTitleChange(metadataGroup.id, e.target.value)}
-                                        />
-                                        <Input
-                                            placeholder={`Nhập nội dung ${metadataGroup.name.toLowerCase()} mới`}
-                                            value={itemMetadataContent[metadataGroup.id]}
-                                            onChange={(e) => handleInputContentChange(metadataGroup.id, e.target.value)}
-                                        />
+                                    {
+                                        metadataInGroup?.map((metadata: IMetadata) => (
+                                            metadataGroup.id === metadata.group_id &&
+                                            <div key={metadata.id} id={metadata.id.toFixed()} className='flex flex-col space-y-2 max-w-md mb-2'>
+                                                <div className='flex space-x-2 items-center'>
+                                                    {
+                                                        metadata.icon && metadata.icon !== "" &&
+                                                        <ShowIcon name={metadata.icon} />
+                                                    }
+                                                    <div><b>{metadata.title} : </b>{metadata.content}</div>
+
+                                                    <Button danger icon={<DeleteOutlined />} onClick={() => { removeMetadata(metadata.id) }} >
+                                                        Xóa
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        ))
+                                    }
+
+                                    <div className='flex flex-col space-y-2 max-w-md'>
+                                        <div className='flex space-x-2'>
+                                            {/* <ShowIcon name={itemMetadataIcon[metadataGroup.id] || "FcAddImage"} size={30} className='cursor-pointer' onClick={() => setSelectIcon(true)} /> */}
+                                            <div className='flex space-x-2'>
+                                                <Input
+                                                    placeholder={`Nhập ${metadataGroup.name.toLowerCase()} mới`}
+                                                    value={itemMetadataTitle[metadataGroup.id]}
+                                                    onChange={(e) => handleInputTitleChange(metadataGroup.id, e.target.value)}
+                                                />
+                                                <Input
+                                                    placeholder={`Nhập nội dung ${metadataGroup.name.toLowerCase()} mới`}
+                                                    value={itemMetadataContent[metadataGroup.id]}
+                                                    onChange={(e) => handleInputContentChange(metadataGroup.id, e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
+                                        <Button danger icon={<PlusOutlined />} onClick={(e) => { addMetadata(e, metadataGroup.id) }}>
+                                            Thêm
+                                        </Button>
                                     </div>
                                 </div>
-                                <Button danger icon={<PlusOutlined />} onClick={(e) => { addMetadata(e, metadataGroup.id) }}>
-                                    Thêm
-                                </Button>
+                            ))
+                        }
+                    </div>
+                    <div className='flex-1'>
+                        <div className='font-bold text-lg'>
+                            FAQs
+                        </div>
+                        {
+                            faqs.map((faq) => (
+                                <div key={faq.id}>
+                                    {faq.title} : {faq.content}
+
+                                    <Button danger icon={<DeleteOutlined />} onClick={() => { removeFAQ(faq.id) }} >
+                                        Xóa
+                                    </Button>
+                                </div>
+
+                            ))
+                        }
+                        <div className='flex space-x-2'>
+                            {/* <ShowIcon name={itemMetadataIcon[metadataGroup.id] || "FcAddImage"} size={30} className='cursor-pointer' onClick={() => setSelectIcon(true)} /> */}
+                            <div className='flex flex-col space-y-2 w-full'>
+                                <Input
+                                    placeholder={`Nhập title faq mới`}
+                                    value={itemFAQTitle}
+                                    onChange={(e) => setItemFAQTitle(e.target.value)}
+                                />
+                                <TextArea
+                                    placeholder={`Nhập nội dung faq mới`}
+                                    value={itemFAQContent}
+                                    onChange={(e) => setItemFAQContent(e.target.value)}
+                                    autoSize={{ minRows: 3, maxRows: 5 }}
+                                />
                             </div>
                         </div>
-                    ))
-                }
-
+                        <Button className='mt-2' danger icon={<PlusOutlined />} onClick={(e) => { addFAQ(e) }}>
+                            Thêm
+                        </Button>
+                    </div>
+                </div>
                 <IconSelectionModal visible={selectIcon} onClose={() => { setSelectIcon(false) }} onSelectIcon={() => { console.log("okoko") }} />
 
                 <Button type="primary" className='bg-[#CD1818] hover:bg-[#6d6d6d] my-3' htmlType="submit">

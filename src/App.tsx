@@ -31,6 +31,9 @@ import Slides from './pages/admin/slides';
 import AddSlide from './pages/admin/slides/addSlide';
 import EditSlide from './pages/admin/slides/editSlide';
 import SearchPage from './pages/search';
+import ProfileOrder from './pages/profile/ProfileOrder';
+import Cart from './pages/product/Cart';
+import PhoneAuth from './pages/auth/loginPhone';
 
 function App() {
   return (
@@ -38,7 +41,10 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path={routes.HOME} element={<Home />} />
+          <Route path={routes.PROFILE_ORDER} element={<ProfileOrder />} />
+          <Route path={routes.CART} element={<Cart />} />
           <Route path={routes.LOGIN} element={<Login />} />
+          <Route path={routes.LOGIN_PHONE} element={<PhoneAuth />} />
           <Route path={routes.REGISTER} element={<Register />} />
           <Route path={routes.FORGOT} element={<LossPass />} />
           <Route path={routes.BLOGS} element={<Blogs />} />
