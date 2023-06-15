@@ -17,3 +17,12 @@ export interface IProduct {
   categoryId: number;
   brandId: number;
 }
+
+export interface IProductCart {
+  id: number;
+  title: string;
+  image: string | null;
+  price: number;
+  discount: number;
+  quantity: number;
+}

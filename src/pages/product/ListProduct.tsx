@@ -41,10 +41,6 @@ const ListProduct: React.FC = () => {
         setMax(value || 99999999);
     }
 
-    const onSliderAfterChange = (value: number | [number, number]) => {
-        // console.log("onAfterChange: ", value);
-    };
-
     const onFilterPrice = () => {
         setMinPrice(min);
         setMaxPrice(max);
@@ -90,7 +86,6 @@ const ListProduct: React.FC = () => {
 
     useEffect(() => {
         getProductWithPage(currentPage, selectedBrand, selectedCategory, selectedPrice, minPrice, maxPrice).then((data) => {
-            console.log(data);
             setLaptops(data.content);
             setTotalPage(data.totalElements);
         })
@@ -203,7 +198,7 @@ const ListProduct: React.FC = () => {
                             <div className="mb-5">
                                 <div className="font-bold mb-3">Khoảng giá</div>
                                 <div className="pr-5">
-                                    <Slider onChange={onSliderChange} onAfterChange={onSliderAfterChange} min={1000000} max={99999999} range step={1000000} value={[min, max]} />
+                                    <Slider onChange={onSliderChange} min={1000000} max={99999999} range step={1000000} value={[min, max]} />
                                     <div className="flex justify-around">
                                         <div className="flex items-center space-x-2">
                                             <div>Min:</div>

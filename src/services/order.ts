@@ -1,15 +1,10 @@
 import { AxiosError, AxiosResponse } from "axios";
-import { IMetadataGroup } from "../types/metadatagroup";
+import { IOrder } from "../types/order";
 import api from "./api";
 
-/**
- *
- * @param slug slug of laptop
- * @returns
- */
-export function getMetadataWithMetadataGroup(slug: string): Promise<IMetadataGroup[]> {
+export function createOrder(order: IOrder): Promise<IOrder> {
   return api
-    .get(`/metadata-group/get/${slug}`)
+    .post("/orders/createOrder", order)
     .then((response: AxiosResponse) => {
       return response.data;
     })
@@ -18,9 +13,9 @@ export function getMetadataWithMetadataGroup(slug: string): Promise<IMetadataGro
     });
 }
 
-export function getAllMetaDataGroup(): Promise<IMetadataGroup[]> {
+export function getOrderByUserName(userName: string): Promise<any> {
   return api
-    .get(`/metadata-group/list`)
+    .get(`/orders/getOrder/${userName}`)
     .then((response: AxiosResponse) => {
       return response.data;
     })
