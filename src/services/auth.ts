@@ -20,6 +20,23 @@ export function login(username: string, password: string): Promise<string> {
     });
 }
 
+export function loginPhone(token: string): Promise<string> {
+  return api
+    .post("/login/phone", { idToken: token })
+    .then((response: AxiosResponse) => {
+      const token: string = response.data.token;
+      const role: string = response.data.userRole;
+      const username: string = response.data.username;
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
+      localStorage.setItem("username", username);
+      return response.data;
+    })
+    .catch((error: AxiosError) => {
+      throw new Error("Login failed");
+    });
+}
+
 export function register(userInfo: IRegister): Promise<boolean> {
   return api
     .post("/register", {

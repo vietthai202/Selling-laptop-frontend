@@ -68,3 +68,14 @@ export function onOffLaptop(id: number): Promise<string> {
       throw new Error("Fetch failed");
     });
 }
+
+export function getLaptopById(id: number): Promise<IProduct> {
+  return api
+    .get(`/laptop/getById/${id}`)
+    .then((response: AxiosResponse) => {
+      return response.data;
+    })
+    .catch((error: AxiosError) => {
+      throw new Error("Fetch failed");
+    });
+}
