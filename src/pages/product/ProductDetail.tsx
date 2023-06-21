@@ -1,46 +1,256 @@
-import { Button, Modal, Spin } from "antd";
+import { Button, Divider, InputNumber, Modal, Spin, message } from "antd";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ShowIcon from "../../components/ShowIcon";
 import { getMetadataWithMetadataGroup } from "../../services/metadataGroup";
-import { getProductBySlug } from "../../services/product";
+import { getLaptopById, getProductBySlug } from "../../services/product";
 import { IMetadata, IMetadataGroup } from "../../types/metadatagroup";
-import { IProduct } from "../../types/product";
-import FAQs from "./ProductFAQs";
+import { IProduct, IProductCart } from "../../types/product";
 
+import { getFAQByLaptopId } from "../../services/faq";
+import { IFAQs } from "../../types/faqs";
+import FAQs from "../../components/ProductFAQs";
+import formatCurrency from "../../utils/formatCurrency";
+import { createOrder } from "../../services/order";
+import { IOrder, IOrderItem } from "../../types/order";
+import { isLoggedIn, logout } from "../../services/auth";
+import { IUser } from "../../types/auth";
+import { createOrderItems } from "../../services/oderItem";
+import { useDispatch } from "react-redux";
+import { setTotalCartItem } from "../../store/cartSlice";
+import { getUserInfo } from "../../services/user";
 
 const ProductDetail: React.FC = () => {
     const param: any = useParams();
+
+    const navigate = useNavigate();
+
+    const dispatch = useDispatch();
 
     const [data, setData] = useState<IProduct>();
     const [showDetail, setShowDetail] = useState(false);
     const [dataDetail, setDataDetail] = useState<IMetadataGroup[]>();
 
+    const [showCreateOrder, setShowCreateOrder] = useState(false);
+
+    const [faqs, setFaqs] = useState<IFAQs[]>([]);
+
+    const [totalPrice, setTotalPrice] = useState<number>(0);
+
+    const [listProductCart, setListProductCart] = useState<IProductCart[]>([]);
+
+    const handleShowCreateOrder = () => {
+        if (data) {
+            const existingItem = listProductCart.find(item => item.id === data.id);
+
+            if (existingItem) {
+                existingItem.quantity++;
+                if (existingItem.quantity > 4) {
+                    existingItem.quantity = 4;
+                }
+            } else {
+                const item: IProductCart = {
+                    id: data.id,
+                    quantity: 1,
+                    title: data.title,
+                    image: data.image,
+                    price: data.price,
+                    discount: data.discount
+                }
+                listProductCart.push(item);
+            }
+
+            localStorage.setItem("cart-item", JSON.stringify(listProductCart));
+
+            const lpc: IProductCart[] = [];
+
+            const lpPromises = listProductCart.map(async (item: IProductCart) => {
+
+                const data = await getLaptopById(item.id);
+
+                const product: IProductCart = {
+                    id: data.id,
+                    title: data.title,
+                    image: data.image,
+                    price: data.price,
+                    discount: data.discount,
+                    quantity: item.quantity > data.quantity ? data.quantity : item.quantity
+                }
+
+                lpc.push(product);
+                return product;
+            });
+
+            Promise.all(lpPromises)
+                .then((results) => {
+                    const lpc: IProductCart[] = results.map((data: IProductCart) => data);
+                    let count = 0;
+                    lpc.forEach(() => {
+                        count += 1;
+                    })
+                    dispatch(setTotalCartItem(count));
+                    setListProductCart(lpc);
+                    updateTotalPrice(lpc);
+                    setShowCreateOrder(true);
+                });
+        }
+    }
+
+    const updateTotalPrice = (list: IProductCart[]) => {
+        let total = 0;
+        list.map((item) => {
+            return total += item.price * item.quantity;
+        })
+        setTotalPrice(total);
+    }
+
+    const removeProduct = (id: number) => {
+        const updatedProductList = listProductCart.filter((product: IProductCart) => product.id !== id);
+        let count = 0;
+        updatedProductList.forEach(() => {
+            count += 1;
+        })
+        dispatch(setTotalCartItem(count));
+        setListProductCart(updatedProductList);
+        updateTotalPrice(updatedProductList);
+        localStorage.setItem("cart-item", JSON.stringify(updatedProductList));
+    };
+
+    const resetCart = () => {
+        const updatedProductList: IProductCart[] = [];
+        setListProductCart(updatedProductList);
+        updateTotalPrice(updatedProductList);
+        localStorage.setItem("cart-item", JSON.stringify(updatedProductList));
+    }
+
+    const updateCart = (id: number, quantity: number | null) => {
+        const updatedProductList = listProductCart.map((product: IProductCart) => {
+            if (product.id === id) {
+                const updatedProduct = { ...product };
+                if (quantity) {
+                    updatedProduct.quantity = quantity;
+                }
+                return updatedProduct;
+            }
+            return product;
+        });
+
+        if (quantity !== null && !listProductCart.some((product) => product.id === id)) {
+            const newProduct: IProductCart = {
+                id: id,
+                quantity: quantity,
+                title: "",
+                image: null,
+                price: 0,
+                discount: 0
+            };
+            updatedProductList.push(newProduct);
+        }
+        let count = 0;
+        updatedProductList.forEach(() => {
+            count += 1;
+        })
+        dispatch(setTotalCartItem(count));
+        setListProductCart(updatedProductList);
+        updateTotalPrice(updatedProductList);
+        localStorage.setItem("cart-item", JSON.stringify(updatedProductList));
+    }
+
+    const handleHideCreateOrder = () => {
+        setShowCreateOrder(false);
+    }
+
+    const createNewOrder = () => {
+        const username = localStorage.getItem("username");
+        if (isLoggedIn() && username) {
+            getUserInfo(username)
+                .then((data: IUser) => {
+                    const newOrder: IOrder = {
+                        id: 0,
+                        userId: data.id,
+                        totalPrice: 0,
+                        status: "",
+                        firstName: data.name,
+                        lastName: "",
+                        phoneNumber: data.phone,
+                        email: data.email,
+                        line: "",
+                        city: data.address,
+                        province: ""
+                    }
+
+                    if (listProductCart.length > 0) {
+                        createOrder(newOrder).then((order: IOrder) => {
+
+                            let quantities: string = "";
+                            let laptopIds: string = "";
+
+                            listProductCart.forEach((data: IProductCart) => {
+                                quantities += "," + data.quantity.toString();
+                                laptopIds += "," + data.id.toString();
+                            })
+
+                            quantities = quantities.substring(1);
+                            laptopIds = laptopIds.substring(1);
+
+                            const newOrderItems: IOrderItem = {
+                                orderId: order.id,
+                                quantities: quantities,
+                                laptopIds: laptopIds,
+                            }
+                            createOrderItems(newOrderItems).then(() => {
+                                message.success("Đặt hàng thành công!");
+                                resetCart();
+                                setShowCreateOrder(false);
+                                // redirect to payment
+                            })
+                        });
+                    } else {
+                        message.error("Không có sản phẩm nào!");
+                    }
+
+                })
+                .catch((error: Error) => {
+                    logout();
+                    console.error('Failed to fetch user information');
+                });
+        } else {
+            message.error("Bạn cần đăng nhập!");
+            navigate("/login");
+        }
+    }
+
     const openDetail = async () => {
         await getMetadataWithMetadataGroup(param.slug)
             .then((data: IMetadataGroup[]) => {
-                console.log(data);
                 setDataDetail(data);
                 setShowDetail(true);
-            }).catch(() => {
-
-            }).finally(() => {
-
-            })
+            });
     }
 
     useEffect(() => {
         if (param) {
+            const cart = localStorage.getItem("cart-item");
+            if (cart !== null) {
+                const ic = JSON.parse(cart);
+                setListProductCart(ic);
+                // updateTotalPrice();
+                let count = 0;
+                ic.forEach(() => {
+                    count += 1;
+                })
+                dispatch(setTotalCartItem(count));
+            }
+
             getProductBySlug(param.slug)
                 .then((data: IProduct) => {
                     setData(data);
-                }).catch(() => {
-
-                }).finally(() => {
-
-                })
+                    getFAQByLaptopId(data.id).then((data: IFAQs[]) => {
+                        setFaqs(data);
+                    });
+                });
         }
-    }, [param]);
+    }, [dispatch, param]);
 
     const renderDetailData = (data: IMetadataGroup[]) => {
         return data.map((item: IMetadataGroup) => (
@@ -57,7 +267,6 @@ const ProductDetail: React.FC = () => {
         ));
     };
 
-
     return (
         data ?
             <>
@@ -67,10 +276,8 @@ const ProductDetail: React.FC = () => {
                             <div className="h-64 md:h-80 p-2 bg-[#CD1818] mb-4 rounded-xl">
                                 <img className="w-full h-full rounded-xl" src={data.image || "https://media.ldlc.com/r1600/ld/products/00/05/82/02/LD0005820208_1.jpg"} alt="" />
                             </div>
-                            <div className="bg-[#F8F9FA] p-5 rounded-md border-solid border border-[#f8f9fa]">
-                                <div>ok</div>
-                                <div onClick={openDetail} className="text-blue-600 mt-2 cursor-pointer">Xem chi tiết thông số kỹ thuật</div>
-                            </div>
+
+                            <div onClick={openDetail} className="text-blue-600 mt-2 cursor-pointer">Xem chi tiết thông số kỹ thuật</div>
 
                             <div className="mt-2 p-5 rounded-md grid grid-cols-1 md:grid-cols-2 gap-2">
                                 <div className="flex justify-start items-center space-x-2">
@@ -108,8 +315,8 @@ const ProductDetail: React.FC = () => {
                             <h2 className="mb-2 leading-tight tracking-tight font-bold text-gray-800 text-2xl md:text-3xl">{data.title}</h2>
                             <p className="text-gray-500">{data.metaTitle}</p>
                             <div className="flex py-4 space-x-4">
-                                <Button danger className="h-14 px-6 py-2 font-semibold rounded-xl">
-                                    Thêm vào giỏ hàng
+                                <Button danger className="h-14 px-6 py-2 font-semibold rounded-xl" onClick={handleShowCreateOrder}>
+                                    Mua ngay
                                 </Button>
                             </div>
                         </div>
@@ -121,7 +328,7 @@ const ProductDetail: React.FC = () => {
                         </div>
                         <div className="flex md:w-1/3 flex-col mt-5 bg-white rounded-md p-5">
                             <div className="font-bold mb-3">Câu hỏi thường gặp</div>
-                            <FAQs />
+                            <FAQs listFaq={faqs} />
                         </div>
                     </div>
 
@@ -140,6 +347,74 @@ const ProductDetail: React.FC = () => {
                         {dataDetail && renderDetailData(dataDetail)}
                     </div>
                 </Modal>
+
+                <Modal
+                    title={`Các sản phẩm trong giỏ hàng`}
+                    centered
+                    open={showCreateOrder}
+                    onCancel={handleHideCreateOrder}
+                    width={800}
+                    footer={null}
+                >
+                    <div className="p-5">
+                        {
+                            listProductCart && listProductCart.map((item) => (
+                                <div key={item.id}>
+                                    <div className="my-1 flex items-center justify-between">
+                                        <div className="flex space-x-2 items-center">
+                                            {item.id} -
+                                            <div><img width={50} height={50} src={item.image || ""} alt="" /></div>
+                                            <div>{item.title}</div>
+                                        </div>
+                                        <div className="flex space-x-2 items-center">
+                                            <div>
+                                                <div className="text-red-500">{formatCurrency(item.price * item.quantity)}.</div>
+                                                {/* <div><del>{item.price} VNĐ</del></div> */}
+                                            </div>
+                                            <InputNumber max={4} value={item.quantity} onChange={(e) => { updateCart(item.id, e) }} />
+                                            <Button danger onClick={() => { removeProduct(item.id) }} >Xóa</Button>
+                                        </div>
+
+                                    </div>
+                                    <Divider dashed />
+                                </div>
+                            ))
+                        }
+                        {
+                            listProductCart.length > 0 ?
+                                <>
+                                    <div className="flex justify-between">
+                                        <div></div>
+                                        <div>
+                                            <div className="flex justify-between">
+                                                <div className="mr-4">Tổng tiền:</div>
+                                                <div>{formatCurrency(totalPrice)}</div>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <div className="mr-4">Giảm:</div>
+                                                <div>xxxxx</div>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <div className="mr-4">Cần thanh toán:</div>
+                                                <div>{formatCurrency(totalPrice)}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <Divider dashed />
+                                    <div className="flex justify-center">
+                                        <Button danger size="large" onClick={createNewOrder}> HOÀN TẤT ĐẶT HÀNG </Button>
+                                    </div>
+                                </>
+                                :
+                                <>
+                                    <div className="flex justify-center flex-col items-center">
+                                        <div className="font-bold text-2xl mb-3">Không có sản phẩm trong giỏ hàng!</div>
+                                        <Button danger size="large" onClick={() => { setShowCreateOrder(false) }}> TIẾP TỤC MUA HÀNG </Button>
+                                    </div>
+                                </>
+                        }
+                    </div>
+                </Modal >
             </>
             :
             <Spin tip="Loading..." />

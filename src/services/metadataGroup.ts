@@ -1,6 +1,6 @@
 import { AxiosError, AxiosResponse } from "axios";
+import { IMetadataGroup } from "../types/metadatagroup";
 import api from "./api";
-import { IMetadata, IMetadataGroup } from "../types/metadatagroup";
 
 /**
  *

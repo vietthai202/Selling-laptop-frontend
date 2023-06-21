@@ -3,11 +3,17 @@ const routes = {
   REGISTER: "/register",
   FORGOT: "/losspass",
   LOGIN: "/login",
+  LOGIN_PHONE: "/login/phone",
   BLOG_CATEGORIES: "/blog-categories",
   BLOGS: "/blogs",
   BLOG_DETAIL: "/blog/:slug",
   PRODUCT_DETAIL: "/product/:slug",
   SEARCH: "/search/:name",
+
+  PROFILE: "/profile",
+  PROFILE_ORDER: "/profile/order",
+  PAYMENT: "/profile/payment/:orderid",
+  CART: "/cart",
 
   ADMIN: "/admin",
   ADMIN_LOGIN: "/admin/login",
