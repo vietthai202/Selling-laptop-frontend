@@ -26,10 +26,10 @@ const TabProfileOrder: React.FC = () => {
                             orderData && orderData.map((data: any) => (
                                 <li key={data.id} className="py-2 list-none">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-lg">Order #{data.id} - {data.createdAt}</span>
+                                        <span className="text-lg">Order #{data.id} - {data.totalPrice} VNĐ</span>
 
                                         {!data.transactions &&
-                                            <Button danger href={`/profile/payment/${data.id}`}>Pay</Button>
+                                            <Button danger target="_blank" href={`/profile/payment/${data.id}`}>Thanh toán</Button>
                                         }
                                     </div>
                                 </li>

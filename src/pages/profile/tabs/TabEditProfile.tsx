@@ -50,8 +50,16 @@ const TabEditProfile: React.FC = () => {
                 const token = localStorage.getItem("token") || "";
                 if (token) {
                     changePassword(token, values.oldpass, values.newpass)
-                        .then(() => message.success("Đổi mật khẩu thành công!"))
-                        .catch(() => message.error("Đổi mật khẩu thất bại!"));
+                        .then(() => {
+                            message.success("Đổi mật khẩu thành công!")
+                            form2.resetFields();
+                            setHideChangePassword();
+                        })
+                        .catch(() => {
+                            message.error("Đổi mật khẩu thất bại!")
+                            form2.resetFields();
+                            setHideChangePassword();
+                        });
                 }
             })
     }
