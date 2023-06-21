@@ -7,8 +7,8 @@ import localeData from "dayjs/plugin/localeData";
 import weekday from "dayjs/plugin/weekday";
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUserInfo, logout } from '../../../services/auth';
-import { createUser, deleteUser, getAllUser, updateUser } from '../../../services/user';
+import { logout } from '../../../services/auth';
+import { createUser, deleteUser, getAllUser, getUserInfo, updateUser } from '../../../services/user';
 import { IUser } from '../../../types/auth';
 import { phone, password } from '../../../utils/validate';
 
@@ -139,7 +139,6 @@ const Users: React.FC = () => {
                     newUser.dateOfBirth = values.dateOfBirth.$d;
                     newUser.password = values.password;
 
-                    console.log(newUser);
                     updateUser(newUser.username, newUser)
                         .then((data: string) => {
                             message.success("Cập nhật thành công!");

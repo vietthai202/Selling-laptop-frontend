@@ -13,11 +13,12 @@ import FAQs from "../../components/ProductFAQs";
 import formatCurrency from "../../utils/formatCurrency";
 import { createOrder } from "../../services/order";
 import { IOrder, IOrderItem } from "../../types/order";
-import { getUserInfo, isLoggedIn, logout } from "../../services/auth";
+import { isLoggedIn, logout } from "../../services/auth";
 import { IUser } from "../../types/auth";
 import { createOrderItems } from "../../services/oderItem";
 import { useDispatch } from "react-redux";
 import { setTotalCartItem } from "../../store/cartSlice";
+import { getUserInfo } from "../../services/user";
 
 const ProductDetail: React.FC = () => {
     const param: any = useParams();

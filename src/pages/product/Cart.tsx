@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { IProductCart } from "../../types/product";
 import formatCurrency from "../../utils/formatCurrency";
 import { Button, Divider, InputNumber, message } from "antd";
-import { getUserInfo, isLoggedIn, logout } from "../../services/auth";
+import { isLoggedIn, logout } from "../../services/auth";
 import { IUser } from "../../types/auth";
 import { IOrder, IOrderItem } from "../../types/order";
 import { createOrder } from "../../services/order";
@@ -10,6 +10,7 @@ import { createOrderItems } from "../../services/oderItem";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setTotalCartItem } from "../../store/cartSlice";
+import { getUserInfo } from "../../services/user";
 
 const Cart: React.FC = () => {
     const dispatch = useDispatch();

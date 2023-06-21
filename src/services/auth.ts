@@ -1,6 +1,6 @@
 import { message } from "antd";
 import { AxiosError, AxiosResponse } from "axios";
-import { IRegister, IUser } from "../types/auth";
+import { IRegister } from "../types/auth";
 import api from "./api";
 
 export function login(username: string, password: string): Promise<string> {
@@ -68,17 +68,6 @@ export function forgotPass(email: string): Promise<boolean> {
       const errorData: any = error.response?.data;
       message.error(errorData.message);
       throw new Error("Register failed");
-    });
-}
-
-export function getUserInfo(username: string): Promise<IUser> {
-  return api
-    .get(`/user/get/${username}`)
-    .then((response: AxiosResponse) => {
-      return response.data;
-    })
-    .catch((error: AxiosError) => {
-      throw new Error("Get failed");
     });
 }
 

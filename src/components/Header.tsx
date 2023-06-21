@@ -1,7 +1,7 @@
 import { Badge, Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getUserInfo, isLoggedIn, logout } from '../services/auth';
+import { isLoggedIn, logout } from '../services/auth';
 
 import CartIcon from '../assets/images/bag.png';
 import InfoIcon from '../assets/images/document.png';
@@ -17,6 +17,7 @@ import Search from './Search';
 import { useDispatch, useSelector } from 'react-redux';
 import { setTotalCartItem } from '../store/cartSlice';
 import { setUserInfo } from '../store/userSlice';
+import { getUserInfo } from '../services/user';
 
 export interface INewSearch {
     value: string;
@@ -43,7 +44,8 @@ const Header: React.FC = () => {
 
     const showProfile = () => {
         if (isLoggedIn()) {
-            setIsModalOpen(true);
+            // setIsModalOpen(true);
+            navigate("/profile");
         } else {
             navigate("/login");
         }
