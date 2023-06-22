@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import routes from '../../../routes';
 import {  deleteCo,getAllCo } from '../../../services/coupon';
 import { ICoupon } from '../../../types/coupon';
+
+
 const Coupon: React.FC = () => {
     const navigate = useNavigate();
 
@@ -96,6 +98,20 @@ const Coupon: React.FC = () => {
             <Button href={routes.ADMIN_COUPON_ADDNEW} className='mb-4' danger icon={<PlusOutlined />}>
                 Thêm danh mục
             </Button>
+
+           <form className="search-box"  >
+      <input
+        type="text"
+        placeholder="Search..."
+     
+      />
+      <button  type="submit" className="search-box__button mb-4">
+        Search
+      </button>
+    </form>
+  
+
+           
 
             <Table rowKey="id" columns={columns} dataSource={dataSource} />
 
