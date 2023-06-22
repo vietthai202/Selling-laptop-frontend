@@ -24,8 +24,10 @@ const Payment: React.FC = () => {
 
     const checkBank = () => {
         checkBankUpdate().then((data: string) => {
-            message.success(data);
+            message.success("Update thành công!");
             setUpdate(!update);
+        }).catch(() => {
+            message.error("Thất bại!");
         })
     }
 
