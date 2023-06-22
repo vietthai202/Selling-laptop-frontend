@@ -19,6 +19,7 @@ import { createOrderItems } from "../../services/oderItem";
 import { useDispatch } from "react-redux";
 import { setTotalCartItem } from "../../store/cartSlice";
 import { getUserInfo } from "../../services/user";
+import Item from "antd/es/list/Item";
 
 const ProductDetail: React.FC = () => {
     const param: any = useParams();
@@ -36,6 +37,10 @@ const ProductDetail: React.FC = () => {
     const [faqs, setFaqs] = useState<IFAQs[]>([]);
 
     const [totalPrice, setTotalPrice] = useState<number>(0);
+
+    const [discuntPrice, setDiscountPrice] = useState<number>(0);
+
+    const [oldPrice, setOldPrice] = useState<number>(0);
 
     const [listProductCart, setListProductCart] = useState<IProductCart[]>([]);
 
@@ -90,16 +95,34 @@ const ProductDetail: React.FC = () => {
                     })
                     dispatch(setTotalCartItem(count));
                     setListProductCart(lpc);
+                    updateOldPrice(lpc);
+                    updateDiscountPrice(lpc);
                     updateTotalPrice(lpc);
                     setShowCreateOrder(true);
                 });
         }
     }
 
+    const updateOldPrice = (list: IProductCart[]) => {
+        let oldPrice = 0;
+        list.map((item) => {
+            return oldPrice += item.price * item.quantity;
+        })
+        setOldPrice(oldPrice);
+    }
+
+    const updateDiscountPrice = (list: IProductCart[]) => {
+        let price = 0;
+        list.map((item) => {
+            return price += (item.price * item.discount / 100) * item.quantity;
+        })
+        setDiscountPrice(price);
+    }
+
     const updateTotalPrice = (list: IProductCart[]) => {
         let total = 0;
         list.map((item) => {
-            return total += item.price * item.quantity;
+            return total += item.price * item.quantity - (item.price * item.discount / 100 * item.quantity);
         })
         setTotalPrice(total);
     }
@@ -112,7 +135,9 @@ const ProductDetail: React.FC = () => {
         })
         dispatch(setTotalCartItem(count));
         setListProductCart(updatedProductList);
+        updateOldPrice(updatedProductList);
         updateTotalPrice(updatedProductList);
+        updateDiscountPrice(updatedProductList);
         localStorage.setItem("cart-item", JSON.stringify(updatedProductList));
     };
 
@@ -152,7 +177,9 @@ const ProductDetail: React.FC = () => {
         })
         dispatch(setTotalCartItem(count));
         setListProductCart(updatedProductList);
+        updateOldPrice(updatedProductList);
         updateTotalPrice(updatedProductList);
+        updateDiscountPrice(updatedProductList);
         localStorage.setItem("cart-item", JSON.stringify(updatedProductList));
     }
 
@@ -311,7 +338,8 @@ const ProductDetail: React.FC = () => {
                             </div>
                         </div>
                         <div className="md:flex-1 px-4 p-5">
-                            <div className="font-bold uppercase text-2xl text-[#CD1818]">{data.price && data.price.toLocaleString()} VNĐ</div>
+                            <div className="font-bold uppercase text-2xl text-[#CD1818]">Giá cũ: {data.price && data.price.toLocaleString()} VNĐ</div>
+                            <div className="font-bold uppercase text-2xl text-[#CD1818]">Giá khuyến mại: {(data.price - data.price * data.discount / 100).toLocaleString()} VNĐ</div>
                             <h2 className="mb-2 leading-tight tracking-tight font-bold text-gray-800 text-2xl md:text-3xl">{data.title}</h2>
                             <p className="text-gray-500">{data.metaTitle}</p>
                             <div className="flex py-4 space-x-4">
@@ -368,7 +396,7 @@ const ProductDetail: React.FC = () => {
                                         </div>
                                         <div className="flex space-x-2 items-center">
                                             <div>
-                                                <div className="text-red-500">{formatCurrency(item.price * item.quantity)}.</div>
+                                                <div className="text-red-500">{formatCurrency(item.price - item.price * item.discount / 100)}.</div>
                                                 {/* <div><del>{item.price} VNĐ</del></div> */}
                                             </div>
                                             <InputNumber max={4} value={item.quantity} onChange={(e) => { updateCart(item.id, e) }} />
@@ -388,11 +416,11 @@ const ProductDetail: React.FC = () => {
                                         <div>
                                             <div className="flex justify-between">
                                                 <div className="mr-4">Tổng tiền:</div>
-                                                <div>{formatCurrency(totalPrice)}</div>
+                                                <div>{formatCurrency(oldPrice)}</div>
                                             </div>
                                             <div className="flex justify-between">
                                                 <div className="mr-4">Giảm:</div>
-                                                <div>xxxxx</div>
+                                                <div>{formatCurrency(discuntPrice)}</div>
                                             </div>
                                             <div className="flex justify-between">
                                                 <div className="mr-4">Cần thanh toán:</div>
