@@ -128,7 +128,7 @@ const ListProduct: React.FC = () => {
             <section className="pt-2 pb-10 lg:pb-20">
                 <div className="container mx-auto">
                     <Carousel
-                        arrows={true}
+                        autoplay={true}
                     >
                         {
                             slides.map((data: ISlide) => (

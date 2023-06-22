@@ -23,3 +23,14 @@ export function getOrderByUserName(userName: string): Promise<any> {
       throw new Error("Fetch failed");
     });
 }
+
+export function getOrderById(id: number): Promise<IOrder> {
+  return api
+    .get(`/orders/getOrders/${id}`)
+    .then((response: AxiosResponse) => {
+      return response.data;
+    })
+    .catch((error: AxiosError) => {
+      throw new Error("Fetch failed");
+    });
+}

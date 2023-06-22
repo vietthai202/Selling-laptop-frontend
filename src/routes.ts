@@ -10,8 +10,9 @@ const routes = {
   PRODUCT_DETAIL: "/product/:slug",
   SEARCH: "/search/:name",
 
+  PROFILE: "/profile",
   PROFILE_ORDER: "/profile/order",
-  PAYMENT: "/profile/payment/:id",
+  PAYMENT: "/profile/payment/:orderid",
   CART: "/cart",
 
   ADMIN: "/admin",
