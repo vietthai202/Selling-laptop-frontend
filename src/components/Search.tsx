@@ -66,7 +66,7 @@ const Search: React.FC<MySelectProps> = ({ options, valueProps, setDataNSearch, 
     return (
         <Select
             showSearch
-            className='min-w-[350px] w-full'
+            className='md:min-w-[350px] w-full mr-5'
             size='large'
             placeholder="Laptop gaming ..."
             filterOption={false}

@@ -1,16 +1,24 @@
 import { AimOutlined, AppstoreOutlined, CommentOutlined, EyeOutlined, UserOutlined } from '@ant-design/icons';
 import { Tabs } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import TabProfileOrder from './tabs/TabProfileOrder';
 import TabAddressReceive from './tabs/TabAddressReceive';
 import TabReviewProduct from './tabs/TabReviewProduct';
 import TabResentlyViewed from './tabs/TabResentlyViewed';
 import TabEditProfile from './tabs/TabEditProfile';
+import { isLoggedIn } from '../../services/auth';
+import { useNavigate } from 'react-router-dom';
 
 const { TabPane } = Tabs;
 
 const Profile: React.FC = () => {
+    const navigate = useNavigate();
 
+    useEffect(() => {
+        if (!isLoggedIn()) {
+            navigate("/login");
+        }
+    }, [navigate]);
 
 
     return (

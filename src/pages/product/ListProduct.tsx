@@ -10,7 +10,6 @@ import { IBrand } from "../../types/brand";
 import { IProduct } from "../../types/product";
 import { IProductCategory } from "../../types/productCategory";
 import { ISlide } from "../../types/slide";
-import formatCurrency from "../../utils/formatCurrency";
 
 const ListProduct: React.FC = () => {
     const [laptops, setLaptops] = useState<IProduct[]>([]);
@@ -108,11 +107,14 @@ const ListProduct: React.FC = () => {
                     <div className="text-lg font-semibold text-gray-600">{data.title}</div>
                 </div>
                 <div className="py-4 px-4 flex flex-col justify-between align-bottom">
-                    <div className="flex justify-between items-center pb-2">
-                        <div className="text-base font-mono font-extrabold text-white bg-[#CD1818] px-2 rounded-full">{(data.price - data.price * data.discount / 100).toLocaleString()} VND</div>
-                    </div>
+                    {
+                        data.discount > 0 &&
+                        <div className="flex justify-between items-center pb-2">
+                            <div className="text-base font-mono font-extrabold text-white bg-[#CD1818] px-2 rounded-full">{(data.price - data.price * data.discount / 100).toLocaleString()} VND</div>
+                        </div>
+                    }
                     <div className="flex justify-between items-center">
-                        <div className="text-base font-mono font-extrabold text-white bg-[#CD1818] px-2 rounded-full text-decoration: line-through">{data.price && data.price.toLocaleString()} VNĐ</div>
+                        <div className={`text-base font-mono font-extrabold text-white bg-[#CD1818] px-2 rounded-full ${data.discount > 0 ? "text-decoration: line-through" : ""}`}>{data.price && data.price.toLocaleString()} VNĐ</div>
 
                         <Button danger className="rounded-full" size="small">MUA NGAY</Button>
                     </div>

@@ -59,6 +59,11 @@ const AdminLayout = () => {
                         icon: React.createElement(LaptopOutlined),
                         label: `Sản phẩm`,
                     },
+                    {
+                        key: "coupon",
+                        icon: React.createElement(LaptopOutlined),
+                        label: `Mã giảm giá`,
+                    },
                 ]
             case 'ROLE_BLOG':
                 return [
