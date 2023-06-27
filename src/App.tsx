@@ -35,6 +35,9 @@ import Profile from './pages/profile';
 import Payment from './pages/profile/Payment';
 import SearchPage from './pages/search';
 import routes from './routes';
+import Coupon from './pages/admin/coupon';
+import AddCoupon from './pages/admin/coupon/addCoupon';
+import EditCoupon from './pages/admin/coupon/editCoupon';
 
 function App() {
   return (
@@ -79,6 +82,10 @@ function App() {
           <Route path={routes.ADMIN_SLIDES} element={<Slides />} />
           <Route path={routes.ADMIN_SLIDES_ADDNEW} element={<AddSlide />} />
           <Route path={routes.ADMIN_SLIDES_EDIT} element={<EditSlide />} />
+
+          <Route path={routes.ADMIN_COUPON} element={<Coupon />} />
+          <Route path={routes.ADMIN_COUPON_ADDNEW} element={<AddCoupon />} />
+          <Route path={routes.ADMIN_COUPON_EDIT} element={<EditCoupon />} />
         </Route>
       </Routes>
     </div>
