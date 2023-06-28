@@ -1,12 +1,11 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Modal, Space, Spin, Table, message } from 'antd';
+import { Button, Input, Modal, Space, Spin, Table, message } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import routes from '../../../routes';
-import {  deleteCo,getAllCo } from '../../../services/coupon';
+import { deleteCo, getAllCo } from '../../../services/coupon';
 import { ICoupon } from '../../../types/coupon';
-
 
 const Coupon: React.FC = () => {
     const navigate = useNavigate();
@@ -18,6 +17,7 @@ const Coupon: React.FC = () => {
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
     const [couponDelete, setCouponDelete] = useState<string>("");
+    const [textSearch, setTextSearch] = useState<string>("");
 
     const buttonUpdate = (slug: string) => {
         navigate(`/admin/coupon/edit/${slug}`);
@@ -48,9 +48,9 @@ const Coupon: React.FC = () => {
         setIsDeleteOpen(false);
     }
 
-    const fetchData = async () => {
+    const fetchData = async (text: string) => {
         setLoading(true);
-        await getAllCo()
+        await getAllCo(text)
             .then((data: any) => {
                 console.log(data);
                 setDataSource(data);
@@ -59,8 +59,8 @@ const Coupon: React.FC = () => {
     }
 
     useEffect(() => {
-        fetchData();
-    }, [navigate, couponDelete])
+        fetchData(textSearch);
+    }, [navigate, couponDelete, textSearch])
 
     const columns: ColumnsType<ICoupon> = [
         {
@@ -78,7 +78,7 @@ const Coupon: React.FC = () => {
             dataIndex: 'discount',
             key: 'discount',
         },
-        
+
         {
             title: 'Action',
             key: 'action',
@@ -96,22 +96,10 @@ const Coupon: React.FC = () => {
     return (
         <Spin tip="Loading...." spinning={loading}>
             <Button href={routes.ADMIN_COUPON_ADDNEW} className='mb-4' danger icon={<PlusOutlined />}>
-                Thêm danh mục
+                Thêm coupon
             </Button>
 
-           <form className="search-box"  >
-      <input
-        type="text"
-        placeholder="Search..."
-     
-      />
-      <button  type="submit" className="search-box__button mb-4">
-        Search
-      </button>
-    </form>
-  
-
-           
+            <Input className='mb-4' value={textSearch} onChange={(e) => { setTextSearch(e.target.value) }} placeholder='Nhập tên' />
 
             <Table rowKey="id" columns={columns} dataSource={dataSource} />
 

@@ -1,4 +1,4 @@
-import { Button, Carousel, Checkbox, Col, InputNumber, Pagination, Row, Select, Slider } from "antd";
+import { Button, Carousel, Checkbox, Col, InputNumber, Pagination, Rate, Row, Select, Slider } from "antd";
 import type { CheckboxValueType } from "antd/es/checkbox/Group";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -105,6 +105,9 @@ const ListProduct: React.FC = () => {
                 <div className="py-4 px-4 flex flex-col justify-between align-bottom">
                     <div className="text-sm font-semibold text-[#CD1818]">Mã sản phẩm: {data.sku}</div>
                     <div className="text-lg font-semibold text-gray-600">{data.title}</div>
+                    {
+                        <Rate count={5} allowHalf defaultValue={4.5} />
+                    }
                 </div>
                 <div className="py-4 px-4 flex flex-col justify-between align-bottom">
                     {

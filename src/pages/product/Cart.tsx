@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
-import { IProductCart } from "../../types/product";
-import formatCurrency from "../../utils/formatCurrency";
 import { Button, Divider, InputNumber, message } from "antd";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { isLoggedIn, logout } from "../../services/auth";
+import { createOrderItems } from "../../services/oderItem";
+import { createOrder } from "../../services/order";
+import { getUserInfo } from "../../services/user";
+import { setTotalCartItem } from "../../store/cartSlice";
 import { IUser } from "../../types/auth";
 import { IOrder, IOrderItem } from "../../types/order";
-import { createOrder } from "../../services/order";
-import { createOrderItems } from "../../services/oderItem";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setTotalCartItem } from "../../store/cartSlice";
-import { getUserInfo } from "../../services/user";
+import { IProductCart } from "../../types/product";
+import formatCurrency from "../../utils/formatCurrency";
 
 const Cart: React.FC = () => {
     const dispatch = useDispatch();
@@ -134,6 +134,8 @@ const Cart: React.FC = () => {
                                 message.success("Đặt hàng thành công!");
                                 resetCart();
                                 handleHideCreateOrder();
+                            }).then(() => {
+                                navigate(`/payment/order/${order.id}`)
                             })
                         });
                     } else {

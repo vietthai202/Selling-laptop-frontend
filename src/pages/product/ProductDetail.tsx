@@ -1,4 +1,4 @@
-import { Button, Divider, InputNumber, Modal, Spin, message } from "antd";
+import { Button, Divider, Input, InputNumber, Modal, Spin, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ShowIcon from "../../components/ShowIcon";
@@ -7,19 +7,21 @@ import { getLaptopById, getProductBySlug } from "../../services/product";
 import { IMetadata, IMetadataGroup } from "../../types/metadatagroup";
 import { IProduct, IProductCart } from "../../types/product";
 
-import { getFAQByLaptopId } from "../../services/faq";
-import { IFAQs } from "../../types/faqs";
-import FAQs from "../../components/ProductFAQs";
-import formatCurrency from "../../utils/formatCurrency";
-import { createOrder } from "../../services/order";
-import { IOrder, IOrderItem } from "../../types/order";
-import { isLoggedIn, logout } from "../../services/auth";
-import { IUser } from "../../types/auth";
-import { createOrderItems } from "../../services/oderItem";
 import { useDispatch } from "react-redux";
-import { setTotalCartItem } from "../../store/cartSlice";
+import FAQs from "../../components/ProductFAQs";
+import { isLoggedIn, logout } from "../../services/auth";
+import { getFAQByLaptopId } from "../../services/faq";
+import { createOrderItems } from "../../services/oderItem";
+import { createOrder } from "../../services/order";
 import { getUserInfo } from "../../services/user";
-import Item from "antd/es/list/Item";
+import { setTotalCartItem } from "../../store/cartSlice";
+import { IUser } from "../../types/auth";
+import { IFAQs } from "../../types/faqs";
+import { IOrder, IOrderItem } from "../../types/order";
+import formatCurrency from "../../utils/formatCurrency";
+import { getCouponByName } from "../../services/coupon";
+import { error } from "console";
+import { ICoupon } from "../../types/coupon";
 
 const ProductDetail: React.FC = () => {
     const param: any = useParams();
@@ -43,6 +45,9 @@ const ProductDetail: React.FC = () => {
     const [oldPrice, setOldPrice] = useState<number>(0);
 
     const [listProductCart, setListProductCart] = useState<IProductCart[]>([]);
+
+    const [coupon, setCoupon] = useState<string>("");
+    const [discount, setDiscount] = useState<number>(0);
 
     const handleShowCreateOrder = () => {
         if (data) {
@@ -124,6 +129,10 @@ const ProductDetail: React.FC = () => {
         list.map((item) => {
             return total += item.price * item.quantity - (item.price * item.discount / 100 * item.quantity);
         })
+        console.log("DISS1", discount)
+        console.log("DISS2", total)
+        total = total - discount;
+        console.log("DISS3", total)
         setTotalPrice(total);
     }
 
@@ -230,6 +239,8 @@ const ProductDetail: React.FC = () => {
                                 resetCart();
                                 setShowCreateOrder(false);
                                 // redirect to payment
+                            }).then(() => {
+                                navigate(`/payment/order/${order.id}`)
                             })
                         });
                     } else {
@@ -252,6 +263,19 @@ const ProductDetail: React.FC = () => {
             .then((data: IMetadataGroup[]) => {
                 setDataDetail(data);
                 setShowDetail(true);
+            });
+    }
+
+    const applyCoupon = async () => {
+        console.log(coupon)
+        getCouponByName(coupon)
+            .then((data: ICoupon) => {
+                console.log(data);
+                setDiscount(data.discount);
+                removeProduct(0);
+            })
+            .catch((error) => {
+                console.log(error);
             });
     }
 
@@ -412,7 +436,12 @@ const ProductDetail: React.FC = () => {
                             listProductCart.length > 0 ?
                                 <>
                                     <div className="flex justify-between">
-                                        <div></div>
+                                        <div>
+                                            <div className="flex space-x-2">
+                                                <Input value={coupon} onChange={(e) => { setCoupon(e.target.value) }} />
+                                                <Button onClick={applyCoupon}>Áp dụng</Button>
+                                            </div>
+                                        </div>
                                         <div>
                                             <div className="flex justify-between">
                                                 <div className="mr-4">Tổng tiền:</div>
