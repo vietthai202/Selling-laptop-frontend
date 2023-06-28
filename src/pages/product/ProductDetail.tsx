@@ -10,18 +10,17 @@ import { IProduct, IProductCart } from "../../types/product";
 import { useDispatch } from "react-redux";
 import FAQs from "../../components/ProductFAQs";
 import { isLoggedIn, logout } from "../../services/auth";
+import { getCouponByName } from "../../services/coupon";
 import { getFAQByLaptopId } from "../../services/faq";
 import { createOrderItems } from "../../services/oderItem";
 import { createOrder } from "../../services/order";
 import { getUserInfo } from "../../services/user";
 import { setTotalCartItem } from "../../store/cartSlice";
 import { IUser } from "../../types/auth";
+import { ICoupon } from "../../types/coupon";
 import { IFAQs } from "../../types/faqs";
 import { IOrder, IOrderItem } from "../../types/order";
 import formatCurrency from "../../utils/formatCurrency";
-import { getCouponByName } from "../../services/coupon";
-import { error } from "console";
-import { ICoupon } from "../../types/coupon";
 
 const ProductDetail: React.FC = () => {
     const param: any = useParams();

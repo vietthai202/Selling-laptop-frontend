@@ -42,9 +42,12 @@ const routes = {
   ADMIN_SLIDES_ADDNEW: "/admin/slides/new",
   ADMIN_SLIDES_EDIT: "/admin/slides/edit/:slug",
 
-  ADMIN_COUPON:"/admin/coupon",
+  ADMIN_COUPON: "/admin/coupon",
   ADMIN_COUPON_ADDNEW: "/admin/coupon/new",
-  ADMIN_COUPON_EDIT:"/admin/coupon/edit/:id",
+  ADMIN_COUPON_EDIT: "/admin/coupon/edit/:id",
+
+  ADMIN_SETTING: "/admin/setting",
+  ADMIN_SETTING_MENU: "/admin/setting/menu",
 };
 
 export default routes;

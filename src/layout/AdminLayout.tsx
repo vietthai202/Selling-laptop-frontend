@@ -1,5 +1,5 @@
 
-import { BlockOutlined, FileTextOutlined, LaptopOutlined, SlackSquareOutlined, UserOutlined } from '@ant-design/icons';
+import { BlockOutlined, FileTextOutlined, LaptopOutlined, SlackSquareOutlined, UserOutlined, SettingOutlined } from '@ant-design/icons';
 import { Button, Layout, Menu, theme } from 'antd';
 import React from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -63,6 +63,11 @@ const AdminLayout = () => {
                         key: "coupon",
                         icon: React.createElement(LaptopOutlined),
                         label: `Mã giảm giá`,
+                    },
+                    {
+                        key: "setting",
+                        icon: React.createElement(SettingOutlined),
+                        label: `Cài đặt`,
                     },
                 ]
             case 'ROLE_BLOG':

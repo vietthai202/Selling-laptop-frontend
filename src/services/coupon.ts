@@ -1,6 +1,7 @@
 import { AxiosError, AxiosResponse } from "axios";
 import api from "./api";
 import { ICoupon } from "../types/coupon";
+
 export function createCO(coupon: ICoupon): Promise<string> {
   return api
     .post(`/coupon/create`, coupon)
@@ -11,6 +12,7 @@ export function createCO(coupon: ICoupon): Promise<string> {
       throw new Error("Fetch failed");
     });
 }
+
 export function updateCo(coupon: ICoupon): Promise<string> {
   return api
     .post(`/coupon/edit/${coupon.id}`, coupon)
@@ -21,6 +23,7 @@ export function updateCo(coupon: ICoupon): Promise<string> {
       throw new Error("Fetch failed");
     });
 }
+
 export function deleteCo(id: string): Promise<ICoupon[]> {
   return api
     .delete(`/coupon/delete/${id}`)

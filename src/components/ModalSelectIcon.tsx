@@ -12,6 +12,7 @@ const IconSelectionModal: React.FC<IconSelectionModalProps> = ({ visible, onClos
     const icons: IconItem[] = iconList;
 
     const handleIconSelect = (iconName: string) => {
+        onClose();
         onSelectIcon(iconName);
     };
 

@@ -1,23 +1,22 @@
 import { Badge, Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { isLoggedIn, logout } from '../services/auth';
 
-import CartIcon from '../assets/images/bag.png';
-import InfoIcon from '../assets/images/document.png';
-import Logo from '../assets/images/logo.png';
-import PhoneIcon from '../assets/images/telephone.png';
-import UserRedIcon from '../assets/images/user-profile-red.png';
-import UserIcon from '../assets/images/user-profile.png';
-import routes from '../routes';
-import { getAllProductCategories } from '../services/productCategory';
-import { IUser } from '../types/auth';
-import { IProductCategory } from '../types/productCategory';
-import Search from './Search';
 import { useDispatch, useSelector } from 'react-redux';
+import CartIcon from '../assets/images/bag.png';
+import Logo from '../assets/images/logo.png';
+import UserRedIcon from '../assets/images/user-profile-red.png';
+import { getAllMenu } from '../services/menu';
+import { getAllProductCategories } from '../services/productCategory';
+import { getUserInfo } from '../services/user';
 import { setTotalCartItem } from '../store/cartSlice';
 import { setUserInfo } from '../store/userSlice';
-import { getUserInfo } from '../services/user';
+import { IUser } from '../types/auth';
+import { IMenu } from '../types/menu';
+import { IProductCategory } from '../types/productCategory';
+import Search from './Search';
+import ShowIcon from './ShowIcon';
 
 export interface INewSearch {
     value: string;
@@ -42,14 +41,7 @@ const Header: React.FC = () => {
 
     const [dataNSearch, setDataNSearch] = useState<INewSearch[]>([]);
 
-    const showProfile = () => {
-        if (isLoggedIn()) {
-            // setIsModalOpen(true);
-            navigate("/profile");
-        } else {
-            navigate("/login");
-        }
-    };
+    const [menus, setMenus] = useState<IMenu[]>([]);
 
     const handleCanel = () => {
         setIsModalOpen(false);
@@ -66,6 +58,12 @@ const Header: React.FC = () => {
             .then((data: IProductCategory[]) => {
                 setCate(data);
             })
+    }, []);
+
+    useEffect(() => {
+        getAllMenu().then((data: IMenu[]) => {
+            setMenus(data);
+        })
     }, []);
 
     useEffect(() => {
@@ -104,24 +102,21 @@ const Header: React.FC = () => {
                     </div>
                 </div>
                 <div className='space-x-3 hidden sm:flex'>
-                    <a href='tel:0352918986' className='flex space-y-1 no-underline flex-col text-white items-center cursor-pointer'>
-                        <div><img className='w-6' src={PhoneIcon} alt="" /></div>
-                        <div className='font-bold whitespace-nowrap text-white'>0352918986</div>
-                    </a>
+                    {
+                        menus.map((data: IMenu) => (
+                            data.enable &&
+                            <a href={data.url} className='flex space-y-1 no-underline flex-col text-white items-center cursor-pointer'>
+                                <div>
+                                    {data.icon && <ShowIcon size={18} name={data.icon} />}
+                                </div>
+                                <div className='font-bold whitespace-nowrap text-white'>{data.name}</div>
+                            </a>
+                        ))
+                    }
 
-                    <Link to={routes.BLOGS} className='flex space-y-1 flex-col text-white items-center cursor-pointer no-underline'>
-                        <div><img className='w-6' src={InfoIcon} alt="" /></div>
-                        <div className='font-bold whitespace-nowrap'>Thông tin hay</div>
-                    </Link>
-
-                    <div onClick={showProfile} className='flex space-y-1 flex-col text-white items-center cursor-pointer no-underline'>
-                        <div><img className='w-6' src={UserIcon} alt="" /></div>
-                        <div className='font-bold whitespace-nowrap'>Tài khoản</div>
-                    </div>
-
-                    <Badge color='#faad14' count={totalCart}>
+                    <Badge className='flex items-center' color='#faad14' count={totalCart}>
                         <div className='flex space-y-1 flex-col text-white items-center cursor-pointer no-underline' onClick={() => navigate("/cart")}>
-                            <div><img className='w-6' src={CartIcon} alt="" /></div>
+                            <div><img className='w-6 h-6' src={CartIcon} alt="" /></div>
                             <div className='font-bold whitespace-nowrap'>Giỏ hàng</div>
                         </div>
                     </Badge>

@@ -38,6 +38,8 @@ import routes from './routes';
 import Coupon from './pages/admin/coupon';
 import AddCoupon from './pages/admin/coupon/addCoupon';
 import EditCoupon from './pages/admin/coupon/editCoupon';
+import SettingMenu from './pages/admin/settings/menu';
+import AdminSetting from './pages/admin/settings';
 
 function App() {
   return (
@@ -86,6 +88,9 @@ function App() {
           <Route path={routes.ADMIN_COUPON} element={<Coupon />} />
           <Route path={routes.ADMIN_COUPON_ADDNEW} element={<AddCoupon />} />
           <Route path={routes.ADMIN_COUPON_EDIT} element={<EditCoupon />} />
+
+          <Route path={routes.ADMIN_SETTING} element={<AdminSetting />} />
+          <Route path={routes.ADMIN_SETTING_MENU} element={<SettingMenu />} />
         </Route>
       </Routes>
     </div>
