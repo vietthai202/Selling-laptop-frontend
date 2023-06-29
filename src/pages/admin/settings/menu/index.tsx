@@ -1,18 +1,22 @@
-import { EditOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { BsArrowsMove } from "react-icons/bs";
 import { Button, Form, Input, Modal, Switch, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { DragDropContext, Draggable, DropResult, Droppable } from 'react-beautiful-dnd';
 import DeleteModal from '../../../../components/DeleteModal';
 import ShowIcon from "../../../../components/ShowIcon";
-import { deleteMenuById, getAllMenu, updateMenu, updatePositions } from "../../../../services/menu";
-import { IMenu } from "../../../../types/menu";
+import { createMenu, createSubMenu, deleteMenuById, deleteSubMenu, getAllMenu, updateMenu, updatePositions, updateSubMenu } from "../../../../services/menu";
+import { IMenu, ISubMenu } from "../../../../types/menu";
 import IconSelectionModal from '../../../../components/ModalSelectIcon';
 
 const SettingMenu: React.FC = () => {
 
     const [menus, setMenus] = useState<IMenu[]>([]);
     const [editData, setEditData] = useState<IMenu | null>(null);
+
+    const [editDataId, setEditDataId] = useState<string | null>(null);
+    const [typeShow, setTypeShow] = useState<string | null>(null);
+
     const [editDataName, setEditDataName] = useState<string>("");
     const [editDataUrl, setEditDataUrl] = useState<string>("");
     const [editDataIcon, setEditDataIcon] = useState<string>("");
@@ -21,12 +25,91 @@ const SettingMenu: React.FC = () => {
 
     const [change, setChange] = useState<boolean>(false);
 
+    const handleAddNewSubMenuClick = (data: IMenu) => {
+        setEditDataId(data.id.toString());
+    };
+
+    const handleAddNewSubMenuSubmit = () => {
+        console.log(editDataId, editDataName, editDataUrl, editDataIcon, editDataShow);
+        const newMenu: ISubMenu = {
+            id: 0,
+            name: editDataName,
+            url: editDataUrl,
+            sortOrder: 0,
+            icon: editDataIcon,
+            enable: editDataShow,
+            menu_id: Number(editDataId)
+        }
+
+        createSubMenu(newMenu).then(() => {
+            setChange(!change);
+            message.success("Tạo thành công!");
+        }).catch(() => {
+            message.error("Tạo thất bại!");
+        }).finally(() => {
+            onCancelAddNewSubMenu();
+        })
+    };
+
+    const handleAddNewMenuClick = () => {
+        setEditDataId("0");
+    };
+
+    const handleAddNewMenuSubmit = () => {
+        const newMenu: IMenu = {
+            id: 0,
+            name: editDataName,
+            url: editDataUrl,
+            sortOrder: 0,
+            icon: editDataIcon,
+            enable: editDataShow,
+            parent_id: 0,
+            uiSubmenus: []
+        }
+
+        createMenu(newMenu).then(() => {
+            setChange(!change);
+            message.success("Tạo thành công!");
+        }).catch(() => {
+            message.error("Tạo thất bại!");
+        }).finally(() => {
+            onCancelAddNewSubMenu();
+        })
+    };
+
+    const onCancelAddNewSubMenu = () => {
+        setEditDataId(null);
+        setEditDataName("");
+        setEditDataUrl("");
+        setEditDataIcon("");
+        setEditDataShow(false);
+        setTypeShow(null);
+    }
+
+    const onCancelEdit = () => {
+        setEditData(null);
+        setEditDataName("");
+        setEditDataUrl("");
+        setEditDataIcon("");
+        setEditDataShow(false);
+    }
+
     const handleEditMenuClick = (data: IMenu) => {
         setEditDataName(data.name);
         setEditDataUrl(data.url);
         setEditDataIcon(data.icon);
         setEditDataShow(data.enable);
         setEditData(data);
+    };
+
+    const handleEdiSubMenuClick = (data: ISubMenu) => {
+        setTypeShow("editsubmenu");
+        setEditDataId(data.id.toString());
+        setEditDataName(data.name);
+        setEditDataUrl(data.url);
+        setEditDataIcon(data.icon);
+        setEditDataShow(data.enable);
+        console.log(data);
     };
 
     const onShowHideChange = (checked: boolean) => {
@@ -52,11 +135,31 @@ const SettingMenu: React.FC = () => {
             }).catch(() => {
                 message.error("Cập nhật thất bại!");
             }).finally(() => {
-                setEditData(null);
+                onCancelEdit();
             })
         }
     };
 
+    const handleEditSubMenuSubmit = () => {
+        const newMenu: ISubMenu = {
+            id: Number(editDataId),
+            name: editDataName,
+            url: editDataUrl,
+            sortOrder: 0,
+            icon: editDataIcon,
+            enable: editDataShow,
+            menu_id: 0,
+        }
+
+        updateSubMenu(newMenu).then(() => {
+            setChange(!change);
+            message.success("Cập nhật thành công!");
+        }).catch(() => {
+            message.error("Cập nhật thất bại!");
+        }).finally(() => {
+            onCancelAddNewSubMenu();
+        })
+    };
 
     useEffect(() => {
         getAllMenu().then((data: IMenu[]) => {
@@ -105,6 +208,14 @@ const SettingMenu: React.FC = () => {
             }
 
             setMenus(updatedMenus);
+
+            updatePositions(updatedMenus)
+                .then(() => {
+                    message.success("Cập nhật thành công!");
+                })
+                .catch(() => {
+                    message.error("Cập nhật thất bại!");
+                });
         }
     };
 
@@ -118,12 +229,27 @@ const SettingMenu: React.FC = () => {
         });
     }
 
+    const deleteSubMenuById = (id: string, onSuccess: () => void) => {
+        deleteSubMenu(id).then(() => {
+            onSuccess();
+            setChange(!change);
+        }).catch(() => {
+            message.error("Xóa thất bại!");
+        });
+    }
+
     return (
 
         <>
-            <div className="mb-3 font-bold text-lg">
-                Kéo thả để sắp xếp menu
-            </div>
+            <div className='flex items-center space-x-4 mb-3'>
+                <div className="font-bold text-lg">
+                    Kéo thả để sắp xếp menu
+                </div>
+
+                <Button danger size='small' icon={<PlusOutlined />} onClick={handleAddNewMenuClick}>
+                    Thêm
+                </Button>
+            </div >
 
             <div className="flex mb-2">
                 <DragDropContext onDragEnd={handleDragMenu}>
@@ -167,10 +293,82 @@ const SettingMenu: React.FC = () => {
 
             <Modal
                 okButtonProps={{ style: { backgroundColor: '#CD1818' } }}
+                open={editDataId === "0"}
+                onOk={handleAddNewMenuSubmit}
+                okText={'Thêm menu'}
+                onCancel={onCancelAddNewSubMenu}
+            >
+                {editDataId && (
+                    <div className='flex flex-col'>
+                        <h3> Thêm mới menu</h3>
+                        <Form.Item
+                            label="Name"
+                        >
+                            <Input value={editDataName} placeholder='Blog tin tức...' onChange={(e) => { setEditDataName(e.target.value) }} />
+                        </Form.Item>
+                        <Form.Item
+                            label="URL"
+                        >
+                            <Input value={editDataUrl} placeholder='https://google.com or /blogs' onChange={(e) => { setEditDataUrl(e.target.value) }} />
+                        </Form.Item>
+                        <Form.Item
+                            label="Icon"
+                        >
+                            <div className='flex items-center space-x-2'>
+                                <ShowIcon name={editDataIcon || "FcAddImage"} size={34} onClick={() => { setShowIconOnEdit(true) }} />
+                                <IconSelectionModal visible={showIconOnEdit} onClose={() => { setShowIconOnEdit(false) }} onSelectIcon={setEditDataIcon} />
+                            </div>
+                        </Form.Item>
+                        <div>
+                            <Switch checkedChildren="Hiện" unCheckedChildren="Ẩn" defaultChecked={editDataShow} onChange={onShowHideChange} />
+                        </div>
+
+                    </div>
+                )}
+            </Modal >
+
+            <Modal
+                okButtonProps={{ style: { backgroundColor: '#CD1818' } }}
+                open={editDataId !== null && editDataId !== "0" && typeShow !== "editsubmenu"}
+                onOk={handleAddNewSubMenuSubmit}
+                okText={'Thêm submenu'}
+                onCancel={onCancelAddNewSubMenu}
+            >
+                {editDataId && (
+                    <div className='flex flex-col'>
+                        <h3> Thêm mới submenu</h3>
+                        <Form.Item
+                            label="Name"
+                        >
+                            <Input value={editDataName} placeholder='Blog tin tức...' onChange={(e) => { setEditDataName(e.target.value) }} />
+                        </Form.Item>
+                        <Form.Item
+                            label="URL"
+                        >
+                            <Input value={editDataUrl} placeholder='https://google.com or /blogs' onChange={(e) => { setEditDataUrl(e.target.value) }} />
+                        </Form.Item>
+                        <Form.Item
+                            label="Icon"
+                        >
+                            <div className='flex items-center space-x-2'>
+                                <ShowIcon name={editDataIcon || "FcAddImage"} size={34} onClick={() => { setShowIconOnEdit(true) }} />
+                                <IconSelectionModal visible={showIconOnEdit} onClose={() => { setShowIconOnEdit(false) }} onSelectIcon={setEditDataIcon} />
+                            </div>
+                        </Form.Item>
+                        <div>
+                            <Switch checkedChildren="Hiện" unCheckedChildren="Ẩn" defaultChecked={editDataShow} onChange={onShowHideChange} />
+                        </div>
+
+                    </div>
+                )}
+            </Modal >
+
+            <Modal
+                okButtonProps={{ style: { backgroundColor: '#CD1818' } }}
                 open={editData !== null}
                 onOk={handleEditMenuSubmit}
                 okText={'Cập nhật'}
-                onCancel={() => setEditData(null)}
+                onCancel={onCancelEdit}
             >
                 {editData && (
                     <div className='flex flex-col'>
@@ -199,7 +397,40 @@ const SettingMenu: React.FC = () => {
 
                     </div>
                 )}
-            </Modal >
+            </Modal>
+
+            <Modal
+                okButtonProps={{ style: { backgroundColor: '#CD1818' } }}
+                open={typeShow !== null && typeShow === "editsubmenu"}
+                onOk={handleEditSubMenuSubmit}
+                okText={'Cập nhật submenu'}
+                onCancel={onCancelAddNewSubMenu}
+            >
+                <div className='flex flex-col'>
+                    <h3> Sửa sub menu #{editDataId}</h3>
+                    <Form.Item
+                        label="Name"
+                    >
+                        <Input value={editDataName} placeholder='Blog tin tức...' onChange={(e) => { setEditDataName(e.target.value) }} />
+                    </Form.Item>
+                    <Form.Item
+                        label="URL"
+                    >
+                        <Input value={editDataUrl} placeholder='https://google.com or /blogs' onChange={(e) => { setEditDataUrl(e.target.value) }} />
+                    </Form.Item>
+                    <Form.Item
+                        label="Icon"
+                    >
+                        <div className='flex items-center space-x-2'>
+                            <ShowIcon name={editDataIcon || "FcAddImage"} size={34} onClick={() => { setShowIconOnEdit(true) }} />
+                            <IconSelectionModal visible={showIconOnEdit} onClose={() => { setShowIconOnEdit(false) }} onSelectIcon={setEditDataIcon} />
+                        </div>
+                    </Form.Item>
+                    <div>
+                        <Switch checkedChildren="Hiện" unCheckedChildren="Ẩn" defaultChecked={editDataShow} onChange={onShowHideChange} />
+                    </div>
+                </div>
+            </Modal>
 
             <div className="flex">
                 <DragDropContext onDragEnd={handleDragSubMenu}>
@@ -209,7 +440,14 @@ const SettingMenu: React.FC = () => {
                             className="p-4 border border-gray-300 rounded shadow mr-4"
                             style={{ width: '250px' }}
                         >
-                            <h3 className="mb-4">{menu.name}</h3>
+                            <div className='flex justify-between items-center mb-4'>
+                                <h3 className="">{menu.name}</h3>
+                                <div className=''>
+                                    <Button danger size='small' icon={<PlusOutlined />} onClick={() => { handleAddNewSubMenuClick(menu) }}>
+                                        Thêm
+                                    </Button>
+                                </div>
+                            </div>
                             <Droppable droppableId={menu.id.toString()} type="submenu">
                                 {(provided) => (
                                     <div
@@ -224,13 +462,17 @@ const SettingMenu: React.FC = () => {
                                                 index={submenuIndex}
                                             >
                                                 {(provided, snapshot) => (
-                                                    <div
-                                                        ref={provided.innerRef}
-                                                        {...provided.draggableProps}
-                                                        {...provided.dragHandleProps}
-                                                        className={`bg-white border border-gray-300 rounded p-2 mb-2 ${snapshot.isDragging ? 'opacity-50' : ''}`}
-                                                    >
-                                                        {submenu.name}
+                                                    <div className='flex items-center space-x-2'>
+                                                        <div
+                                                            ref={provided.innerRef}
+                                                            {...provided.draggableProps}
+                                                            {...provided.dragHandleProps}
+                                                            className={`bg-white border border-gray-300 rounded p-2 mb-2 ${snapshot.isDragging ? 'opacity-50' : ''}`}
+                                                        >
+                                                            {submenu.name}
+                                                        </div>
+                                                        <Button danger icon={<EditOutlined />} size='small' onClick={() => handleEdiSubMenuClick(submenu)}></Button>
+                                                        <DeleteModal id={submenu.id.toString()} onDelete={deleteSubMenuById} onSuccess={() => { message.success("Xóa thành công!"); }} />
                                                     </div>
                                                 )}
                                             </Draggable>

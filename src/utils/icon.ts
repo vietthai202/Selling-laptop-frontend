@@ -1,5 +1,15 @@
 import { IconType } from "react-icons";
-import { BsFillCpuFill, BsFillDeviceSsdFill, BsNvidia, BsFillTelephoneOutboundFill, BsFillPostcardFill, BsPersonVcardFill, BsClipboardDataFill, BsCloudHazeFill } from "react-icons/bs";
+import {
+  BsFillCpuFill,
+  BsFillDeviceSsdFill,
+  BsNvidia,
+  BsFillTelephoneOutboundFill,
+  BsFillPostcardFill,
+  BsPersonVcardFill,
+  BsClipboardDataFill,
+  BsCloudHazeFill,
+  BsFillEnvelopeFill,
+} from "react-icons/bs";
 import { CgSmartphoneRam } from "react-icons/cg";
 import { MdScreenshotMonitor, MdStorage } from "react-icons/md";
 import { FcApproval, FcOvertime, FcInTransit, FcSettings, FcSynchronize, FcMoneyTransfer, FcGallery, FcStart, FcAddImage } from "react-icons/fc";
@@ -21,6 +31,7 @@ export const iconList: IconItem[] = [
   { name: "BsPersonVcardFill", icon: BsPersonVcardFill },
   { name: "BsClipboardDataFill", icon: BsClipboardDataFill },
   { name: "BsCloudHazeFill", icon: BsCloudHazeFill },
+  { name: "BsFillEnvelopeFill", icon: BsFillEnvelopeFill },
   // icon có màu
   { name: "FcApproval", icon: FcApproval },
   { name: "FcOvertime", icon: FcOvertime },

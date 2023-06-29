@@ -29,6 +29,16 @@ const Header: React.FC = () => {
 
     const dispatch = useDispatch();
 
+    const [hoveredMenu, setHoveredMenu] = useState('');
+
+    const handleMouseEnter = (menuId: string) => {
+        setHoveredMenu(menuId);
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredMenu('');
+    };
+
     const totalCart: number = useSelector((state: any) => state.cart.totalCartItem);
 
     const [user, setUser] = useState<IUser | null>(null);
@@ -105,12 +115,37 @@ const Header: React.FC = () => {
                     {
                         menus.map((data: IMenu) => (
                             data.enable &&
-                            <a href={data.url} className='flex space-y-1 no-underline flex-col text-white items-center cursor-pointer'>
-                                <div>
-                                    {data.icon && <ShowIcon size={18} name={data.icon} />}
-                                </div>
-                                <div className='font-bold whitespace-nowrap text-white'>{data.name}</div>
-                            </a>
+                            <div
+                                key={data.id}
+                                className="relative"
+                                onMouseEnter={() => handleMouseEnter(data.id.toString())}
+                                onMouseLeave={handleMouseLeave}
+                            >
+
+                                <a href={data.url} className='flex space-y-1 no-underline flex-col text-white items-center cursor-pointer'>
+                                    <div>
+                                        {data.icon && <ShowIcon size={18} name={data.icon} />}
+                                    </div>
+                                    <div className='font-bold whitespace-nowrap text-white'>{data.name}</div>
+                                </a>
+
+                                {data.uiSubmenus && data.uiSubmenus.length > 0 && hoveredMenu === data.id.toString() && (
+                                    <div className="absolute top-full right-0 bg-gray-200 rounded-md">
+                                        {data.uiSubmenus.map((submenu) => (
+                                            submenu.enable &&
+                                            <a
+                                                key={submenu.id}
+                                                href={submenu.url}
+                                                style={{ whiteSpace: 'nowrap' }}
+                                                className="block px-8 py-2 text-gray-800 hover:bg-gray-300 hover:rounded-md no-underline"
+                                            >
+                                                {submenu.name}
+                                            </a>
+                                        ))}
+                                    </div>
+                                )}
+
+                            </div>
                         ))
                     }
 

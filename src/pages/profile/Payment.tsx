@@ -32,9 +32,11 @@ const Payment: React.FC = () => {
     }
 
     useEffect(() => {
+        console.log("ORDER1")
         if (username && param) {
             getOrderByUserName(username)
                 .then((data) => {
+                    console.log("ORDER", data)
                     const checkExistId = data.some((item: any) => Number(item.id) === Number(param.orderid));
                     if (checkExistId) {
                         getOrderById(param.orderid).then((data: IOrder) => {

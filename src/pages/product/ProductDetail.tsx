@@ -48,6 +48,8 @@ const ProductDetail: React.FC = () => {
     const [coupon, setCoupon] = useState<string>("");
     const [discount, setDiscount] = useState<number>(0);
 
+    const [loading, setLoading] = useState<boolean>(false);
+
     const handleShowCreateOrder = () => {
         if (data) {
             const existingItem = listProductCart.find(item => item.id === data.id);
@@ -239,7 +241,7 @@ const ProductDetail: React.FC = () => {
                                 setShowCreateOrder(false);
                                 // redirect to payment
                             }).then(() => {
-                                navigate(`/payment/order/${order.id}`)
+                                navigate(`/profile/payment/${order.id}`)
                             })
                         });
                     } else {
@@ -265,18 +267,22 @@ const ProductDetail: React.FC = () => {
             });
     }
 
-    const applyCoupon = async () => {
-        console.log(coupon)
-        getCouponByName(coupon)
-            .then((data: ICoupon) => {
-                console.log(data);
-                setDiscount(data.discount);
-                removeProduct(0);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
+    // const applyCoupon = async () => {
+    //     console.log("123", coupon);
+    //     setLoading(true);
+
+    //     try {
+    //         const [data] = await Promise.all([
+    //             getCouponByName(coupon)
+    //         ]);
+
+    //         setDiscount(data.discount);
+    //     } catch (error) {
+    //         console.log(error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // }
 
     useEffect(() => {
         if (param) {
@@ -407,69 +413,71 @@ const ProductDetail: React.FC = () => {
                     width={800}
                     footer={null}
                 >
-                    <div className="p-5">
-                        {
-                            listProductCart && listProductCart.map((item) => (
-                                <div key={item.id}>
-                                    <div className="my-1 flex items-center justify-between">
-                                        <div className="flex space-x-2 items-center">
-                                            {item.id} -
-                                            <div><img width={50} height={50} src={item.image || ""} alt="" /></div>
-                                            <div>{item.title}</div>
-                                        </div>
-                                        <div className="flex space-x-2 items-center">
-                                            <div>
-                                                <div className="text-red-500">{formatCurrency(item.price - item.price * item.discount / 100)}.</div>
-                                                {/* <div><del>{item.price} VNĐ</del></div> */}
+                    <Spin tip="Loading" spinning={loading}>
+                        <div className="p-5">
+                            {
+                                listProductCart && listProductCart.map((item) => (
+                                    <div key={item.id}>
+                                        <div className="my-1 flex items-center justify-between">
+                                            <div className="flex space-x-2 items-center">
+                                                {item.id} -
+                                                <div><img width={50} height={50} src={item.image || ""} alt="" /></div>
+                                                <div>{item.title}</div>
                                             </div>
-                                            <InputNumber max={4} value={item.quantity} onChange={(e) => { updateCart(item.id, e) }} />
-                                            <Button danger onClick={() => { removeProduct(item.id) }} >Xóa</Button>
-                                        </div>
+                                            <div className="flex space-x-2 items-center">
+                                                <div>
+                                                    <div className="text-red-500">{formatCurrency(item.price - item.price * item.discount / 100)}.</div>
+                                                    {/* <div><del>{item.price} VNĐ</del></div> */}
+                                                </div>
+                                                <InputNumber max={4} value={item.quantity} onChange={(e) => { updateCart(item.id, e) }} />
+                                                <Button danger onClick={() => { removeProduct(item.id) }} >Xóa</Button>
+                                            </div>
 
+                                        </div>
+                                        <Divider dashed />
                                     </div>
-                                    <Divider dashed />
-                                </div>
-                            ))
-                        }
-                        {
-                            listProductCart.length > 0 ?
-                                <>
-                                    <div className="flex justify-between">
-                                        <div>
-                                            <div className="flex space-x-2">
-                                                <Input value={coupon} onChange={(e) => { setCoupon(e.target.value) }} />
-                                                <Button onClick={applyCoupon}>Áp dụng</Button>
+                                ))
+                            }
+                            {
+                                listProductCart.length > 0 ?
+                                    <>
+                                        <div className="flex justify-between">
+                                            <div>
+                                                {/* <div className="flex space-x-2">
+                                                    <Input value={coupon} onChange={(e) => { setCoupon(e.target.value) }} />
+                                                    <Button onClick={applyCoupon}>Áp dụng</Button>
+                                                </div> */}
+                                            </div>
+                                            <div>
+                                                <div className="flex justify-between">
+                                                    <div className="mr-4">Tổng tiền:</div>
+                                                    <div>{formatCurrency(oldPrice)}</div>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                    <div className="mr-4">Giảm:</div>
+                                                    <div>{formatCurrency(discuntPrice)}</div>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                    <div className="mr-4">Cần thanh toán:</div>
+                                                    <div>{formatCurrency(totalPrice)}</div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div>
-                                            <div className="flex justify-between">
-                                                <div className="mr-4">Tổng tiền:</div>
-                                                <div>{formatCurrency(oldPrice)}</div>
-                                            </div>
-                                            <div className="flex justify-between">
-                                                <div className="mr-4">Giảm:</div>
-                                                <div>{formatCurrency(discuntPrice)}</div>
-                                            </div>
-                                            <div className="flex justify-between">
-                                                <div className="mr-4">Cần thanh toán:</div>
-                                                <div>{formatCurrency(totalPrice)}</div>
-                                            </div>
+                                        <Divider dashed />
+                                        <div className="flex justify-center">
+                                            <Button danger size="large" onClick={createNewOrder}> HOÀN TẤT ĐẶT HÀNG </Button>
                                         </div>
-                                    </div>
-                                    <Divider dashed />
-                                    <div className="flex justify-center">
-                                        <Button danger size="large" onClick={createNewOrder}> HOÀN TẤT ĐẶT HÀNG </Button>
-                                    </div>
-                                </>
-                                :
-                                <>
-                                    <div className="flex justify-center flex-col items-center">
-                                        <div className="font-bold text-2xl mb-3">Không có sản phẩm trong giỏ hàng!</div>
-                                        <Button danger size="large" onClick={() => { setShowCreateOrder(false) }}> TIẾP TỤC MUA HÀNG </Button>
-                                    </div>
-                                </>
-                        }
-                    </div>
+                                    </>
+                                    :
+                                    <>
+                                        <div className="flex justify-center flex-col items-center">
+                                            <div className="font-bold text-2xl mb-3">Không có sản phẩm trong giỏ hàng!</div>
+                                            <Button danger size="large" onClick={() => { setShowCreateOrder(false) }}> TIẾP TỤC MUA HÀNG </Button>
+                                        </div>
+                                    </>
+                            }
+                        </div>
+                    </Spin>
                 </Modal >
             </>
             :
