@@ -45,11 +45,6 @@ const AdminLayout = () => {
                         label: `Thương hiệu`,
                     },
                     {
-                        key: "slides",
-                        icon: React.createElement(SlackSquareOutlined),
-                        label: `Slide Show`,
-                    },
-                    {
                         key: "product-categories",
                         icon: React.createElement(BlockOutlined),
                         label: `Danh mục sản phẩm`,

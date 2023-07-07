@@ -7,7 +7,8 @@ const AdminSetting: React.FC = () => {
     const navigate = useNavigate();
     return (
         <div className="flex space-x-2">
-            <Button danger onClick={() => { navigate(routes.ADMIN_SETTING_MENU) }}>Menu</Button>
+            <Button danger onClick={() => { navigate(routes.ADMIN_SETTING_MENU) }}>MENU</Button>
+            <Button danger onClick={() => { navigate(routes.ADMIN_SLIDES) }}>SLIDE</Button>
         </div>
     )
 }

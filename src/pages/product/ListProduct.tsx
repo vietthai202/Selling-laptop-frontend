@@ -144,7 +144,7 @@ const ListProduct: React.FC = () => {
                             slides.map((data: ISlide) => (
 
                                 <div key={data.id} className="cursor-pointer" style={contentStyle} onClick={() => { window.location.href = `${data.url}`; }}>
-                                    <img width="100%" src={data.image || ""} alt="" />
+                                    <img width="100%" src={data.imageUrl || ""} alt="" />
                                 </div>
 
                             ))
