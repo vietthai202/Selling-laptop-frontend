@@ -9,10 +9,11 @@ import { createMenu, createSubMenu, deleteMenuById, deleteSubMenu, getAllMenu, u
 import { IMenu, ISubMenu } from "../../../../types/menu";
 import IconSelectionModal from '../../../../components/ModalSelectIcon';
 
-const SettingMenu: React.FC = () => {
+const SettingFooter: React.FC = () => {
 
     const [menus, setMenus] = useState<IMenu[]>([]);
     const [editData, setEditData] = useState<IMenu | null>(null);
+    const [totalMenu, setTotalMenu] = useState<number>(4);
 
     const [editDataId, setEditDataId] = useState<string | null>(null);
     const [typeShow, setTypeShow] = useState<string | null>(null);
@@ -20,7 +21,7 @@ const SettingMenu: React.FC = () => {
     const [editDataName, setEditDataName] = useState<string>("");
     const [editDataUrl, setEditDataUrl] = useState<string>("");
     const [editDataIcon, setEditDataIcon] = useState<string>("");
-    const [editDataShow, setEditDataShow] = useState<boolean>(false);
+    const [editDataShow, setEditDataShow] = useState<boolean>(true);
     const [showIconOnEdit, setShowIconOnEdit] = useState<boolean>(false);
 
     const [change, setChange] = useState<boolean>(false);
@@ -65,7 +66,7 @@ const SettingMenu: React.FC = () => {
             enable: editDataShow,
             parent_id: 0,
             uiSubmenus: [],
-            menuType: "HEADER"
+            menuType: "FOOTER"
         }
 
         createMenu(newMenu).then(() => {
@@ -104,13 +105,13 @@ const SettingMenu: React.FC = () => {
     };
 
     const handleEdiSubMenuClick = (data: ISubMenu) => {
-        setTypeShow("editsubmenu");
         setEditDataId(data.id.toString());
         setEditDataName(data.name);
         setEditDataUrl(data.url);
         setEditDataIcon(data.icon);
         setEditDataShow(data.enable);
         console.log(data);
+        setTypeShow("editsubmenu");
     };
 
     const onShowHideChange = (checked: boolean) => {
@@ -163,9 +164,10 @@ const SettingMenu: React.FC = () => {
     };
 
     useEffect(() => {
-        getAllMenu("HEADER").then((data: IMenu[]) => {
+        getAllMenu("FOOTER").then((data: IMenu[]) => {
             if (data.length > 0) {
                 setMenus(data);
+                setTotalMenu(data.length);
             }
         })
     }, [change]);
@@ -248,10 +250,12 @@ const SettingMenu: React.FC = () => {
                 <div className="font-bold text-lg">
                     Kéo thả để sắp xếp menu
                 </div>
-
-                <Button danger size='small' icon={<PlusOutlined />} onClick={handleAddNewMenuClick}>
-                    Thêm
-                </Button>
+                {
+                    totalMenu < 4 &&
+                    <Button danger size='small' icon={<PlusOutlined />} onClick={handleAddNewMenuClick}>
+                        Thêm
+                    </Button>
+                }
             </div >
 
             <div className="flex mb-2">
@@ -303,11 +307,11 @@ const SettingMenu: React.FC = () => {
             >
                 {editDataId && (
                     <div className='flex flex-col'>
-                        <h3> Thêm mới menu</h3>
+                        <h3> Thêm mới footer headline</h3>
                         <Form.Item
                             label="Name"
                         >
-                            <Input value={editDataName} placeholder='Blog tin tức...' onChange={(e) => { setEditDataName(e.target.value) }} />
+                            <Input value={editDataName} placeholder='Dịch vụ' onChange={(e) => { setEditDataName(e.target.value) }} />
                         </Form.Item>
                         <Form.Item
                             label="URL"
@@ -435,16 +439,16 @@ const SettingMenu: React.FC = () => {
                 </div>
             </Modal>
 
-            <div className="flex">
+            <div className="grid grid-cols-1 xl:grid-cols-1 md:grid-cols-4 gap-5">
                 <DragDropContext onDragEnd={handleDragSubMenu}>
                     {menus.map((menu) => (
                         <div
                             key={menu.id.toString()}
-                            className="p-4 border border-gray-300 rounded shadow mr-4"
-                            style={{ width: '250px' }}
+                            className="p-4 border border-gray-300 rounded shadow mr-4 w-fit max-w-[400px]"
                         >
                             <div className='flex justify-between items-center mb-4'>
                                 <h3 className="">{menu.name}</h3>
+
                                 <div className=''>
                                     <Button danger size='small' icon={<PlusOutlined />} onClick={() => { handleAddNewSubMenuClick(menu) }}>
                                         Thêm
@@ -493,4 +497,4 @@ const SettingMenu: React.FC = () => {
     )
 }
 
-export default SettingMenu;
+export default SettingFooter;

@@ -44,6 +44,7 @@ const routes = {
 
   ADMIN_SETTING: "/admin/setting",
   ADMIN_SETTING_MENU: "/admin/setting/menu",
+  ADMIN_SETTING_FOOTER: "/admin/setting/footer",
   ADMIN_SLIDES: "/admin/setting/slides",
   ADMIN_SLIDES_ADDNEW: "/admin/setting/slides/new",
   ADMIN_SLIDES_EDIT: "/admin/setting/slides/edit/:slug",

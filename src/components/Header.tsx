@@ -60,21 +60,9 @@ const Header: React.FC = () => {
     };
 
     useEffect(() => {
-        getAllMenu().then((data: IMenu[]) => {
+        getAllMenu("HEADER").then((data: IMenu[]) => {
             if (data.length > 0) {
                 setMenus(data);
-            } else {
-                const menuExample: IMenu = {
-                    id: 0,
-                    name: '',
-                    url: '',
-                    sortOrder: 0,
-                    icon: '',
-                    enable: false,
-                    parent_id: 0,
-                    uiSubmenus: []
-                }
-                setMenus([menuExample]);
             }
         })
     }, []);

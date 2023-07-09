@@ -40,6 +40,7 @@ import AddCoupon from './pages/admin/coupon/addCoupon';
 import EditCoupon from './pages/admin/coupon/editCoupon';
 import SettingMenu from './pages/admin/settings/menu';
 import AdminSetting from './pages/admin/settings';
+import SettingFooter from './pages/admin/settings/footer';
 
 function App() {
   return (
@@ -91,6 +92,7 @@ function App() {
 
           <Route path={routes.ADMIN_SETTING} element={<AdminSetting />} />
           <Route path={routes.ADMIN_SETTING_MENU} element={<SettingMenu />} />
+          <Route path={routes.ADMIN_SETTING_FOOTER} element={<SettingFooter />} />
         </Route>
       </Routes>
     </div>
