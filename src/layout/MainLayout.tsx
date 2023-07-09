@@ -32,19 +32,19 @@ const MainLayout = () => {
                 <div className="grid-1 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
                     {
                         menus.map((menu: IMenu) => (
-                            <>
+                            <div key={menu.id}>
                                 {
                                     menu.enable &&
-                                    <div key={menu.id} className="">
+                                    <>
                                         <div className="mb-4 flex justify-center items-center font-semibold uppercase md:justify-start">
                                             {menu.name}
                                         </div>
                                         {
                                             menu.uiSubmenus.map((sub: ISubMenu) => (
-                                                <>
+                                                <div key={sub.id}>
                                                     {
                                                         sub.enable &&
-                                                        <div key={sub.id} className="mb-4 flex space-x-2">
+                                                        <div className="mb-4 flex space-x-2">
                                                             {sub.icon && sub.icon !== "FcAddImage" && <ShowIcon size={18} name={sub.icon} />}
                                                             {
                                                                 sub.url ?
@@ -54,12 +54,12 @@ const MainLayout = () => {
                                                             }
                                                         </div>
                                                     }
-                                                </>
+                                                </div>
                                             ))
                                         }
-                                    </div>
+                                    </>
                                 }
-                            </>
+                            </div>
                         ))
                     }
                 </div>
