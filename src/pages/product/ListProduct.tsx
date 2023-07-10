@@ -10,6 +10,9 @@ import { IBrand } from "../../types/brand";
 import { IProduct } from "../../types/product";
 import { IProductCategory } from "../../types/productCategory";
 import { ISlide } from "../../types/slide";
+import formatCurrency from "../../utils/formatCurrency";
+import { IMetadata } from "../../types/metadatagroup";
+import ShowIcon from "../../components/ShowIcon";
 
 const ListProduct: React.FC = () => {
     const [laptops, setLaptops] = useState<IProduct[]>([]);
@@ -98,28 +101,34 @@ const ListProduct: React.FC = () => {
 
     const renderItems = () => {
         return laptops.map((data: IProduct) => (
-            <Link to={`/product/${data.slug}`} key={data.id} className="flex flex-col justify-between rounded-md overflow-hidden shadow-lg hover:scale-105 transition duration-500 cursor-pointer no-underline bg-white">
-                <div>
-                    <img className="w-full h-48" src={data.image || "https://upload.wikimedia.org/wikipedia/commons/7/75/No_image_available.png"} alt="" />
+            <Link to={`/product/${data.slug}`} key={data.id} className="flex flex-col justify-start rounded-lg overflow-hidden shadow-lg hover:scale-105 transition duration-500 bg-white no-underline">
+                <div className="relative">
+                    <img className="absolute top-0 left-0 bottom-0 right-0 w-full h-48" src="https://images.fpt.shop/unsafe/fit-in/270x210/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2023/7/1/638237980035622461_frame-cate-270x210.png" alt="" />
+                    <img className="w-full h-48 rounded-xl" src={data.image || "https://upload.wikimedia.org/wikipedia/commons/7/75/No_image_available.png"} alt="" />
+                    <div className="absolute left-0 bottom-4 text-[14px] text-white py-1 px-3 rounded-r-md bg-[#ea9d02]">Trả góp 0%</div>
                 </div>
                 <div className="py-4 px-4 flex flex-col justify-between align-bottom">
-                    <div className="text-sm font-semibold text-[#CD1818]">Mã sản phẩm: {data.sku}</div>
-                    <div className="text-lg font-semibold text-gray-600">{data.title}</div>
-                    {
-                        <Rate count={5} allowHalf defaultValue={4.5} />
-                    }
-                </div>
-                <div className="py-4 px-4 flex flex-col justify-between align-bottom">
-                    {
-                        data.discount > 0 &&
-                        <div className="flex justify-between items-center pb-2">
-                            <div className="text-base font-mono font-extrabold text-white bg-[#CD1818] px-2 rounded-full">{(data.price - data.price * data.discount / 100).toLocaleString()} VND</div>
+                    <div className="text-sm font-semibold text-[#CD1818]">Mã SP: <span className="uppercase">{data.sku}</span></div>
+                    <div className="text-[17px] font-bold text-[#474c51] mb-2 h-[37px] block overflow-hidden" style={{ lineHeight: 'normal' }}>{data.title}</div>
+                    <div className="flex justify-between items-center pb-2">
+                        <div className="relative text-base font-mono font-extrabold bg-[#ef8573] text-white px-2 rounded-full basis-[130px] w-[130px] h-[28px] flex justify-center items-center" style={{ zIndex: 1 }}>
+                            {formatCurrency(data.price - data.price * data.discount / 100)}
+                            <div className={`absolute top-0 bottom-0 left-0 bg-[#CD1818] rounded-l-full`} style={{ zIndex: -1, width: `${data.discount}%` }}></div>
                         </div>
-                    }
-                    <div className="flex justify-between items-center">
-                        <div className={`text-base font-mono font-extrabold text-white bg-[#CD1818] px-2 rounded-full ${data.discount > 0 ? "text-decoration: line-through" : ""}`}>{data.price && data.price.toLocaleString()} VNĐ</div>
-
-                        <Button danger className="rounded-full" size="small">MUA NGAY</Button>
+                        <div className={`text-base text-[#919191] text-[14px] ${data.discount > 0 ? "text-decoration: line-through" : ""}`}>{formatCurrency(data.price)}</div>
+                    </div>
+                    <div className="bg-[#f8f9fa] rounded-md p-3 text-[#6c757d] text-[14px]">
+                        <div className="flex flex-wrap">
+                            {
+                                data.metadataDtoSet && data.metadataDtoSet.map((meta: IMetadata) => (
+                                    meta.icon &&
+                                    <div className="flex justify-center items-center space-x-2 m-2">
+                                        <ShowIcon name={meta.icon} />
+                                        <div>{meta.content}</div>
+                                    </div>
+                                ))
+                            }
+                        </div>
                     </div>
                 </div>
             </Link>
