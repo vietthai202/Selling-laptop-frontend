@@ -104,7 +104,7 @@ const ListProduct: React.FC = () => {
             <Link to={`/product/${data.slug}`} key={data.id} className="flex flex-col justify-start rounded-lg overflow-hidden shadow-lg hover:scale-105 transition duration-500 bg-white no-underline">
                 <div className="relative">
                     <img className="absolute top-0 left-0 bottom-0 right-0 w-full h-48" src="https://images.fpt.shop/unsafe/fit-in/270x210/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2023/7/1/638237980035622461_frame-cate-270x210.png" alt="" />
-                    <img className="w-full h-48 rounded-xl" src={data.image || "https://upload.wikimedia.org/wikipedia/commons/7/75/No_image_available.png"} alt="" />
+                    <img style={{marginLeft:"50px"}} className="w-64 h-48 rounded-xl" src={data.image || "https://upload.wikimedia.org/wikipedia/commons/7/75/No_image_available.png"} alt="" />
                     <div className="absolute left-0 bottom-4 text-[14px] text-white py-1 px-3 rounded-r-md bg-[#ea9d02]">Trả góp 0%</div>
                 </div>
                 <div className="py-4 px-4 flex flex-col justify-between align-bottom">
