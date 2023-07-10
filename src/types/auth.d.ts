@@ -18,4 +18,5 @@ export interface IUser {
   userRole: string;
   username: string;
   address: string;
+  image: string;
 }

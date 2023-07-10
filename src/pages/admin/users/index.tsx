@@ -83,6 +83,7 @@ const Users: React.FC = () => {
                     phone: values.phone,
                     userRole: values.userRole.key,
                     dateOfBirth: values.dateOfBirth.$d,
+                    image: values.image
                 };
 
                 console.log(userToCreate)

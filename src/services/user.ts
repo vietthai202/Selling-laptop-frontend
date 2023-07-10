@@ -50,6 +50,7 @@ export function updateProfile(token: string, userInfo: IUser): Promise<void> {
       name: userInfo.name,
       dateOfBirth: userInfo.dateOfBirth,
       address: userInfo.address,
+      image: userInfo.image,
     })
     .then((response: AxiosResponse) => {
       return response.data;
