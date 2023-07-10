@@ -1,7 +1,7 @@
 export interface ISlide {
   id: number;
   name: string;
-  image: string | null;
+  imageUrl: string | null;
   url: string;
-  status: boolean;
+  enable: boolean;
 }

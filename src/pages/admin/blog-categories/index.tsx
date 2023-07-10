@@ -198,7 +198,6 @@ const BlogCategories: React.FC = () => {
                         form={form}
                         name="blogCategoryForm"
                         layout="vertical"
-                        labelCol={{ span: 8 }}
                         autoComplete="off"
                     >
 
@@ -243,7 +242,6 @@ const BlogCategories: React.FC = () => {
                         form={form2}
                         name="blogCategoryForm"
                         layout="vertical"
-                        labelCol={{ span: 8 }}
                         autoComplete="off"
                     >
 

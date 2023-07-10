@@ -2,9 +2,9 @@ import { AxiosError, AxiosResponse } from "axios";
 import { IMenu, ISubMenu } from "../types/menu";
 import api from "./api";
 
-export function getAllMenu(): Promise<IMenu[]> {
+export function getAllMenu(menuType: string): Promise<IMenu[]> {
   return api
-    .get(`/ui_menu/list`)
+    .get(`/ui_menu/list/${menuType}`)
     .then((response: AxiosResponse) => {
       return response.data;
     })

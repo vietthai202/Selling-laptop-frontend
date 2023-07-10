@@ -21,9 +21,9 @@ const EditSlide: React.FC = () => {
     if (isLoggedIn() && username && slide) {
       const newSlide: ISlide = slide;
       newSlide.name = values.name;
-      newSlide.image = image;
+      newSlide.imageUrl = image;
       newSlide.url = values.url;
-      newSlide.status = values.status;
+      newSlide.enable = values.status;
 
       await editSlide(newSlide)
         .then(() => {
@@ -48,7 +48,7 @@ const EditSlide: React.FC = () => {
       getSlideById(param.slug)
         .then((data: ISlide) => {
           setSlide(data);
-          setImage(data.image);
+          setImage(data.imageUrl);
           console.log(data);
         })
         .catch(() => {
@@ -61,6 +61,7 @@ const EditSlide: React.FC = () => {
 
   return (
     <div>
+      <h3>Edit Slide</h3>
       {slide && (
         <Form
           name="newBlogForm"

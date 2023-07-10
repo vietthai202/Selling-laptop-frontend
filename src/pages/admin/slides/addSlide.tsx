@@ -19,9 +19,9 @@ const AddSlide: React.FC = () => {
       const slide: ISlide = {
         id: 0,
         name: values.name,
-        image: image,
+        imageUrl: image,
         url: values.url,
-        status: values.status,
+        enable: values.status,
       };
 
       console.log(slide);
@@ -46,6 +46,7 @@ const AddSlide: React.FC = () => {
 
   return (
     <div>
+      <h3>Add Slide</h3>
       <Form
         name="newBlogForm"
         layout="vertical"

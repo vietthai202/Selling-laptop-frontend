@@ -20,7 +20,7 @@ const Slides: React.FC = () => {
   const [deleteSlide, setBrandDelete] = useState<string>("");
 
   const buttonUpdate = (slug: string) => {
-    navigate(`/admin/slides/edit/${slug}`);
+    navigate(`/admin/setting/slides/edit/${slug}`);
   };
 
   const buttonDelete = (blogid: string) => {
@@ -76,7 +76,7 @@ const Slides: React.FC = () => {
           <img
             className="w-48 h-20"
             src={
-              record.image ||
+              record.imageUrl ||
               "https://upload.wikimedia.org/wikipedia/commons/7/75/No_image_available.png"
             }
             alt=""
@@ -86,12 +86,12 @@ const Slides: React.FC = () => {
     },
     {
       title: "Status",
-      dataIndex: "status",
-      key: "status",
+      dataIndex: "enable",
+      key: "enable",
       render: (_, record) => {
         return (
           <Switch
-            defaultChecked={record.status}
+            defaultChecked={record.enable}
             onChange={() => {
               onOffSlide(record.id).then(() => { message.success("Cập nhật thành công!") }).catch(() => { message.error("Cập nhật thất bại!") });
             }}

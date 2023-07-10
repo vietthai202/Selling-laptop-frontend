@@ -38,16 +38,16 @@ const routes = {
   ADMIN_PRODUCTS_ADDNEW: "/admin/products/new",
   ADMIN_PRODUCTS_EDIT: "/admin/products/edit/:slug",
 
-  ADMIN_SLIDES: "/admin/slides",
-  ADMIN_SLIDES_ADDNEW: "/admin/slides/new",
-  ADMIN_SLIDES_EDIT: "/admin/slides/edit/:slug",
-
   ADMIN_COUPON: "/admin/coupon",
   ADMIN_COUPON_ADDNEW: "/admin/coupon/new",
   ADMIN_COUPON_EDIT: "/admin/coupon/edit/:id",
 
   ADMIN_SETTING: "/admin/setting",
   ADMIN_SETTING_MENU: "/admin/setting/menu",
+  ADMIN_SETTING_FOOTER: "/admin/setting/footer",
+  ADMIN_SLIDES: "/admin/setting/slides",
+  ADMIN_SLIDES_ADDNEW: "/admin/setting/slides/new",
+  ADMIN_SLIDES_EDIT: "/admin/setting/slides/edit/:slug",
 };
 
 export default routes;

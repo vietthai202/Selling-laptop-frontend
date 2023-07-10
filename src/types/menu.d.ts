@@ -7,6 +7,7 @@ export interface IMenu {
   enable: boolean;
   parent_id: number;
   uiSubmenus: ISubMenu[];
+  menuType: string;
 }
 
 export interface ISubMenu {

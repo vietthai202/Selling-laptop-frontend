@@ -8,13 +8,11 @@ import CartIcon from '../assets/images/bag.png';
 import Logo from '../assets/images/logo.png';
 import UserRedIcon from '../assets/images/user-profile-red.png';
 import { getAllMenu } from '../services/menu';
-import { getAllProductCategories } from '../services/productCategory';
 import { getUserInfo } from '../services/user';
 import { setTotalCartItem } from '../store/cartSlice';
 import { setUserInfo } from '../store/userSlice';
 import { IUser } from '../types/auth';
 import { IMenu } from '../types/menu';
-import { IProductCategory } from '../types/productCategory';
 import Search from './Search';
 import ShowIcon from './ShowIcon';
 
@@ -43,8 +41,6 @@ const Header: React.FC = () => {
 
     const [user, setUser] = useState<IUser | null>(null);
 
-    const [cate, setCate] = useState<IProductCategory[]>();
-
     const navigate = useNavigate();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -64,15 +60,10 @@ const Header: React.FC = () => {
     };
 
     useEffect(() => {
-        getAllProductCategories()
-            .then((data: IProductCategory[]) => {
-                setCate(data);
-            })
-    }, []);
-
-    useEffect(() => {
-        getAllMenu().then((data: IMenu[]) => {
-            setMenus(data);
+        getAllMenu("HEADER").then((data: IMenu[]) => {
+            if (data.length > 0) {
+                setMenus(data);
+            }
         })
     }, []);
 
@@ -130,13 +121,12 @@ const Header: React.FC = () => {
                                 </a>
 
                                 {data.uiSubmenus && data.uiSubmenus.length > 0 && hoveredMenu === data.id.toString() && (
-                                    <div className="absolute top-full right-0 bg-gray-200 rounded-md">
+                                    <div className="absolute top-full right-0 bg-gray-200 rounded-md z-50 whitespace-nowrap">
                                         {data.uiSubmenus.map((submenu) => (
                                             submenu.enable &&
                                             <a
                                                 key={submenu.id}
                                                 href={submenu.url}
-                                                style={{ whiteSpace: 'nowrap' }}
                                                 className="block px-8 py-2 text-gray-800 hover:bg-gray-300 hover:rounded-md no-underline"
                                             >
                                                 {submenu.name}
@@ -157,15 +147,7 @@ const Header: React.FC = () => {
                     </Badge>
                 </div>
             </div>
-            <div className='h-[40px] space-x-10 bg-[#333] text-white whitespace-nowrap w-full overflow-x-auto flex items-center px-4 sm:px-0 sm:justify-center'>
-                {
-                    cate && cate.map((cate: IProductCategory) => (
-                        <div key={cate.id} className='text-white cursor-pointer hover:font-bold'>
-                            {cate.name}
-                        </div>
-                    ))
-                }
-
+            <div className='h-[1px] space-x-10 bg-[#333] text-white whitespace-nowrap w-full overflow-x-auto flex items-center px-4 sm:px-0 sm:justify-center'>
             </div>
             <Modal
                 okButtonProps={{ style: { backgroundColor: '#CD1818' } }}
