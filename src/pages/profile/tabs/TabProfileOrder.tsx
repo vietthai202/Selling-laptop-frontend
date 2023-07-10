@@ -20,24 +20,25 @@ const TabProfileOrder: React.FC = () => {
     return (
         <>
             <div className="container mx-auto">
-                <Card title="Đơn hàng của tôi">
-                    <ul className="divide-y divide-gray-300">
-                        {
-                            orderData && orderData.map((data: any) => (
-                                <li key={data.id} className="py-2 list-none">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-lg">Order #{data.id} - {data.totalPrice} VNĐ</span>
+    <Card title="Đơn hàng của tôi">
+        <ul className="divide-y divide-gray-300">
+            {
+                orderData && orderData.sort((a:any, b:any) => b.id - a.id).map((data: any) => (
+                    <li key={data.id} className="py-2 list-none">
+                        <div className="flex justify-between items-center">
+                            <span className="text-lg">Order #{data.id} - {data.totalPrice.toLocaleString()} VNĐ</span>
 
-                                        {!data.transactions &&
-                                            <Button danger target="_blank" href={`/profile/payment/${data.id}`}>Thanh toán</Button>
-                                        }
-                                    </div>
-                                </li>
-                            ))
-                        }
-                    </ul>
-                </Card>
-            </div>
+                            {!data.transactions &&
+                                <Button danger target="_blank" href={`/profile/payment/${data.id}`}>Thanh toán</Button>
+                            }
+                        </div>
+                    </li>
+                ))
+            }
+        </ul>
+    </Card>
+</div>
+
         </>
     )
 }
