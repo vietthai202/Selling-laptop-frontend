@@ -1,4 +1,4 @@
-import { Button, Divider, Input, InputNumber, Modal, Spin, message } from "antd";
+import { Button, Card, Divider, Input, InputNumber, Modal, Spin, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ShowIcon from "../../components/ShowIcon";
@@ -388,6 +388,27 @@ const ProductDetail: React.FC = () => {
                             <FAQs listFaq={faqs} />
                         </div>
                     </div>
+                    <Card title="Đánh giá sản phẩm" className="bg-white -mx-4 my-4">
+                        <div className="flex justify-around">
+                            <div className="review-block1">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                            <div className="review-block2">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                            <div className="review-block3">
+                                <div>Bạn đã dùng sản phẩm này?</div>
+                                <div>Gửi đánh giá</div>
+                            </div>
+                        </div>
+                    </Card>
 
                 </div>
 

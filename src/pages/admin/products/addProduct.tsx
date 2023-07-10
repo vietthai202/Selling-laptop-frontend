@@ -436,7 +436,7 @@ const AddProduct: React.FC = () => {
 
                                     <div className='flex flex-col space-y-2 max-w-md'>
                                         <div className='flex space-x-2'>
-                                            {/* <ShowIcon name={itemMetadataIcon[metadataGroup.id] || "FcAddImage"} size={30} className='cursor-pointer' onClick={() => setSelectIcon(true)} /> */}
+                                            <ShowIcon name={itemMetadataIcon[metadataGroup.id] || "FcAddImage"} size={30} className='cursor-pointer' onClick={() => setSelectIcon(true)} />
                                             <div className='flex space-x-2'>
                                                 <Input
                                                     placeholder={`Nhập ${metadataGroup.name.toLowerCase()} mới`}
@@ -463,7 +463,7 @@ const AddProduct: React.FC = () => {
                             FAQs
                         </div>
                         {
-                            faqs.map((faq) => (
+                            faqs.length > 0 && faqs.map((faq) => (
                                 <div key={faq.id}>
                                     {faq.title} : {faq.content}
 
@@ -475,7 +475,6 @@ const AddProduct: React.FC = () => {
                             ))
                         }
                         <div className='flex space-x-2'>
-                            {/* <ShowIcon name={itemMetadataIcon[metadataGroup.id] || "FcAddImage"} size={30} className='cursor-pointer' onClick={() => setSelectIcon(true)} /> */}
                             <div className='flex flex-col space-y-2 w-full'>
                                 <Input
                                     placeholder={`Nhập title faq mới`}
