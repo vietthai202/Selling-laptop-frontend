@@ -1,13 +1,14 @@
-import { AimOutlined, AppstoreOutlined, CommentOutlined, EyeOutlined, UserOutlined } from '@ant-design/icons';
+import { AimOutlined, AppstoreOutlined, CommentOutlined, EyeOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons';
 import { Tabs } from 'antd';
 import React, { useEffect } from 'react';
-import TabProfileOrder from './tabs/TabProfileOrder';
-import TabAddressReceive from './tabs/TabAddressReceive';
-import TabReviewProduct from './tabs/TabReviewProduct';
-import TabResentlyViewed from './tabs/TabResentlyViewed';
-import TabEditProfile from './tabs/TabEditProfile';
-import { isLoggedIn } from '../../services/auth';
 import { useNavigate } from 'react-router-dom';
+import { isLoggedIn } from '../../services/auth';
+import TabAddressReceive from './tabs/TabAddressReceive';
+import TabEditProfile from './tabs/TabEditProfile';
+import TabGuarantee from './tabs/TabGuarantee';
+import TabProfileOrder from './tabs/TabProfileOrder';
+import TabResentlyViewed from './tabs/TabResentlyViewed';
+import TabReviewProduct from './tabs/TabReviewProduct';
 
 const { TabPane } = Tabs;
 
@@ -78,6 +79,17 @@ const Profile: React.FC = () => {
                     key="4"
                 >
                     <TabResentlyViewed />
+                </TabPane>
+                <TabPane
+                    tab={
+                        <span>
+                            <SafetyOutlined />
+                            Bảo hành
+                        </span>
+                    }
+                    key="5"
+                >
+                    <TabGuarantee />
                 </TabPane>
             </Tabs>
         </div>

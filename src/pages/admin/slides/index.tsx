@@ -139,8 +139,7 @@ const Slides: React.FC = () => {
         okText="Xóa"
       >
         <div className="flex flex-col items-center">
-          Tất cả sản phẩm trong thương hiệu này sẽ tự động chuyển sang thương
-          hiệu mặc định!
+          Bạn có chắc chắn muốn xóa!
         </div>
       </Modal>
     </div>

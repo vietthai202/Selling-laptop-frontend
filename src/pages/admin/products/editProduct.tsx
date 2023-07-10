@@ -628,7 +628,7 @@ const EditProduct: React.FC = () => {
                                 FAQs
                             </div>
                             {
-                                faqs.map((faq) => (
+                                faqs.length > 0 && faqs.map((faq) => (
                                     <div key={faq.id} className='flex items-center space-x-4 space-y-2'>
                                         <div>{faq.title} : {faq.content}</div>
 
