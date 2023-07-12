@@ -126,7 +126,7 @@ const TabEditProfile: React.FC = () => {
                     <div className="flex">
                         <div className="flex flex-col space-y-4 items-center">
                             <div className="w-32 h-32 bg-gray-200 rounded-full flex justify-center" >
-                                <Image className="w-32 h-32 bg-gray-200 rounded-full flex justify-center" src={user?.image}  />
+                                <Image className="w-32 h-32 bg-gray-200 rounded-full flex justify-center" src={user?.image || "https://vdostavka.ru/wp-content/uploads/2019/05/no-avatar.png"} />
                             </div>
                             <div className="">
                                 <UploadSingleImage valueProps={""} setValueProps={setImage} />
