@@ -22,7 +22,6 @@ const IconSelectionModal: React.FC<IconSelectionModalProps> = ({ visible, onClos
             title="Chọn Icon"
             onCancel={onClose}
             footer={null}
-            style={{ zIndex: 999999999 }}
         >
             <Row gutter={[16, 16]}>
                 {icons.map((icon) => (

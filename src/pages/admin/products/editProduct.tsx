@@ -35,6 +35,7 @@ const EditProduct: React.FC = () => {
     const navigate = useNavigate();
 
     const [selectIcon, setSelectIcon] = useState(false);
+    const [selectIconEdit, setSelectIconEdit] = useState(false);
     const [showDeleteMeta, setShowDeletaMeta] = useState(false);
     const [idDeleteMeta, setIdDeleteMeta] = useState<number | null>(null);
 
@@ -375,6 +376,7 @@ const EditProduct: React.FC = () => {
                 price: values.price,
                 discount: values.discount,
                 quantity: values.quantity,
+                status: product.status,
                 categoryId: values.categoryId,
                 brandId: values.brandId
             }
@@ -743,7 +745,7 @@ const EditProduct: React.FC = () => {
                             labelCol={{ span: 8 }}
                         >
                             <div className='flex space-x-2 justify-center items-center'>
-                                <ShowIcon name={editDataIcon || "FcAddImage"} size={30} onClick={() => { setSelectIcon(true); }} className='cursor-pointer' />
+                                <ShowIcon name={editDataIcon || "FcAddImage"} size={30} onClick={() => { setSelectIconEdit(true); }} className='cursor-pointer' />
 
                                 <Form.Item
                                     style={{ minWidth: 150 }}
@@ -771,6 +773,7 @@ const EditProduct: React.FC = () => {
                                 >
                                     <Input size="large" placeholder='xxx' />
                                 </Form.Item>
+                                <IconSelectionModal visible={selectIconEdit} onClose={() => { setSelectIconEdit(false) }} onSelectIcon={handleSelectionIcon} />
                             </div>
                         </Form>
                     </div>
