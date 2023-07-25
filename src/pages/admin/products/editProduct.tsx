@@ -21,6 +21,9 @@ import { IFAQs } from '../../../types/faqs';
 import FAQs from '../../../components/ProductFAQs';
 import ShowIcon from '../../../components/ShowIcon';
 import IconSelectionModal from '../../../components/ModalSelectIcon';
+import ListProductImage from '../../../components/ListProductImage';
+import { IProductImage } from '../../../types/productImage';
+import { createMultipleProductImage, getProductImage } from '../../../services/productImage';
 
 const { TextArea } = Input;
 
@@ -33,6 +36,8 @@ const EditProduct: React.FC = () => {
     const param: any = useParams();
 
     const navigate = useNavigate();
+
+    const [imageUrls, setImageUrls] = useState<string[]>([]);
 
     const [selectIcon, setSelectIcon] = useState(false);
     const [selectIconEdit, setSelectIconEdit] = useState(false);
@@ -381,10 +386,26 @@ const EditProduct: React.FC = () => {
                 brandId: values.brandId
             }
 
-            await updateProduct(newProduct)
+            const listImageUrl: string = imageUrls.join("##swp##");
+
+            const img: IProductImage = {
+                id: 0,
+                image: listImageUrl,
+                laptop_id: product.id,
+            }
+
+            await createMultipleProductImage(img)
                 .then(() => {
-                    message.success("Thành công!");
-                    navigate(routes.ADMIN_PRODUCTS);
+                    // message.success("Thành công!");
+                    // navigate(routes.ADMIN_PRODUCTS);
+                }).catch(() => {
+                    message.error("Thất bại!");
+                });
+
+            await updateProduct(newProduct)
+                .then(async () => {
+                    // message.success("Thành công!");
+                    // navigate(routes.ADMIN_PRODUCTS);
                 })
                 .catch(() => {
                     message.error("Thất bại!");
@@ -411,6 +432,15 @@ const EditProduct: React.FC = () => {
                     getFAQByLaptopId(data.id)
                         .then((data: IFAQs[]) => {
                             setFaqs(data);
+                        })
+
+                    getProductImage(data.id)
+                        .then((data: IProductImage[]) => {
+                            let productImgs: string[] = [];
+                            data.map((d: IProductImage) => {
+                                return productImgs.push(d.image);
+                            })
+                            setImageUrls(productImgs);
                         })
                 })
         }
@@ -545,9 +575,8 @@ const EditProduct: React.FC = () => {
 
                     </Form.Item>
 
-                    <div className='flex flex-col md:flex-row items-center justify-around'>
+                    <div className='flex flex-col lg:flex-row items-center justify-around'>
                         <Form.Item
-
                             label="Giá sản phẩm"
                             name="price"
                             rules={[{ required: true, message: 'Hãy nhập giá!' }]}
@@ -556,7 +585,6 @@ const EditProduct: React.FC = () => {
                         </Form.Item>
 
                         <Form.Item
-                            style={{ minWidth: 300 }}
                             label="Giảm giá"
                             name="discount"
                             rules={[{ required: true, message: 'Hãy nhập discount!' }]}
@@ -565,7 +593,6 @@ const EditProduct: React.FC = () => {
                         </Form.Item>
 
                         <Form.Item
-                            style={{ minWidth: 300 }}
                             label="Số lượng"
                             name="quantity"
                             rules={[{ required: true, message: 'Hãy nhập số lượng!' }]}
@@ -573,6 +600,13 @@ const EditProduct: React.FC = () => {
                             <InputNumber style={{ minWidth: 300 }} size="large" formatter={formatNumber} parser={parseNumber} />
                         </Form.Item>
                     </div>
+
+                    <Form.Item
+                        label="Danh sách ảnh"
+                        name="listImage"
+                    >
+                        <ListProductImage imageUrls={imageUrls} setImageUrls={setImageUrls} />
+                    </Form.Item>
 
                     <Form.Item
                         label="Meta title"
@@ -699,7 +733,7 @@ const EditProduct: React.FC = () => {
                     <IconSelectionModal visible={selectIcon} onClose={() => { setSelectIcon(false) }} onSelectIcon={handleSelectionIcon} />
 
                     <Button type="primary" className='bg-[#CD1818] hover:bg-[#6d6d6d] my-3' htmlType="submit">
-                        Sửa
+                        Sửa sản phẩm
                     </Button>
                 </Form>
             }
