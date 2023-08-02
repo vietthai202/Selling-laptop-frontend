@@ -113,7 +113,7 @@ const ListProduct: React.FC = () => {
                     <div className="flex justify-between items-center pb-2">
                         <div className="relative text-base font-mono font-extrabold bg-[#ef8573] text-white px-2 rounded-full basis-[130px] w-[130px] h-[28px] flex justify-center items-center" style={{ zIndex: 1 }}>
                             {formatCurrency(data.price - data.price * data.discount / 100)}
-                            <div className={`absolute top-0 bottom-0 left-0 bg-[#CD1818] rounded-l-full`} style={{ zIndex: -1, width: `${data.discount}%` }}></div>
+                            <div className={`absolute top-0 bottom-0 left-0 bg-[#CD1818] rounded-full`} style={{ zIndex: -1, width: `${100 - data.discount}%` }}></div>
                         </div>
                         <div className={`text-base text-[#919191] text-[14px] ${data.discount > 0 ? "text-decoration: line-through" : ""}`}>{formatCurrency(data.price)}</div>
                     </div>

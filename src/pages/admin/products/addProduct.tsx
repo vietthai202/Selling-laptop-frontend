@@ -33,6 +33,8 @@ const AddProduct: React.FC = () => {
 
     const [selectIcon, setSelectIcon] = useState(false);
 
+    const [editDataIcon, setEditDataIcon] = useState('');
+    const [groupSelected, setGroupSelected] = useState<number>();
     const [categoryName, setCategoryName] = useState('');
     const [categoryDesc, setCategoryDesc] = useState('');
     const [productCategories, setCategories] = useState<IProductCategory[]>();
@@ -135,7 +137,7 @@ const AddProduct: React.FC = () => {
 
         const newMetadata: IMetadata = {
             id: metadataId,
-            icon: itemMetadataIcon[group_id],
+            icon: editDataIcon,
             title: itemMetadataTitle[group_id],
             content: itemMetadataContent[group_id],
             laptop_id: 0,
@@ -183,11 +185,18 @@ const AddProduct: React.FC = () => {
         setFaqs(faqsRm);
     }
 
-    // const handleInputIconChange = (index: number, value: string) => {
-    //     const newInputValues = [...itemMetadataTitle];
-    //     newInputValues[index] = value
-    //     setItemMetadataTitle(newInputValues);
-    // };
+    const handleSelectionIcon = (iconName: string) => {
+        if (groupSelected) {
+            setEditDataIcon(iconName);
+            handleIconChange(groupSelected, iconName);
+        }
+    }
+
+    const handleIconChange = (index: number, value: string) => {
+        const newIconValues = [...itemMetadataIcon];
+        newIconValues[index] = value
+        setItemMetadataIcon(newIconValues);
+    };
 
     const handleInputTitleChange = (index: number, value: string) => {
         const newInputValues = [...itemMetadataTitle];
@@ -422,7 +431,7 @@ const AddProduct: React.FC = () => {
                                                 <div className='flex space-x-2 items-center'>
                                                     {
                                                         metadata.icon && metadata.icon !== "" &&
-                                                        <ShowIcon name={metadata.icon} />
+                                                        <ShowIcon name={metadata.icon} size={30} />
                                                     }
                                                     <div><b>{metadata.title} : </b>{metadata.content}</div>
 
@@ -436,7 +445,8 @@ const AddProduct: React.FC = () => {
 
                                     <div className='flex flex-col space-y-2 max-w-md'>
                                         <div className='flex space-x-2'>
-                                            <ShowIcon name={itemMetadataIcon[metadataGroup.id] || "FcAddImage"} size={30} className='cursor-pointer' onClick={() => setSelectIcon(true)} />
+                                            <ShowIcon name={itemMetadataIcon[metadataGroup.id] || "FcAddImage"} size={30} onClick={() => { setSelectIcon(true); setGroupSelected(metadataGroup.id); }} className='cursor-pointer' />
+
                                             <div className='flex space-x-2'>
                                                 <Input
                                                     placeholder={`Nhập ${metadataGroup.name.toLowerCase()} mới`}
@@ -494,7 +504,7 @@ const AddProduct: React.FC = () => {
                         </Button>
                     </div>
                 </div>
-                <IconSelectionModal visible={selectIcon} onClose={() => { setSelectIcon(false) }} onSelectIcon={() => { console.log("okoko") }} />
+                <IconSelectionModal visible={selectIcon} onClose={() => { setSelectIcon(false) }} onSelectIcon={handleSelectionIcon} />
 
                 <Button type="primary" className='bg-[#CD1818] hover:bg-[#6d6d6d] my-3' htmlType="submit">
                     Thêm mới

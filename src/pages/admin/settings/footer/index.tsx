@@ -299,6 +299,7 @@ const SettingFooter: React.FC = () => {
             </div>
 
             <Modal
+                destroyOnClose={true}
                 okButtonProps={{ style: { backgroundColor: '#CD1818' } }}
                 open={editDataId === "0"}
                 onOk={handleAddNewMenuSubmit}
@@ -335,6 +336,7 @@ const SettingFooter: React.FC = () => {
             </Modal >
 
             <Modal
+                destroyOnClose={true}
                 okButtonProps={{ style: { backgroundColor: '#CD1818' } }}
                 open={editDataId !== null && editDataId !== "0" && typeShow !== "editsubmenu"}
                 onOk={handleAddNewSubMenuSubmit}
@@ -371,6 +373,7 @@ const SettingFooter: React.FC = () => {
             </Modal >
 
             <Modal
+                destroyOnClose={true}
                 okButtonProps={{ style: { backgroundColor: '#CD1818' } }}
                 open={editData !== null}
                 onOk={handleEditMenuSubmit}
@@ -407,6 +410,7 @@ const SettingFooter: React.FC = () => {
             </Modal>
 
             <Modal
+                destroyOnClose={true}
                 okButtonProps={{ style: { backgroundColor: '#CD1818' } }}
                 open={typeShow !== null && typeShow === "editsubmenu"}
                 onOk={handleEditSubMenuSubmit}
